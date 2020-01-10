@@ -14,14 +14,18 @@ if exist %AZURE_CONF_FILE% (
 
 if "%1" == "bash" (
   SET ENTRY_POINT=--entrypoint /ansible/bin/entrypoint.sh
+  REM the input device is not a TTY. If you are using mintty, try prefixing the command with 'winpty'
+  REM docker should not run as an interactive session (only for the docker-bash script)
+  SET INTERACTIVE=-it
 ) else (
   SET ENTRY_POINT=
+  SET INTERACTIVE=
 )
 
 docker run ^
     --name ansible ^
 	--rm ^
-	-it ^
+	%INTERACTIVE% ^
 	-v %cd%:/ansible/playbooks ^
 	--env AZURE_CLIENT_ID=%AZURE_CLIENT_ID% ^
 	--env AZURE_SECRET=%AZURE_SECRET% ^
