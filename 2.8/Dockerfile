@@ -32,7 +32,7 @@ RUN echo "==> Update"  && \
     echo "Add the user to the sudoers group" && \
     adduser $PLAY_USER sudo && \
 	echo "==> Install tools..."  && \
-	apt-get install -y vim wget jq && \	
+	apt-get install -y vim wget jq rsync && \
     echo "==> Install ansible..."  && \
     apt-get install -y software-properties-common && \
     apt-add-repository --yes --update ppa:ansible/ansible-$PLAY_ANSIBLE_VERSION && \
