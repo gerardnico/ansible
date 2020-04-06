@@ -12,6 +12,11 @@ if exist %AZURE_CONF_FILE% (
    call %AZURE_CONF_FILE%
 )
 
+if not defined ANSIBLE_VERSION (
+    SET ANSIBLE_VERSION=2.8
+)
+echo Ansible Version: %ANSIBLE_VERSION%
+
 if "%1" == "bash" (
   SET ENTRY_POINT=--entrypoint /ansible/bin/entrypoint.sh
   REM the input device is not a TTY. If you are using mintty, try prefixing the command with 'winpty'
@@ -33,5 +38,5 @@ docker run ^
 	--env AZURE_TENANT=%AZURE_TENANT% ^
 	--user ansible ^
 	%ENTRY_POINT% ^
-	gerardnico/ansible:2.7 ^
+	gerardnico/ansible:%ANSIBLE_VERSION% ^
 	%*

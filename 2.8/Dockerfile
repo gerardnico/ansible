@@ -13,7 +13,7 @@ ENV ANSIBLE_SSH_PIPELINING True
 # Own environment variable
 # Not from Ansible
 ENV PLAY_USER ansible
-ENV PLAY_ANSIBLE_VERSION 2.7
+ENV PLAY_ANSIBLE_VERSION 2.8
 ENV PLAY_BASE /ansible
 ENV PLAY_PLAYBOOK $PLAY_BASE/playbooks
 ENV PLAY_BIN $PLAY_BASE/bin
@@ -55,15 +55,6 @@ RUN	echo "==> Creating the project structure" && \
 	mkdir -p $PLAY_PLAYBOOK
 
 # The Azure file were deleted from the repo and added in the distro in 2.8
-# Old URL
-# https://raw.githubusercontent.com/ansible/ansible/devel/contrib/inventory/azure_rm.ini
-# https://raw.githubusercontent.com/ansible/ansible/devel/contrib/inventory/azure_rm.py
-COPY azure_rm.ini $PLAY_BIN/azure_rm.ini
-COPY azure_rm.py $PLAY_BIN/azure_rm.py
-
-RUN	echo "==> Azure" && \
-    chmod +x $PLAY_BIN/azure_rm.py
-
 
 # The Entry point script to start the ssh-agent
 # Called only with bash at the command line
@@ -93,6 +84,6 @@ ENV AZURE_TENANT=""
 # We choose no entrypoint. You need to give the command.
 #
 # Run Example: 
-#    docker run --rm -it gerardnico/ansible:2.7 bash
-#    docker run --rm -it gerardnico/ansible:2.7 ansible-playbook --version
-#    docker run --rm -it gerardnico/ansible:2.7 ansible --version
+#    docker run --rm -it gerardnico/ansible:2.8 bash
+#    docker run --rm -it gerardnico/ansible:2.8 ansible-playbook --version
+#    docker run --rm -it gerardnico/ansible:2.8 ansible --version

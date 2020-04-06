@@ -1,0 +1,5 @@
+2.7/azure_rm.ini eol=lf
+2.7/azure_rm.py eol=lf
+*.sh eol=lf
+*.cmd eol=crlf
+*.bat eol=crlf

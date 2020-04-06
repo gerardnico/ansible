@@ -15,6 +15,20 @@ This directory contains `Ansible` cli [scripts](#script-list) that are located i
 
 
 ## How to
+
+### Change the Ansible version
+
+There is actually two image with the version:
+  * 2.7
+  * 2.8
+By default, this is the latest that is used in the file [ansible-docker-run.cmd](ansible-docker-run.cmd)
+
+You can set the env variable to another version if you want. Example:
+
+```dos
+SET ANSIBLE_VERSION = 2.7
+```
+
 ### Works with Encrypted Private Key
 
 When working with encrypted private key, Ansible will always ask the passphrase.
