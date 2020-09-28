@@ -27,8 +27,8 @@ if "%1" == "bash" (
   SET INTERACTIVE=
 )
 
+REM no name is given to the container because otherwise it's not possible to start two ansible session
 docker run ^
-    --name ansible ^
 	--rm ^
 	%INTERACTIVE% ^
 	-v %cd%:/ansible/playbooks ^
