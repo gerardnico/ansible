@@ -2,7 +2,9 @@
 
 
 ## About
-This directory contains `Ansible` cli [scripts](#script-list) that are located in the docker image [gerardnico/ansible:2.7](https://hub.docker.com/r/gerardnico/ansible/) build by this [Dockerfile](2.7/Dockerfile)
+This directory contains `Ansible` cli [scripts](#script-list) that are located 
+in the docker image [gerardnico/ansible:xxx](https://hub.docker.com/r/gerardnico/ansible/) 
+build by this [Dockerfile](./Dockerfiles)
 
 
 ## Start Process
@@ -18,15 +20,16 @@ This directory contains `Ansible` cli [scripts](#script-list) that are located i
 
 ### Change the Ansible version
 
-There is actually two image with the version:
+There is actually 3 images with the version:
   * 2.7
   * 2.8
+  * 8
 By default, this is the latest that is used in the file [ansible-docker-run.cmd](ansible-docker-run.cmd)
 
 You can set the env variable to another version if you want. Example:
 
 ```dos
-SET ANSIBLE_VERSION = 2.7
+SET ANSIBLE_VERSION = 8
 ```
 
 ### Works with Encrypted Private Key
@@ -59,11 +62,11 @@ Called from the Cmd shell
   * [ansible-pull.cmd](ansible-pull.cmd) - The [ansible-pull cli](https://docs.ansible.com/ansible/latest/cli/ansible-pull.html)
   * [ansible-vault.cmd](ansible-vault.cmd) - The [ansible-vault cli](https://docs.ansible.com/ansible/latest/user_guide/vault.html). !!! Warning, you can't use a password file, see [ansible-vault](#ansible-vault) !!!
   * [ansible-azure-rm.cmd](ansible-azure-rm.cmd) - The Azure Inventory script `azure_rm.py`
-  * [build.bat](build.bat) - Build/Create the Ansible Docker image from the [Dockerfile](2.7/Dockerfile)
+  * [build.bat](build.bat) - Build/Create the Ansible Docker image from the [Dockerfile](Dockerfiles/8/Dockerfile)
 
 Called from inside the Docker container. You need to call the script [ansible-bash.cmd](ansible-bash.cmd) first.
 
-  * [azure-inventory.sh](azure-inventory.sh) - A script to format the output of the Azure Inventory script from [ansible-azure-rm.cmd](ansible-azure-rm.cmd) or `azure_rm.py`
+  * [azure-inventory.sh](azure_inventory.sh) - A script to format the output of the Azure Inventory script from [ansible-azure-rm.cmd](ansible-azure-rm.cmd) or `azure_rm.py`
   * `azure_rm.py` -  the Azure Inventory script. Before, you need to copy [azure-conf-dist.cmd](azure-conf-dist.cmd) to `azure-conf.cmd` and set your identity variables
 
 Called indirectly by the other scripts
@@ -76,7 +79,7 @@ Called indirectly by the other scripts
 
 ### Ansible-vault
 
-When running Docker on Windows, the default permission makes the files executable. See [Windows Permissions](#Windows Permissions)
+When running Docker on Windows, the default permission makes the files executable. See [Windows Permissions](#windows-permissions)
 You get this kind of errors:
 
 ```txt
@@ -152,5 +155,3 @@ that helps manage the repository files located at:
   
   * `/etc/apt/sources.list`
   * `/etc/apt/sources.list.d`
-  
- 
