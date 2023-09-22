@@ -49,9 +49,15 @@ RUN echo "==> Update"  && \
     mkdir -p /etc/ansible && \
     echo "[local]" >> /etc/ansible/hosts && \
     echo "localhost" >> /etc/ansible/hosts && \
-# Error: This environment is externally managed
-#	echo "==> Adding Azure SDK (https://docs.ansible.com/ansible/latest/scenario_guides/guide_azure.html)" && \
-#	pip3 install 'ansible[azure]' && \
+    echo "===> Python install" && \
+    echo "===> use apt-get install python3-xxx to avoid the error, this environment is externally managed" && \
+    echo "===> Install Passlib" && \
+    # passlib: new Ansible encryption that replaces Python crypt module \
+    apt-get install python3-passlib && \
+    # Azure no longer supported with this install \
+    # https://github.com/ansible/ansible/issues/67255 \
+    # https://docs.ansible.com/ansible/latest/scenario_guides/guide_azure.html
+	# echo "==> Adding Azure SDK" && \
 	echo "==> Adding ansible root"  && \
 	mkdir -p $PLAY_BASE && \
 	chown $PLAY_USER $PLAY_BASE
