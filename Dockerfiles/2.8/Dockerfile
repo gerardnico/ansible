@@ -13,7 +13,7 @@ ENV ANSIBLE_SSH_PIPELINING True
 # Own environment variable
 # Not from Ansible
 ENV PLAY_USER ansible
-ENV PLAY_ANSIBLE_VERSION 2.7
+ENV PLAY_ANSIBLE_VERSION 2.8
 ENV PLAY_BASE /ansible
 ENV PLAY_PLAYBOOK $PLAY_BASE/playbooks
 ENV PLAY_BIN $PLAY_BASE/bin
@@ -32,7 +32,7 @@ RUN echo "==> Update"  && \
     echo "Add the user to the sudoers group" && \
     adduser $PLAY_USER sudo && \
 	echo "==> Install tools..."  && \
-	apt-get install -y vim wget jq && \	
+	apt-get install -y vim wget jq rsync && \
     echo "==> Install ansible..."  && \
     apt-get install -y software-properties-common && \
     apt-add-repository --yes --update ppa:ansible/ansible-$PLAY_ANSIBLE_VERSION && \
@@ -43,7 +43,7 @@ RUN echo "==> Update"  && \
     mkdir -p /etc/ansible && \
     echo "[local]" >> /etc/ansible/hosts && \
     echo "localhost" >> /etc/ansible/hosts && \
-	echo "==> Adding Azure SDK (https://docs.ansible.com/ansible/latest/scenario_guides/guide_azure.html)" && \ 
+	echo "==> Adding Azure SDK (https://docs.ansible.com/ansible/latest/scenario_guides/guide_azure.html)" && \
 	pip install 'ansible[azure]' && \
 	echo "==> Adding ansible root"  && \
 	mkdir -p $PLAY_BASE && \
@@ -55,15 +55,6 @@ RUN	echo "==> Creating the project structure" && \
 	mkdir -p $PLAY_PLAYBOOK
 
 # The Azure file were deleted from the repo and added in the distro in 2.8
-# Old URL
-# https://raw.githubusercontent.com/ansible/ansible/devel/contrib/inventory/azure_rm.ini
-# https://raw.githubusercontent.com/ansible/ansible/devel/contrib/inventory/azure_rm.py
-COPY azure_rm.ini $PLAY_BIN/azure_rm.ini
-COPY azure_rm.py $PLAY_BIN/azure_rm.py
-
-RUN	echo "==> Azure" && \
-    chmod +x $PLAY_BIN/azure_rm.py
-
 
 # The Entry point script to start the ssh-agent
 # Called only with bash at the command line
@@ -82,7 +73,7 @@ USER $PLAY_USER
 WORKDIR $PLAY_PLAYBOOK
 
 # Azure env
-# Need to be set with 
+# Need to be set with
 # docker run --env <key>=<value>
 ENV AZURE_CLIENT_ID=""
 ENV AZURE_SECRET=""
@@ -92,7 +83,7 @@ ENV AZURE_TENANT=""
 
 # We choose no entrypoint. You need to give the command.
 #
-# Run Example: 
-#    docker run --rm -it gerardnico/ansible:2.7 bash
-#    docker run --rm -it gerardnico/ansible:2.7 ansible-playbook --version
-#    docker run --rm -it gerardnico/ansible:2.7 ansible --version
+# Run Example:
+#    docker run --rm -it gerardnico/ansible:2.8 bash
+#    docker run --rm -it gerardnico/ansible:2.8 ansible-playbook --version
+#    docker run --rm -it gerardnico/ansible:2.8 ansible --version
