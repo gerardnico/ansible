@@ -6,6 +6,15 @@ This directory contains `Ansible` cli [scripts](#script-list) that are located
 in the docker image [gerardnico/ansible:xxx](https://hub.docker.com/r/gerardnico/ansible/) 
 build by this [Dockerfile](./Dockerfiles)
 
+## Run Example
+
+After the image have been [build locally](build.bat), 
+you can run and choose a version with:
+```dos
+SET ANSIBLE_VERSION=8
+ansible-playbook --version
+```
+
 
 ## Start Process
 
@@ -14,7 +23,6 @@ build by this [Dockerfile](./Dockerfiles)
   * Add this directory to your `PATH` environment variable to be able to call the Ansible script from anywhere
   * Call the `ansible-xxx.cmd` cli scripts. See the [script section](#script-list) for a description
   
-
 
 ## How to
 
@@ -29,7 +37,7 @@ By default, this is the latest that is used in the file [ansible-docker-run.cmd]
 You can set the env variable to another version if you want. Example:
 
 ```dos
-SET ANSIBLE_VERSION = 8
+SET ANSIBLE_VERSION=8
 ```
 
 ### Works with Encrypted Private Key

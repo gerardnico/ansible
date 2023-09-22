@@ -12,7 +12,7 @@ if exist %AZURE_CONF_FILE% (
    call %AZURE_CONF_FILE%
 )
 
-if not defined ANSIBLE_VERSION (
+if "%ANSIBLE_VERSION%"=="" (
     SET ANSIBLE_VERSION=2.8
 )
 echo Ansible Version: %ANSIBLE_VERSION%

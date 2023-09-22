@@ -1,8 +1,12 @@
 FROM ubuntu:23.04
-
 # 23:04 is Kunar
 # The dist available for ansible 8 are visible here:
 # http://ppa.launchpad.net/ansible/ansible-8/ubuntu/dists/
+
+# https://docs.ansible.com/ansible/latest/reference_appendices/release_and_maintenance.html#ansible-community-changelogs
+ENV PLAY_PACKAGE_RELEASE_VERSION 8
+# The release and the core does not follow the same versioning
+ENV PLAY_ANSIBLE_CORE_VERSION 2.15
 
 # Ansible Env
 ENV ANSIBLE_GATHERING smart
@@ -17,7 +21,6 @@ ENV ANSIBLE_SSH_PIPELINING True
 # Own environment variable
 # Not from Ansible
 ENV PLAY_USER ansible
-ENV PLAY_ANSIBLE_VERSION 8
 ENV PLAY_BASE /ansible
 ENV PLAY_PLAYBOOK $PLAY_BASE/playbooks
 ENV PLAY_BIN $PLAY_BASE/bin
@@ -38,16 +41,17 @@ RUN echo "==> Update"  && \
 	apt-get install -y vim wget jq rsync && \
     echo "==> Install ansible..."  && \
     apt-get install -y software-properties-common && \
-    apt-add-repository --yes --update ppa:ansible/ansible-$PLAY_ANSIBLE_VERSION && \
+    apt-add-repository --yes --update ppa:ansible/ansible-$PLAY_PACKAGE_RELEASE_VERSION && \
     apt-get install -y ansible && \
-    echo "==> Update (because https://launchpad.net/~ansible/+archive/ubuntu/ansible-2.7)"  && \
+    echo "==> Update (because https://launchpad.net/~ansible/+archive/ubuntu/ansible-8)"  && \
     apt-get update && \
 	echo "==> Adding hosts for convenience..."  && \
     mkdir -p /etc/ansible && \
     echo "[local]" >> /etc/ansible/hosts && \
     echo "localhost" >> /etc/ansible/hosts && \
-	echo "==> Adding Azure SDK (https://docs.ansible.com/ansible/latest/scenario_guides/guide_azure.html)" && \
-	pip install 'ansible[azure]' && \
+# Error: This environment is externally managed
+#	echo "==> Adding Azure SDK (https://docs.ansible.com/ansible/latest/scenario_guides/guide_azure.html)" && \
+#	pip3 install 'ansible[azure]' && \
 	echo "==> Adding ansible root"  && \
 	mkdir -p $PLAY_BASE && \
 	chown $PLAY_USER $PLAY_BASE
