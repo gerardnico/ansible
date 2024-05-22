@@ -1,5 +1,5 @@
 @echo off
-REM Run Ansible vault inside docker
+REM Ansible vault string encryption
 
 SET SCRIPT_PATH=%~dp0
 
