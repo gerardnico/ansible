@@ -13,9 +13,8 @@ if exist %AZURE_CONF_FILE% (
 )
 
 if "%ANSIBLE_VERSION%"=="" (
-    SET ANSIBLE_VERSION=2.8
+    SET ANSIBLE_VERSION=2.9
 )
-echo Ansible Version: %ANSIBLE_VERSION%
 
 if "%1" == "bash" (
   SET ENTRY_POINT=--entrypoint /ansible/bin/entrypoint.sh
@@ -27,15 +26,30 @@ if "%1" == "bash" (
   SET INTERACTIVE=
 )
 
+REM Fixed working directory in the Dockerfile
+SET DOCKER_WORKING_DIR=/ansible/playbooks
+
+
+if not defined ANSIBLE_CONFIG (SET ANSIBLE_CONFIG=ansible.cfg)
+if not defined ANSIBLE_HOME (SET ANSIBLE_HOME=%DOCKER_WORKING_DIR%)
+
+echo Ansible Env Inside Docker:
+echo ANSIBLE_VERSION : %ANSIBLE_VERSION%
+echo ANSIBLE_CONFIG : %DOCKER_WORKING_DIR%/%ANSIBLE_CONFIG%
+echo ANSIBLE_HOME   : %DOCKER_WORKING_DIR%/%ANSIBLE_HOME%
+echo
+
 REM no name is given to the container because otherwise it's not possible to start two ansible session
 docker run ^
 	--rm ^
 	%INTERACTIVE% ^
-	-v %cd%:/ansible/playbooks ^
+	-v %cd%:%DOCKER_WORKING_DIR% ^
 	--env AZURE_CLIENT_ID=%AZURE_CLIENT_ID% ^
 	--env AZURE_SECRET=%AZURE_SECRET% ^
 	--env AZURE_SUBSCRIPTION_ID=%AZURE_SUBSCRIPTION_ID% ^
 	--env AZURE_TENANT=%AZURE_TENANT% ^
+	--env ANSIBLE_CONFIG=%DOCKER_WORKING_DIR%/%ANSIBLE_CONFIG% ^
+	--env ANSIBLE_HOME=%DOCKER_WORKING_DIR%/%ANSIBLE_HOME% ^
 	--user ansible ^
 	%ENTRY_POINT% ^
 	gerardnico/ansible:%ANSIBLE_VERSION% ^
