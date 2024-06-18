@@ -14,14 +14,12 @@ fi
 # Default Ansible version if not set
 ANSIBLE_VERSION=${ANSIBLE_VERSION:-2.9}
 
+declare -a args=("run" "--rm")
+
 if [ "$1" == "bash" ]; then
-  ENTRY_POINT="--entrypoint /ansible/bin/entrypoint.sh"
   # The input device is not a TTY. If you are using mintty, try prefixing the command with 'winpty'
-  # Docker should not run as an interactive session (only for the docker-bash script)
-  INTERACTIVE="-it"
-else
-  ENTRY_POINT=""
-  INTERACTIVE=""
+    # Docker should not run as an interactive session (only for the docker-bash script)
+  args+=("--entrypoint" "/ansible/bin/entrypoint.sh" "-it")
 fi
 
 # Fixed working directory in the Dockerfile
@@ -43,20 +41,26 @@ echo
 # --volume /c/code/infra:/ansible/playbooks
 PWD_DOCKER_FORMAT=$(cygpath -aw . | tr 'C:' '/c' | tr '\\' '/')
 
+# Azure
+if [ -n "$AZURE_CLIENT_ID" ]; then
+    args+=("--env" "AZURE_CLIENT_ID=\"$AZURE_CLIENT_ID\"")
+fi
+if [ -n "$AZURE_SECRET" ]; then
+    args+=("--env" "AZURE_SECRET=\"$AZURE_SECRET\"")
+fi
+if [ -n "$AZURE_SUBSCRIPTION_ID" ]; then
+    args+=("--env" "AZURE_SUBSCRIPTION_ID=\"$AZURE_SUBSCRIPTION_ID\"")
+fi
+if [ -n "$AZURE_TENANT" ]; then
+    args+=("--env" "AZURE_TENANT=\"$AZURE_TENANT\"")
+fi
+
 # Run Docker command
-docker run \
-	--rm \
+docker "${args[@]}" \
 	--volume "$PWD_DOCKER_FORMAT:$DOCKER_WORKING_DIR" \
 	--env ANSIBLE_CONFIG="$DOCKER_WORKING_DIR/$ANSIBLE_CONFIG" \
-	"$INTERACTIVE" \
 	--user ansible \
   --env ANSIBLE_HOME="$DOCKER_WORKING_DIR/$ANSIBLE_HOME" \
-	$ENTRY_POINT \
-  --env AZURE_CLIENT_ID="$AZURE_CLIENT_ID" \
-  --env AZURE_SECRET="$AZURE_SECRET" \
-  --env AZURE_SUBSCRIPTION_ID="$AZURE_SUBSCRIPTION_ID" \
-  --env AZURE_TENANT="$AZURE_TENANT" \
 	gerardnico/ansible:"$ANSIBLE_VERSION" \
 	"$@"
-
 
