@@ -39,23 +39,24 @@ echo "ANSIBLE_CONFIG : $DOCKER_WORKING_DIR/$ANSIBLE_CONFIG"
 echo "ANSIBLE_HOME   : $DOCKER_WORKING_DIR/$ANSIBLE_HOME"
 echo
 
-# --volume c/code/infra\:/ansible/playbooks
-PWD=$(cygpath -aw . | tr \\\\ /)
+# Cygwin to Docker Pwd format
+# --volume /c/code/infra:/ansible/playbooks
+PWD_DOCKER_FORMAT=$(cygpath -aw . | tr 'C:' '/c' | tr '\\' '/')
 
 # Run Docker command
 docker run \
 	--rm \
-	--volume "$PWD:$DOCKER_WORKING_DIR" \
+	--volume "$PWD_DOCKER_FORMAT:$DOCKER_WORKING_DIR" \
 	--env ANSIBLE_CONFIG="$DOCKER_WORKING_DIR/$ANSIBLE_CONFIG" \
 	"$INTERACTIVE" \
+	--user ansible \
+  --env ANSIBLE_HOME="$DOCKER_WORKING_DIR/$ANSIBLE_HOME" \
+	$ENTRY_POINT \
+  --env AZURE_CLIENT_ID="$AZURE_CLIENT_ID" \
+  --env AZURE_SECRET="$AZURE_SECRET" \
+  --env AZURE_SUBSCRIPTION_ID="$AZURE_SUBSCRIPTION_ID" \
+  --env AZURE_TENANT="$AZURE_TENANT" \
 	gerardnico/ansible:"$ANSIBLE_VERSION" \
 	"$@"
 
-#	--user ansible \
-#	--env ANSIBLE_HOME="$DOCKER_WORKING_DIR/$ANSIBLE_HOME" \
 
-#	$ENTRY_POINT \
-#	--env AZURE_CLIENT_ID="$AZURE_CLIENT_ID" \
-#	--env AZURE_SECRET="$AZURE_SECRET" \
-#	--env AZURE_SUBSCRIPTION_ID="$AZURE_SUBSCRIPTION_ID" \
-#	--env AZURE_TENANT="$AZURE_TENANT" \
