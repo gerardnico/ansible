@@ -18,9 +18,11 @@ declare -a args=("run" "--rm")
 
 if [ "$1" == "bash" ]; then
   # The input device is not a TTY. If you are using mintty, try prefixing the command with 'winpty'
-    # Docker should not run as an interactive session (only for the docker-bash script)
-  args+=("--entrypoint" "/ansible/bin/entrypoint.sh" "-it")
+  # Docker should not run as an interactive session (only for the docker-bash script)
+  args+=("-it")
 fi
+
+args+=("--entrypoint" "/ansible/bin/entrypoint.sh")
 
 # Working Dir
 # DOCKER_WORKING_DIR is the working directory that is set as a literal in the Dockerfile
@@ -50,6 +52,16 @@ args+=("--env" "ANSIBLE_HOME=\"$ANSIBLE_HOME\"")
 # DEFAULT_LOCAL_TMP depends of ansible home
 # https://docs.ansible.com/ansible/latest/reference_appendices/config.html#default-local-tmp
 args+=("--env" "ANSIBLE_LOCAL_TEMP=/tmp")
+
+# SSH
+echo "Env (SSH Key Passphrase)"
+SSH_PREFIX='ANSIBLE_SSH_KEY_PASSPHRASE_'
+for var in $(printenv | grep -P "^${SSH_PREFIX}")
+do
+  echo "The SSH variable $(echo "$var" | grep -oP "^${SSH_PREFIX}[^=]+") was passed to docker"
+  args+=("--env" "$var")
+done
+echo
 
 echo "Env (Script)"
 echo "DOCKER_ANSIBLE_VERSION : $ANSIBLE_VERSION"
