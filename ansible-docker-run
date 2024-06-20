@@ -33,12 +33,12 @@ PWD_DOCKER_FORMAT=$(cygpath -aw . | tr 'C:' '/c' | tr '\\' '/')
 args+=("--volume" "$PWD_DOCKER_FORMAT:$DOCKER_WORKING_DIR")
 
 # User
-ANSIBLE_USER="ansible"
-args+=("--user" "$ANSIBLE_USER")
+#ANSIBLE_USER="ansible"
+#args+=("--user" "$ANSIBLE_USER")
 
 # Mounting SSH
 SSH_DOCKER_FORMAT=$(cygpath -aw "$HOMEPATH/.ssh" | tr 'C:' '/c' | tr '\\' '/')
-args+=("--volume" "$SSH_DOCKER_FORMAT:/home/$ANSIBLE_USER/.ssh")
+args+=("--volume" "$SSH_DOCKER_FORMAT:/root/.ssh")
 
 # Setting the ANSIBLE_CONFIG value to avoid
 # https://docs.ansible.com/ansible/devel/reference_appendices/config.html#cfg-in-world-writable-dir

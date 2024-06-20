@@ -27,10 +27,7 @@ ENV ANSIBLE_SSH_PIPELINING True
 #ENV PYTHONPATH /ansible/lib
 #ENV ANSIBLE_LIBRARY /ansible/library
 
-# Own environment variable
-# Not from Ansible
-ENV PLAY_USER ansible
-
+# Own environment variabl
 # There is only a 2.9 version (ie version 9)
 # then the core is then a 2.16
 # see the relation here: https://docs.ansible.com/ansible/10/reference_appendices/release_and_maintenance.html#ansible-community-changelogs
@@ -48,12 +45,6 @@ RUN echo "==> Update"  && \
     apt-get update && \
 	echo "==> Install Dev tools..."  && \
 	apt-get install -y sudo libssl-dev libffi-dev && \
-	echo "==> Add user and group ansible..."  && \
-    useradd --create-home --user-group $PLAY_USER && \
-    echo "==> Sudo conf: Nothing"  && \
-    echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers && \
-    echo "Add the user to the sudoers group" && \
-    usermod -a -G sudo $PLAY_USER && \
 	echo "==> Install tools..."  && \
 	apt-get install -y vim wget jq rsync && \
     echo "==> Install ansible..."  && \
@@ -77,35 +68,42 @@ RUN echo "==> Update"  && \
     echo "localhost" >> /etc/ansible/hosts && \
     echo "==> Install Pip"  && \
     # https://packaging.python.org/en/latest/guides/installing-using-linux-tools/#debian-ubuntu-and-derivatives \
-    apt install -y python3-venv python3-pip && \
-    # Azure is already available as collection
-	# echo "==> Adding Azure SDK (https://docs.ansible.com/ansible/latest/scenario_guides/guide_azure.html)" && \
-	# pip install 'ansible[azure]' && \
-    # Error: This environment is externally managed To install Python packages system-wide, try apt install python3-xyz
-	echo "==> Adding ansible root"  && \
-	mkdir -p $PLAY_BASE && \
-	chown $PLAY_USER $PLAY_BASE
+    apt install -y python3-venv python3-pip
 
 
 RUN	echo "==> Creating the project structure" && \
 	mkdir -p $PLAY_BIN && \
 	mkdir -p $PLAY_PLAYBOOK
 
-# The Azure file were deleted from the repo and added in the distro in 2.8
-RUN	echo "==> Giving ownership to $PLAY_USER" && \
-    chown -R $PLAY_USER:$PLAY_USER $PLAY_BASE && \
-    chmod +x $ENTRYPOINT_PATH
+# 2024-06-20: User deprecated
+# Too much problem for all with private key as they are mounted as root
+# and not as ansible
+# ENV PLAY_USER ansible
+# RUN echo "==> Add user and group ansible..."  && \
+#    useradd --create-home --user-group $PLAY_USER && \
+#    echo "==> Sudo conf: Nothing"  && \
+#    echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers && \
+#    echo "Add the user to the sudoers group" && \
+#    usermod -a -G sudo $PLAY_USER &&
+#    echo "==> Adding ansible root"  && \
+#	 mkdir -p $PLAY_BASE && \
+#	 chown $PLAY_USER $PLAY_BASE && \
+#    echo "==> Giving ownership to $PLAY_USER" && \
+#    chown -R $PLAY_USER:$PLAY_USER $PLAY_BASE
 
-
-# When using private key, ssh does not want to use an unprotected key
-# We need then to start the container has a user, not as root
-USER $PLAY_USER
 
 WORKDIR $PLAY_PLAYBOOK
 
 # The Entry point script to start the ssh-agent and add ssh-keys
 COPY $ENTRYPOINT_FILE $ENTRYPOINT_PATH
+RUN chmod +x $ENTRYPOINT_PATH
 ENTRYPOINT $ENTRYPOINT_PATH
+
+# When using private key, ssh does not want to use an unprotected key
+# We need then to start the container has a user, not as root
+# The user
+# USER $PLAY_USER
+
 #
 # Run Example:
 #    docker run --rm -it gerardnico/ansible:2.8 bash
