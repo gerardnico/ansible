@@ -78,6 +78,7 @@ RUN echo "==> Update"  && \
     echo "==> Install Pip"  && \
     # https://packaging.python.org/en/latest/guides/installing-using-linux-tools/#debian-ubuntu-and-derivatives \
     apt install -y python3-venv python3-pip && \
+    # Azure is already available as collection
 	# echo "==> Adding Azure SDK (https://docs.ansible.com/ansible/latest/scenario_guides/guide_azure.html)" && \
 	# pip install 'ansible[azure]' && \
     # Error: This environment is externally managed To install Python packages system-wide, try apt install python3-xyz

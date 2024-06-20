@@ -50,6 +50,7 @@ docker run ^
 	--env AZURE_TENANT=%AZURE_TENANT% ^
 	--env ANSIBLE_CONFIG=%DOCKER_WORKING_DIR%/%ANSIBLE_CONFIG% ^
 	--env ANSIBLE_HOME=%DOCKER_WORKING_DIR%/%ANSIBLE_HOME% ^
+	--env ANSIBLE_LOCAL_TEMP=/tmp ^
 	--user ansible ^
 	%ENTRY_POINT% ^
 	gerardnico/ansible:%ANSIBLE_VERSION% ^

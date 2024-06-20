@@ -31,13 +31,13 @@ ansible-playbook --version
 There is actually 3 images with the version:
   * 2.7
   * 2.8
-  * 8
+  * 2.9
 By default, this is the latest that is used in the file [ansible-docker-run.cmd](ansible-docker-run.cmd)
 
 You can set the env variable to another version if you want. Example:
 
 ```dos
-SET ANSIBLE_VERSION=8
+SET ANSIBLE_VERSION=2.8
 ```
 
 ### Works with Encrypted Private Key
@@ -49,20 +49,24 @@ Example:
  
 ```dos 
 ansible-bash
+```
+```
 Starting the ssh-agent for convenience
 Agent pid 7
 Start the passed command (bash)
 ansible@3240e859c2c6:/ansible/playbooks$ ssh-add privkey.pem
 Enter passphrase for privkey.pem:
 Identity added: privkey.pem (privkey.pem)
-ansible@3240e859c2c6:/ansible/playbooks$
+```
+```bash
+sudo ansible xxxxx
 ```
 
 ## Script list
 
 Called from the Cmd shell
 
-  * [ansible-bash.cmd](ansible-bash.cmd) - Get a bash shell inside the docker container where all Ansible cli can be started
+  * [ansible-bash.cmd](ansible-bash.cmd) - Get a bash shell inside the docker container where all Ansible cli can be started. Run the command with `sudo`
   * [ansible-playbook.cmd](ansible-playbook.cmd) - The `ansible-playbook` cli
   * [ansible-inventory.cmd](ansible-inventory.cmd) - The `ansible-inventory` cli
   * [ansible-config.cmd](ansible-config.cmd) - The `ansible-config` cli
@@ -122,6 +126,7 @@ You can become `root` on this machine
 
 ```bash
 sudo su -
+sudo ansible-xxx
 ```
 
 ### Windows Permissions
@@ -163,3 +168,126 @@ that helps manage the repository files located at:
   
   * `/etc/apt/sources.list`
   * `/etc/apt/sources.list.d`
+
+### Support: SSH UNPROTECTED PRIVATE KEY FILE
+
+2 tips: 
+* Even if it can be seen as completely mad, this error can appear when the 
+env variable `$ANSIBLE_CONFIG` is bad.
+* Mounting the keys under the `%UserProfile%/.ssh` make the key only readable by owner. 
+
+
+### Collection
+
+The [last ansible 2.9](./Dockerfiles/2.9) contains the following collection:
+
+```bash
+ansible-galaxy collection list
+```
+
+Collection                               Version
+---------------------------------------- -------
+amazon.aws                               7.6.0
+ansible.netcommon                        5.3.0
+ansible.posix                            1.5.4
+ansible.utils                            2.12.0
+ansible.windows                          2.3.0
+arista.eos                               6.2.2
+awx.awx                                  23.9.0
+azure.azcollection                       1.19.0
+check_point.mgmt                         5.2.3
+chocolatey.chocolatey                    1.5.1
+cisco.aci                                2.9.0
+cisco.asa                                4.0.3
+cisco.dnac                               6.13.3
+cisco.intersight                         2.0.9
+cisco.ios                                5.3.0
+cisco.iosxr                              6.1.1
+cisco.ise                                2.9.1
+cisco.meraki                             2.18.1
+cisco.mso                                2.6.0
+cisco.nxos                               5.3.0
+cisco.ucs                                1.10.0
+cloud.common                             2.1.4
+cloudscale_ch.cloud                      2.3.1
+community.aws                            7.2.0
+community.azure                          2.0.0
+community.ciscosmb                       1.0.9
+community.crypto                         2.20.0
+community.digitalocean                   1.26.0
+community.dns                            2.9.1
+community.docker                         3.10.1
+community.general                        8.6.1
+community.grafana                        1.8.0
+community.hashi_vault                    6.2.0
+community.hrobot                         1.9.2
+community.library_inventory_filtering_v1 1.0.1
+community.libvirt                        1.3.0
+community.mongodb                        1.7.4
+community.mysql                          3.9.0
+community.network                        5.0.2
+community.okd                            2.3.0
+community.postgresql                     3.4.1
+community.proxysql                       1.5.1
+community.rabbitmq                       1.3.0
+community.routeros                       2.15.0
+community.sap                            2.0.0
+community.sap_libs                       1.4.2
+community.sops                           1.6.7
+community.vmware                         4.4.0
+community.windows                        2.2.0
+community.zabbix                         2.4.0
+containers.podman                        1.13.0
+cyberark.conjur                          1.2.2
+cyberark.pas                             1.0.25
+dellemc.enterprise_sonic                 2.4.0
+dellemc.openmanage                       8.7.0
+dellemc.powerflex                        2.4.0
+dellemc.unity                            1.7.1
+f5networks.f5_modules                    1.28.0
+fortinet.fortimanager                    2.5.0
+fortinet.fortios                         2.3.6
+frr.frr                                  2.0.2
+gluster.gluster                          1.0.2
+google.cloud                             1.3.0
+grafana.grafana                          2.2.5
+hetzner.hcloud                           2.5.0
+hpe.nimble                               1.1.4
+ibm.qradar                               2.1.0
+ibm.spectrum_virtualize                  2.0.0
+ibm.storage_virtualize                   2.3.1
+infinidat.infinibox                      1.4.5
+infoblox.nios_modules                    1.6.1
+inspur.ispim                             2.2.2
+inspur.sm                                2.3.0
+junipernetworks.junos                    5.3.1
+kaytus.ksmanage                          1.2.2
+kubernetes.core                          2.4.2
+lowlydba.sqlserver                       2.3.2
+microsoft.ad                             1.5.0
+netapp.aws                               21.7.1
+netapp.azure                             21.10.1
+netapp.cloudmanager                      21.22.1
+netapp.elementsw                         21.7.0
+netapp.ontap                             22.11.0
+netapp.storagegrid                       21.12.0
+netapp.um_info                           21.8.1
+netapp_eseries.santricity                1.4.0
+netbox.netbox                            3.18.0
+ngine_io.cloudstack                      2.3.0
+ngine_io.exoscale                        1.1.0
+openstack.cloud                          2.2.0
+openvswitch.openvswitch                  2.1.1
+ovirt.ovirt                              3.2.0
+purestorage.flasharray                   1.28.0
+purestorage.flashblade                   1.17.0
+purestorage.fusion                       1.6.1
+sensu.sensu_go                           1.14.0
+splunk.es                                2.1.2
+t_systems_mms.icinga_director            2.0.1
+telekom_mms.icinga_director              1.35.0
+theforeman.foreman                       3.15.0
+vmware.vmware_rest                       2.3.1
+vultr.cloud                              1.12.1
+vyos.vyos                                4.1.0
+wti.remote                               1.0.5

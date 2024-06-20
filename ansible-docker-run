@@ -22,12 +22,34 @@ if [ "$1" == "bash" ]; then
   args+=("--entrypoint" "/ansible/bin/entrypoint.sh" "-it")
 fi
 
-# Fixed working directory in the Dockerfile
+# Working Dir
+# DOCKER_WORKING_DIR is the working directory that is set as a literal in the Dockerfile
 DOCKER_WORKING_DIR="/ansible/playbooks"
+# Cygwin to Docker Pwd format (ie --volume /c/current/workdir/from/host:/ansible/playbooks)
+# Note: Deleting the c part seems to work also (ie HOMEPATH=\Users\ngera)
+PWD_DOCKER_FORMAT=$(cygpath -aw . | tr 'C:' '/c' | tr '\\' '/')
+args+=("--volume" "$PWD_DOCKER_FORMAT:$DOCKER_WORKING_DIR")
 
-# Default values if not defined
+# User
+ANSIBLE_USER="ansible"
+args+=("--user" "$ANSIBLE_USER")
+
+# Mounting SSH
+SSH_DOCKER_FORMAT=$(cygpath -aw "$HOMEPATH/.ssh" | tr 'C:' '/c' | tr '\\' '/')
+args+=("--volume" "$SSH_DOCKER_FORMAT:/home/$ANSIBLE_USER/.ssh")
+
+# Setting the ANSIBLE_CONFIG value to avoid
+# https://docs.ansible.com/ansible/devel/reference_appendices/config.html#cfg-in-world-writable-dir
+# We get a warning so.
 ANSIBLE_CONFIG=${ANSIBLE_CONFIG:-ansible.cfg}
+args+=("--env" "ANSIBLE_CONFIG=$ANSIBLE_CONFIG")
+
+# Home
 ANSIBLE_HOME=${ANSIBLE_HOME:-$DOCKER_WORKING_DIR}
+args+=("--env" "ANSIBLE_HOME=\"$ANSIBLE_HOME\"")
+# DEFAULT_LOCAL_TMP depends of ansible home
+# https://docs.ansible.com/ansible/latest/reference_appendices/config.html#default-local-tmp
+args+=("--env" "ANSIBLE_LOCAL_TEMP=/tmp")
 
 echo "Env (Script)"
 echo "DOCKER_ANSIBLE_VERSION : $ANSIBLE_VERSION"
@@ -36,10 +58,6 @@ echo "Env (Inside Docker)"
 echo "ANSIBLE_CONFIG : $DOCKER_WORKING_DIR/$ANSIBLE_CONFIG"
 echo "ANSIBLE_HOME   : $DOCKER_WORKING_DIR/$ANSIBLE_HOME"
 echo
-
-# Cygwin to Docker Pwd format
-# --volume /c/code/infra:/ansible/playbooks
-PWD_DOCKER_FORMAT=$(cygpath -aw . | tr 'C:' '/c' | tr '\\' '/')
 
 # Azure
 if [ -n "$AZURE_CLIENT_ID" ]; then
@@ -55,12 +73,15 @@ if [ -n "$AZURE_TENANT" ]; then
     args+=("--env" "AZURE_TENANT=\"$AZURE_TENANT\"")
 fi
 
+# Hcloud
+# https://docs.ansible.com/ansible/latest/collections/hetzner/hcloud/docsite/guides.html
+if [ -n "$HCLOUD_TOKEN" ]; then
+    args+=("--env" "HCLOUD_TOKEN=\"$HCLOUD_TOKEN\"")
+fi
+
+
 # Run Docker command
 docker "${args[@]}" \
-	--volume "$PWD_DOCKER_FORMAT:$DOCKER_WORKING_DIR" \
-	--env ANSIBLE_CONFIG="$DOCKER_WORKING_DIR/$ANSIBLE_CONFIG" \
-	--user ansible \
-  --env ANSIBLE_HOME="$DOCKER_WORKING_DIR/$ANSIBLE_HOME" \
 	gerardnico/ansible:"$ANSIBLE_VERSION" \
 	"$@"
 
