@@ -92,12 +92,6 @@ RUN	echo "==> Creating the project structure" && \
 	mkdir -p $PLAY_PLAYBOOK
 
 # The Azure file were deleted from the repo and added in the distro in 2.8
-
-# The Entry point script to start the ssh-agent
-# Called only with bash at the command line
-# COPY will create it under root
-COPY $ENTRYPOINT_FILE $ENTRYPOINT_PATH
-
 RUN	echo "==> Giving ownership to $PLAY_USER" && \
     chown -R $PLAY_USER:$PLAY_USER $PLAY_BASE && \
     chmod +x $ENTRYPOINT_PATH
@@ -109,16 +103,9 @@ USER $PLAY_USER
 
 WORKDIR $PLAY_PLAYBOOK
 
-# Azure env
-# Need to be set with
-# docker run --env <key>=<value>
-ENV AZURE_CLIENT_ID=""
-ENV AZURE_SECRET=""
-ENV AZURE_SUBSCRIPTION_ID=""
-ENV AZURE_TENANT=""
-
-
-# We choose no entrypoint. You need to give the command.
+# The Entry point script to start the ssh-agent and add ssh-keys
+COPY $ENTRYPOINT_FILE $ENTRYPOINT_PATH
+ENTRYPOINT $ENTRYPOINT_PATH
 #
 # Run Example:
 #    docker run --rm -it gerardnico/ansible:2.8 bash
