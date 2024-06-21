@@ -19,9 +19,9 @@ SSH_VAR_PREFIX='ANSIBLE_SSH_KEY_PASSPHRASE_'
 for var in $(printenv | grep -oP "^$SSH_VAR_PREFIX\K[^=]+")
 do
   filename=$(echo "$var" | tr '[:upper:]' '[:lower:]')
-  varUppercase=$(echo "$SSH_VAR_PREFIX$var" | tr '[:lower:]' '[:upper:]')
+  fullVariableName="$SSH_VAR_PREFIX$var"
   filePath=~/.ssh/"$filename"
-  echo "The SSH env variable $varUppercase was found"
+  echo "The SSH env variable $fullVariableName was found"
   if [ -f "$filePath" ]; then
     echo "Trying to add the key $filename to the SSH agent"
     # The instruction is in the man page. SSH_ASKPASS needs a path to an executable
@@ -38,7 +38,7 @@ do
     timeout $TIMEOUT bash -c "DISPLAY=:0 SSH_ASKPASS_REQUIRE=force SSH_ASKPASS=$SSH_ASKPASS ssh-add $filePath" || >&2 echo "  - Bad passphrase" ; exit 1
     echo "  - The key $filename was added successfully the SSH agent."
   else
-    echo "The env variable $varUppercase designs a key file ($filePath) that does not exist"
+    echo "The env variable $fullVariableName designs a key file ($filePath) that does not exist"
     exit 1;
   fi
 done
