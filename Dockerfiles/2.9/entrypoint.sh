@@ -35,10 +35,12 @@ do
     TIMEOUT=5
     echo "  - Executing ssh-add (if the passphrase is incorrect, the execution will freeze for ${TIMEOUT} sec)"
     # freeze due to SSH_ASKPASS_REQUIRE=force otherwise it will ask it at the terminal
-    timeout $TIMEOUT bash -c "DISPLAY=:0 SSH_ASKPASS_REQUIRE=force SSH_ASKPASS=$SSH_ASKPASS ssh-add $filePath" || >&2 echo "  - Bad passphrase" ; exit 1
-    echo "  - The key $filename was added successfully the SSH agent."
+    BAD_PASSPHRASE_RESULT="Bad passphrase"
+    result=$(timeout $TIMEOUT bash -c "DISPLAY=:0 SSH_ASKPASS_REQUIRE=force SSH_ASKPASS=$SSH_ASKPASS ssh-add $filePath" 2>&1 || echo "$BAD_PASSPHRASE_RESULT")
+    echo "  - $result" # should be `Identity added:xxx`
+    [ "$result" == "$BAD_PASSPHRASE_RESULT" ] && exit 1;
   else
-    echo "The env variable $fullVariableName designs a key file ($filePath) that does not exist"
+    echo "The env variable $fullVariableName designs a key file ($filePath) that does not exist" >&2
     exit 1;
   fi
 done
