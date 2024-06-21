@@ -27,7 +27,7 @@ ENV ANSIBLE_SSH_PIPELINING True
 #ENV PYTHONPATH /ansible/lib
 #ENV ANSIBLE_LIBRARY /ansible/library
 
-# Own environment variabl
+# Own environment variable
 # There is only a 2.9 version (ie version 9)
 # then the core is then a 2.16
 # see the relation here: https://docs.ansible.com/ansible/10/reference_appendices/release_and_maintenance.html#ansible-community-changelogs
@@ -46,8 +46,9 @@ RUN echo "==> Update"  && \
 	echo "==> Install Dev tools..."  && \
 	apt-get install -y sudo libssl-dev libffi-dev && \
 	echo "==> Install tools..."  && \
-	apt-get install -y vim wget jq rsync && \
-    echo "==> Install ansible..."  && \
+	apt-get install -y vim wget jq rsync
+
+RUN echo "==> Install ansible..."  && \
     # as described here: # https://docs.ansible.com/ansible/latest/installation_guide/installation_distros.html#installing-ansible-on-ubuntu \
     # https://github.com/ansible-community/ppa
     apt-get install -y software-properties-common && \
@@ -61,21 +62,23 @@ RUN echo "==> Update"  && \
     # We get 2.9???
     apt-get install -y ansible && \
     echo "==> Update (because https://launchpad.net/~ansible/+archive/ubuntu/ansible-2.9)"  && \
-    apt-get update && \
-	echo "==> Adding hosts for convenience..."  && \
+    apt-get update
+
+RUN echo "==> Install Python Packages (Pip, ...)"  && \
+    # https://packaging.python.org/en/latest/guides/installing-using-linux-tools/#debian-ubuntu-and-derivatives \
+    # python3-dateutil was required when running ansible
+    apt install -y python3-venv python3-pip python3-dateutil
+
+RUN echo "==> Adding hosts for convenience..."  && \
     mkdir -p /etc/ansible && \
     echo "[local]" >> /etc/ansible/hosts && \
     echo "localhost" >> /etc/ansible/hosts && \
-    echo "==> Install Pip"  && \
-    # https://packaging.python.org/en/latest/guides/installing-using-linux-tools/#debian-ubuntu-and-derivatives \
-    apt install -y python3-venv python3-pip
-
-
-RUN	echo "==> Creating the project structure" && \
+	echo "==> Creating the project structure" && \
 	mkdir -p $PLAY_BIN && \
 	mkdir -p $PLAY_PLAYBOOK
 
 # 2024-06-20: User deprecated
+# When using private key, ssh does not want to use an unprotected key
 # Too much problem for all with private key as they are mounted as root
 # and not as ansible
 # ENV PLAY_USER ansible
@@ -90,6 +93,7 @@ RUN	echo "==> Creating the project structure" && \
 #	 chown $PLAY_USER $PLAY_BASE && \
 #    echo "==> Giving ownership to $PLAY_USER" && \
 #    chown -R $PLAY_USER:$PLAY_USER $PLAY_BASE
+# USER $PLAY_USER
 
 
 WORKDIR $PLAY_PLAYBOOK
@@ -99,13 +103,11 @@ COPY $ENTRYPOINT_FILE $ENTRYPOINT_PATH
 RUN chmod +x $ENTRYPOINT_PATH
 ENTRYPOINT $ENTRYPOINT_PATH
 
-# When using private key, ssh does not want to use an unprotected key
-# We need then to start the container has a user, not as root
-# The user
-# USER $PLAY_USER
-
 #
 # Run Example:
-#    docker run --rm -it gerardnico/ansible:2.8 bash
-#    docker run --rm -it gerardnico/ansible:2.8 ansible-playbook --version
-#    docker run --rm -it gerardnico/ansible:2.8 ansible --version
+#    docker run --rm -it gerardnico/ansible:2.9 bash
+#    docker run --rm -it gerardnico/ansible:2.9 ansible-playbook --version
+#    docker run --rm -it gerardnico/ansible:2.9 ansible --version
+# With OS shell script that wraps Docker
+#    ansible-playbook --version
+#    ansible --version

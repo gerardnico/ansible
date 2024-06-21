@@ -48,7 +48,7 @@ args+=("--env" "ANSIBLE_CONFIG=$ANSIBLE_CONFIG")
 
 # Home
 ANSIBLE_HOME=${ANSIBLE_HOME:-$DOCKER_WORKING_DIR}
-args+=("--env" "ANSIBLE_HOME=\"$ANSIBLE_HOME\"")
+args+=("--env" "ANSIBLE_HOME=$ANSIBLE_HOME")
 # DEFAULT_LOCAL_TMP depends of ansible home
 # https://docs.ansible.com/ansible/latest/reference_appendices/config.html#default-local-tmp
 args+=("--env" "ANSIBLE_LOCAL_TEMP=/tmp")
@@ -73,22 +73,22 @@ echo
 
 # Azure
 if [ -n "$AZURE_CLIENT_ID" ]; then
-    args+=("--env" "AZURE_CLIENT_ID=\"$AZURE_CLIENT_ID\"")
+    args+=("--env" "AZURE_CLIENT_ID=$AZURE_CLIENT_ID")
 fi
 if [ -n "$AZURE_SECRET" ]; then
-    args+=("--env" "AZURE_SECRET=\"$AZURE_SECRET\"")
+    args+=("--env" "AZURE_SECRET=$AZURE_SECRET")
 fi
 if [ -n "$AZURE_SUBSCRIPTION_ID" ]; then
-    args+=("--env" "AZURE_SUBSCRIPTION_ID=\"$AZURE_SUBSCRIPTION_ID\"")
+    args+=("--env" "AZURE_SUBSCRIPTION_ID=$AZURE_SUBSCRIPTION_ID")
 fi
 if [ -n "$AZURE_TENANT" ]; then
-    args+=("--env" "AZURE_TENANT=\"$AZURE_TENANT\"")
+    args+=("--env" "AZURE_TENANT=$AZURE_TENANT")
 fi
 
 # Hcloud
 # https://docs.ansible.com/ansible/latest/collections/hetzner/hcloud/docsite/guides.html
 if [ -n "$HCLOUD_TOKEN" ]; then
-    args+=("--env" "HCLOUD_TOKEN=\"$HCLOUD_TOKEN\"")
+    args+=("--env" "HCLOUD_TOKEN=$HCLOUD_TOKEN")
 fi
 
 
