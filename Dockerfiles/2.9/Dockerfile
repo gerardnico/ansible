@@ -67,7 +67,7 @@ RUN echo "==> Install ansible..."  && \
 RUN echo "==> Install Python Packages (Pip, ...)"  && \
     # https://packaging.python.org/en/latest/guides/installing-using-linux-tools/#debian-ubuntu-and-derivatives \
     # python3-dateutil was required when running ansible
-    apt install -y python3-venv python3-pip python3-dateutil
+    apt install -y python3-venv python3-pip python3-dateutil python3-selinux
 
 RUN echo "==> Adding hosts for convenience..."  && \
     mkdir -p /etc/ansible && \
