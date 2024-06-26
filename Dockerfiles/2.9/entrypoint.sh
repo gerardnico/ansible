@@ -45,6 +45,13 @@ do
   fi
 done
 
+# Quote the args
+# We put single quote around arguments so that a `$` will not be seen as a variable
+quoted_args=""
+for arg in "$@"; do
+  quoted_args+="'$arg' "
+done
+quoted_args=${quoted_args% } # Remove the trailing space
+
 echo
-# Start the passed command ($*)
-/bin/sh -c "$*"
+/bin/sh -c "$quoted_args"
