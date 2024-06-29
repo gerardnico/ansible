@@ -5,6 +5,9 @@
 * for a string
 
 ```bash
+# from cygwin
+ansible-encrypt 'the_password_to_encrypt'
+# from DOS
 ansible-encrypt the_password_to_encrypt
 ```
 
@@ -22,6 +25,7 @@ cat cert.pem | ansible-encrypt
 It needs `bash` to be:
 * able to pass multiple line (Dos Cmd does not support it)
 * don't fuck up with bash character such as dollar
+* to pass stdin to decrypt
 
 ```dos
 ansible-bash

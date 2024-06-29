@@ -45,13 +45,21 @@ do
   fi
 done
 
+# Deprecated 2024-06-29: We use eval for now.
 # Quote the args
 # We put single quote around arguments so that a `$` will not be seen as a variable
-quoted_args=""
-for arg in "$@"; do
-  quoted_args+="'$arg' "
-done
-quoted_args=${quoted_args% } # Remove the trailing space
+#quoted_args=""
+#for arg in "$@"; do
+#  quoted_args+="'$arg' "
+#done
+#quoted_args=${quoted_args% } # Remove the trailing space
+#
+#echo
+#/bin/sh -c "$quoted_args"
 
-echo
-/bin/sh -c "$quoted_args"
+# Eval
+# Eval permits to pass the quote and to avoid that a `$` character will be seen as a variable
+# Using `/bin/sh -c "$@"` will see the `$` character as a variable
+eval "$@"
+
+
