@@ -48,18 +48,28 @@ done
 # Deprecated 2024-06-29: We use eval for now.
 # Quote the args
 # We put single quote around arguments so that a `$` will not be seen as a variable
-#quoted_args=""
-#for arg in "$@"; do
-#  quoted_args+="'$arg' "
-#done
-#quoted_args=${quoted_args% } # Remove the trailing space
-#
-#echo
-#/bin/sh -c "$quoted_args"
 
-# Eval
-# Eval permits to pass the quote and to avoid that a `$` character will be seen as a variable
-# Using `/bin/sh -c "$@"` will see the `$` character as a variable
-eval "$@"
+quoted_args=""
+args=( "$@" )
+argsQuotedFromIndex=1;
+if [ "$1" == "ansible-vault" ]; then
+  argsQuotedFromIndex=2
+fi
+
+for i in "${!args[@]}"; do
+  value="${args[$i]}";
+  if [ "$i" -ge $argsQuotedFromIndex ]; then
+    quoted_args+="'$value' "
+  else
+    quoted_args+="$value "
+    fi
+done
+quoted_args=${quoted_args% } # Remove the trailing space
+#
+echo
+echo "Command executed"
+echo "$quoted_args"
+echo
+/bin/sh -c "$quoted_args"
 
 

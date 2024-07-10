@@ -26,6 +26,14 @@ ansible-playbook --version
 
 ## How to
 
+### Define a project location so that the commands can be run from anywhere
+
+If you work in a project and don't want to `cd` into it every time to run
+the ansible command, you can set the env variable `ANSIBLE_LOCAL_HOME` to the path
+of you ansible project.
+
+This directory will then be mounted and used instead of the current working directory.
+
 ### Change the Ansible version
 
 There is actually 3 images with the version:
@@ -40,7 +48,7 @@ You can set the env variable to another version if you want. Example:
 SET ANSIBLE_VERSION=2.8
 ```
 
-### Work with Encrypted Private Key
+### Work with a client encrypted SSH Private Key
 
 
 When working with encrypted private key, our entrypoint will start a `ssh-agent`.
@@ -100,7 +108,6 @@ ansible-bash xxxxx
 ansible-playbook xxxxx
 ```
 
-
 ## Script list
 
 ### DOS
@@ -112,7 +119,7 @@ Called from the Cmd shell
   * [ansible-config.cmd](ansible-config.cmd) - The `ansible-config` cli
   * [ansible.cmd](ansible.cmd) - The Ansible cli
   * [ansible-pull.cmd](ansible-pull.cmd) - The [ansible-pull cli](https://docs.ansible.com/ansible/latest/cli/ansible-pull.html)
-  * [ansible-vault.cmd](ansible-vault.cmd) - The [ansible-vault cli](https://docs.ansible.com/ansible/latest/user_guide/vault.html). !!! Warning, you can't use a password file, see [ansible-vault](#ansible-vault) !!!
+  * [ansible-vault.cmd](ansible-vault.cmd) - The [ansible-vault cli](https://docs.ansible.com/ansible/latest/user_guide/vault.html). !!! Warning, on windows, you can't use a password file, see [ansible-vault](#on-windows-ansible-vault-id-should-be-an-executable-file) !!!
   * [ansible-azure-rm.cmd](ansible-azure-rm.cmd) - The Azure Inventory script `azure_rm.py`
   * [build.bat](build.bat) - Build/Create the Ansible Docker image from the [Dockerfile](Dockerfiles/8/Dockerfile)
 
@@ -131,58 +138,9 @@ Called indirectly by the other scripts
   * [ansible](ansible)
   * [ansible-bash](ansible-bash)
   * [ansible-playbook](ansible-playbook)
+  * [ansible-encrypt](ansible-encrypt)
 
-## Note
 
-
-### Ansible-vault
-
-When running Docker on Windows, the default permission makes the files executable. See [Windows Permissions](#windows-permissions)
-You get this kind of errors:
-
-```txt
-[WARNING]: Error in vault password file loading (None): Problem running vault password script
-/ansible/playbooks/vault_pwd_file.txt ([Errno 8] Exec format error). If this is not a script, remove the executable
-bit from the file.
-```
-
-To resolve this problem, you need to create an executable file that will output your password:
-```bash 
-#!/usr/bin/env bash
-echo myPassword
-```
-and to use it in your command line
-
-```dos
-ansible-vault encrypt_string --vault-id vault_pwd_file.sh 'foobar' --name 'the_secret'
-'the_secret': !vault |
-          $ANSIBLE_VAULT;1.1;AES256
-          39373333356435366461373363663939363837623530363061353461326365353832366363363439
-          3665393437373663646561373762656439333365643334640a346236323639366637393937666134
-          66653037326466663262626337616435396461646239316163666437356332363066333935376364
-          3136333031616339370a323330373163333466396339343834653830356131316564626636663332
-          3330
-Encryption successful
-```
-
- 
-
-### Windows Permissions
-
-```txt
-SECURITY WARNING: You are building a Docker image from Windows against a non-Windows Docker host. 
-All files and directories added to build context will have '-rwxr-xr-x' permissions. 
-It is recommended to double check and reset permissions for sensitive files and directories.
-```
-
-The Windows filesystem does not have an option to mark a file as `executable`.
-
-Building a Linux image from a Windows machine would therefore break the image 
-if a file has to be marked executable.
-
-For that reason, files are marked executable by default when building from a windows client. 
-
-You can modify the Dockerfile to change/remove the executable bit afterwards.
 
 ### Ansible Package Repository
 
@@ -221,3 +179,51 @@ The installation contains a lot of collection.
 
 Example: [2.9 Collections](Dockerfiles/2.9/README-2.9.md#collection)
 
+## Support
+
+### On Windows, ansible-vault id should be an executable file
+
+When running Docker on Windows, the default permission makes the files executable. See [Windows Permissions](#windows-permissions)
+You get this kind of errors:
+
+```txt
+[WARNING]: Error in vault password file loading (None): Problem running vault password script
+/ansible/playbooks/vault_pwd_file.txt ([Errno 8] Exec format error). If this is not a script, remove the executable
+bit from the file.
+```
+
+To resolve this problem, you need to create an executable file that will output your password:
+```bash 
+#!/usr/bin/env bash
+echo myPassword
+```
+and to use it in your command line or set it in your `ansible.cfg` file
+
+```dos
+ansible-vault encrypt_string --vault-id vault_pwd_file.sh 'foobar' --name 'the_secret'
+'the_secret': !vault |
+          $ANSIBLE_VAULT;1.1;AES256
+          39373333356435366461373363663939363837623530363061353461326365353832366363363439
+          3665393437373663646561373762656439333365643334640a346236323639366637393937666134
+          66653037326466663262626337616435396461646239316163666437356332363066333935376364
+          3136333031616339370a323330373163333466396339343834653830356131316564626636663332
+          3330
+Encryption successful
+```
+
+### Windows Permissions
+
+```txt
+SECURITY WARNING: You are building a Docker image from Windows against a non-Windows Docker host. 
+All files and directories added to build context will have '-rwxr-xr-x' permissions. 
+It is recommended to double check and reset permissions for sensitive files and directories.
+```
+
+The Windows filesystem does not have an option to mark a file as `executable`.
+
+Building a Linux image from a Windows machine would therefore break the image
+if a file has to be marked executable.
+
+For that reason, files are marked executable by default when building from a windows client.
+
+You can modify the Dockerfile to change/remove the executable bit afterwards.

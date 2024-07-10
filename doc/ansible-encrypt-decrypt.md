@@ -2,6 +2,10 @@
 
 ## Encryption:
 
+* from inside Docker
+```bash
+ansible-vault encrypt_string 'the_secret_to_encrypt' 
+```
 * for a string
 
 ```bash

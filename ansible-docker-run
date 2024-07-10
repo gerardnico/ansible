@@ -34,8 +34,11 @@ args+=("--entrypoint" "/ansible/bin/entrypoint.sh")
 # DOCKER_WORKING_DIR is the working directory that is set as a literal in the Dockerfile
 DOCKER_WORKING_DIR="/ansible/playbooks"
 
-# Mounting Pwd
+# Mounting the current directory or the home if set
 PWD_DOCKER_FORMAT=$(pwd)
+if [ -n "$ANSIBLE_LOCAL_HOME" ]; then
+  PWD_DOCKER_FORMAT=$ANSIBLE_LOCAL_HOME;
+fi;
 if [ $CYGWIN = 1 ] ; then
     # Cygwin to Docker Pwd format (ie --volume /c/current/workdir/from/host:/ansible/playbooks)
     # Note: Deleting the c part seems to work also (ie HOMEPATH=\Users\ngera)
@@ -109,4 +112,3 @@ fi
 docker "${args[@]}" \
 	gerardnico/ansible:"$ANSIBLE_VERSION" \
 	"$@"
-
