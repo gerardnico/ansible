@@ -140,3 +140,10 @@ vmware.vmware_rest                       2.3.1
 vultr.cloud                              1.12.1
 vyos.vyos                                4.1.0
 wti.remote                               1.0.5
+
+## Clients
+
+Lookup plugins needs client tools on the control node
+
+The following clients are installed:
+* `kubectl` for [kustomize_lookup](https://docs.ansible.com/ansible/latest/collections/kubernetes/core/kustomize_lookup.html)

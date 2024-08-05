@@ -46,7 +46,7 @@ RUN echo "==> Update"  && \
 	echo "==> Install Dev tools..."  && \
 	apt-get install -y sudo libssl-dev libffi-dev && \
 	echo "==> Install tools..."  && \
-	apt-get install -y vim wget jq rsync
+	apt-get install -y vim wget jq rsync curl
 
 RUN echo "==> Install ansible..."  && \
     # as described here: # https://docs.ansible.com/ansible/latest/installation_guide/installation_distros.html#installing-ansible-on-ubuntu \
@@ -95,6 +95,12 @@ RUN echo "==> Adding hosts for convenience..."  && \
 #    chown -R $PLAY_USER:$PLAY_USER $PLAY_BASE
 # USER $PLAY_USER
 
+# https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/#install-kubectl-on-linux
+RUN echo "==> Installing Kubectl" && \
+    curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" && \
+    curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl.sha256" && \
+    echo "$(cat kubectl.sha256)  kubectl" | sha256sum --check && \
+    sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
 
 WORKDIR $PLAY_PLAYBOOK
 
