@@ -4,7 +4,8 @@
 
 * from inside Docker
 ```bash
-ansible-vault encrypt_string 'the_secret_to_encrypt' 
+ansible-vault encrypt_string 'the_secret_to_encrypt'
+echo 'the_secret_to_encrypt' | ansible-vault encrypt_string 
 ```
 * for a string
 
