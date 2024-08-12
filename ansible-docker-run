@@ -51,8 +51,10 @@ args+=("--volume" "$PWD_DOCKER_FORMAT:$DOCKER_WORKING_DIR")
 #args+=("--user" "$ANSIBLE_USER")
 
 # Mounting SSH
-SSH_DOCKER_FORMAT="$HOMEPATH/.ssh"
+echo "Mounting SSH"
+SSH_DOCKER_FORMAT="$HOME/.ssh"
 if [ $CYGWIN = 1 ] ; then
+  SSH_DOCKER_FORMAT="$HOMEPATH/.ssh"
   SSH_DOCKER_FORMAT=$(cygpath -aw "$SSH_DOCKER_FORMAT" | tr 'C:' '/c' | tr '\\' '/')
 fi
 args+=("--volume" "$SSH_DOCKER_FORMAT:/root/.ssh")
