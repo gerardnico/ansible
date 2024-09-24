@@ -46,7 +46,9 @@ RUN echo "==> Update"  && \
 	echo "==> Install Dev tools..."  && \
 	apt-get install -y sudo libssl-dev libffi-dev && \
 	echo "==> Install tools..."  && \
-	apt-get install -y vim wget jq rsync curl
+	apt-get install -y vim wget jq rsync curl && \
+    echo "==> Install Ansible dependency tools (less for ansible-galaxy role info)"  && \
+    apt-get install -y less
 
 RUN echo "==> Install ansible..."  && \
     # as described here: # https://docs.ansible.com/ansible/latest/installation_guide/installation_distros.html#installing-ansible-on-ubuntu \
