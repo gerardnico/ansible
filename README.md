@@ -23,6 +23,10 @@ It contains:
 cd ~/code
 git clone https://github.com/gerardnico/ansible.git
 ```
+* On Linux, give them execution permissions
+```bash
+chmod +x ansible*
+```
 * Add this directory to your `PATH` environment variable to be able to call the [Ansible script](#ansible-scripts) from anywhere
 ```bash
 export PATH=~/code/ansible
