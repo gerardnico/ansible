@@ -17,29 +17,6 @@
 # Ubuntu jammy
 FROM ubuntu:24.04
 
-# Ansible Env
-ENV ANSIBLE_GATHERING smart
-ENV ANSIBLE_HOST_KEY_CHECKING false
-ENV ANSIBLE_RETRY_FILES_ENABLED false
-ENV ANSIBLE_SSH_PIPELINING True
-
-#ENV ANSIBLE_ROLES_PATH /ansible/playbooks/roles
-#ENV PYTHONPATH /ansible/lib
-#ENV ANSIBLE_LIBRARY /ansible/library
-
-# Own environment variable
-# There is only a 2.9 version (ie version 9)
-# then the core is then a 2.16
-# see the relation here: https://docs.ansible.com/ansible/10/reference_appendices/release_and_maintenance.html#ansible-community-changelogs
-# then the python version needs to be 3.10 - 3.12
-# See the Matrix Support: https://docs.ansible.com/ansible/latest/reference_appendices/release_and_maintenance.html#ansible-core-support-matrix
-ENV PLAY_ANSIBLE_VERSION 2.9
-ENV PLAY_BASE /ansible
-ENV PLAY_PLAYBOOK $PLAY_BASE/playbooks
-ENV PLAY_BIN $PLAY_BASE/bin
-ENV PATH $PLAY_BIN:$PATH
-ENV ENTRYPOINT_FILE entrypoint.sh
-ENV ENTRYPOINT_PATH $PLAY_BIN/$ENTRYPOINT_FILE
 
 RUN echo "==> Update"  && \
     apt-get update && \
@@ -74,28 +51,8 @@ RUN echo "==> Install Python Packages (Pip, ...)"  && \
 RUN echo "==> Adding hosts for convenience..."  && \
     mkdir -p /etc/ansible && \
     echo "[local]" >> /etc/ansible/hosts && \
-    echo "localhost" >> /etc/ansible/hosts && \
-	echo "==> Creating the project structure" && \
-	mkdir -p $PLAY_BIN && \
-	mkdir -p $PLAY_PLAYBOOK
+    echo "localhost" >> /etc/ansible/hosts
 
-# 2024-06-20: User deprecated
-# When using private key, ssh does not want to use an unprotected key
-# Too much problem for all with private key as they are mounted as root
-# and not as ansible
-# ENV PLAY_USER ansible
-# RUN echo "==> Add user and group ansible..."  && \
-#    useradd --create-home --user-group $PLAY_USER && \
-#    echo "==> Sudo conf: Nothing"  && \
-#    echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers && \
-#    echo "Add the user to the sudoers group" && \
-#    usermod -a -G sudo $PLAY_USER &&
-#    echo "==> Adding ansible root"  && \
-#	 mkdir -p $PLAY_BASE && \
-#	 chown $PLAY_USER $PLAY_BASE && \
-#    echo "==> Giving ownership to $PLAY_USER" && \
-#    chown -R $PLAY_USER:$PLAY_USER $PLAY_BASE
-# USER $PLAY_USER
 
 # https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/#install-kubectl-on-linux
 RUN echo "==> Installing Kubectl" && \
@@ -104,12 +61,31 @@ RUN echo "==> Installing Kubectl" && \
     echo "$(cat kubectl.sha256)  kubectl" | sha256sum --check && \
     sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
 
-WORKDIR $PLAY_PLAYBOOK
+# Ansible Env
+ENV ANSIBLE_GATHERING smart
+ENV ANSIBLE_HOST_KEY_CHECKING false
+ENV ANSIBLE_RETRY_FILES_ENABLED false
+ENV ANSIBLE_SSH_PIPELINING True
+
+#ENV ANSIBLE_ROLES_PATH /ansible/playbooks/roles
+#ENV PYTHONPATH /ansible/lib
+#ENV ANSIBLE_LIBRARY /ansible/library
+
+# our Own environment variable
+# There is only a 2.9 version (ie version 9)
+# then the core is then a 2.16
+# see the relation here: https://docs.ansible.com/ansible/10/reference_appendices/release_and_maintenance.html#ansible-community-changelogs
+# then the python version needs to be 3.10 - 3.12
+# See the Matrix Support: https://docs.ansible.com/ansible/latest/reference_appendices/release_and_maintenance.html#ansible-core-support-matrix
+ENV DOCKER_ANSIBLE_VERSION 2.9
+
+# Workdir
+RUN mkdir -p /docker-ansible
+WORKDIR /docker-ansible
 
 # The Entry point script to start the ssh-agent and add ssh-keys
-COPY $ENTRYPOINT_FILE $ENTRYPOINT_PATH
-RUN chmod +x $ENTRYPOINT_PATH
-ENTRYPOINT $ENTRYPOINT_PATH
+COPY --chmod=0755 ansible-entrypoint.sh /usr/local/bin
+ENTRYPOINT [ "ansible-entrypoint.sh" ]
 
 #
 # Run Example:

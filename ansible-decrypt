@@ -3,10 +3,10 @@
 SCRIPT_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 
-if [ -z "$1" ]; then
-  "${SCRIPT_PATH}/ansible-docker-run" ansible-vault decrypt "$@"
-else
+if [ -n "$1" ]; then
   echo "Decrypt from stdin is not yet supported. Use 'ansible-bash' and run you command there"
   exit 1
 fi
+
+"${SCRIPT_PATH}/ansible-docker-run" ansible-vault decrypt "$@"
 

@@ -114,7 +114,7 @@ ansible-playbook xxxxx
 
 #### Add automatically private keys
 
-Automatically, the [entrypoint](Dockerfiles/2.9/entrypoint.sh) can add the encrypted key automatically to
+Automatically, the [entrypoint](Dockerfiles/2.9/ansible-entrypoint.sh) can add the encrypted key automatically to
 the `ssh-agent`
 
 How it works?

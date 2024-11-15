@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+# We can test for docker hub with --no-cache
+dock-x build "$BUILD_CONTEXT"

@@ -17,7 +17,10 @@ trap 'echo_err ""; echo_err "Command error on line ($0:$LINENO)"; exit 1' ERR
 
 # Echo a message
 function echo_log() {
-  echo -e "$CLI_NAME: ${1:-}"
+  # Not on stdout otherwise
+  # for var in $(command_with_echo_error)
+  # would process the stdout of the error trap
+  echo -e "$CLI_NAME: ${1:-}" > /dev/stderr
 }
 # Print the error message $1
 function echo_err() {
@@ -46,15 +49,15 @@ fi
 # Default Ansible version if not set
 ANSIBLE_VERSION=${ANSIBLE_VERSION:-2.9}
 
-declare -a args=("run" "--rm")
+declare -a ENVS=("run" "--rm")
 
 if [ "$1" == "bash" ]; then
   # The input device is not a TTY. If you are using mintty, try prefixing the command with 'winpty'
   # Docker should not run as an interactive session (only for the docker-bash script)
-  args+=("-it")
+  ENVS+=("-it")
 fi
 
-args+=("--entrypoint" "/ansible/bin/entrypoint.sh")
+ENVS+=("--entrypoint" "/ansible/bin/entrypoint.sh")
 
 # Working Dir
 # DOCKER_WORKING_DIR is the working directory that is set as a literal in the Dockerfile
@@ -75,11 +78,11 @@ if [ $CYGWIN = 1 ] ; then
     # Note: Deleting the c part seems to work also (ie HOMEPATH=\Users\ngera)
     PWD_DOCKER_FORMAT=$(cygpath -aw "$PWD_DOCKER_FORMAT" | tr 'C:' '/c' | tr '\\' '/')
 fi
-args+=("--volume" "$PWD_DOCKER_FORMAT:$DOCKER_WORKING_DIR")
+ENVS+=("--volume" "$PWD_DOCKER_FORMAT:$DOCKER_WORKING_DIR")
 
 # User
 #ANSIBLE_USER="ansible"
-#args+=("--user" "$ANSIBLE_USER")
+#ENVS+=("--user" "$ANSIBLE_USER")
 
 # Mounting SSH
 echo "Mounting SSH"
@@ -88,28 +91,31 @@ if [ $CYGWIN = 1 ] ; then
   SSH_DOCKER_FORMAT="$HOMEPATH/.ssh"
   SSH_DOCKER_FORMAT=$(cygpath -aw "$SSH_DOCKER_FORMAT" | tr 'C:' '/c' | tr '\\' '/')
 fi
-args+=("--volume" "$SSH_DOCKER_FORMAT:/root/.ssh")
+ENVS+=("--volume" "$SSH_DOCKER_FORMAT:/root/.ssh")
 
 # Setting the ANSIBLE_CONFIG value to avoid
 # https://docs.ansible.com/ansible/devel/reference_appendices/config.html#cfg-in-world-writable-dir
 # We get a warning so.
 ANSIBLE_CONFIG=${ANSIBLE_CONFIG:-ansible.cfg}
-args+=("--env" "ANSIBLE_CONFIG=$ANSIBLE_CONFIG")
+ENVS+=("--env" "ANSIBLE_CONFIG=$ANSIBLE_CONFIG")
 
 # Home
 ANSIBLE_HOME=${ANSIBLE_HOME:-$DOCKER_WORKING_DIR}
-args+=("--env" "ANSIBLE_HOME=$ANSIBLE_HOME")
+ENVS+=("--env" "ANSIBLE_HOME=$ANSIBLE_HOME")
 # DEFAULT_LOCAL_TMP depends of ansible home
 # https://docs.ansible.com/ansible/latest/reference_appendices/config.html#default-local-tmp
-args+=("--env" "ANSIBLE_LOCAL_TEMP=/tmp")
+ENVS+=("--env" "ANSIBLE_LOCAL_TEMP=/tmp")
 
 # SSH
 echo "Env (SSH Key Passphrase)"
-SSH_PREFIX='ANSIBLE_SSH_KEY_PASSPHRASE_'
-for var in $(printenv | grep -P "^${SSH_PREFIX}")
-do
-  echo "The SSH variable $(echo "$var" | grep -oP "^${SSH_PREFIX}[^=]+") was passed to docker"
-  args+=("--env" "$var")
+SSH_PREFIX="ANSIBLE_SSH_KEY_PASSPHRASE_"
+if ! SSH_KEYS=$(printenv | grep -P "^$SSH_PREFIX"); then
+  SSH_KEYS="";
+fi
+for var in $SSH_KEYS; do
+  varName=$(echo "$var" | grep -oP "^${SSH_PREFIX}[^=]+")
+  echo "The SSH variable ($varName) was passed to docker" > /dev/stderr
+  ENVS+=("--env" "$var")
 done
 echo
 
@@ -124,31 +130,43 @@ echo
 # Azure
 AZURE_CLIENT_ID=${AZURE_CLIENT_ID:-}
 if [ "$AZURE_CLIENT_ID" != "" ]; then
-    args+=("--env" "AZURE_CLIENT_ID=$AZURE_CLIENT_ID")
+    ENVS+=("--env" "AZURE_CLIENT_ID=$AZURE_CLIENT_ID")
 fi
 AZURE_SECRET=${AZURE_SECRET:-}
 if [ "$AZURE_SECRET" != "" ]; then
-    args+=("--env" "AZURE_SECRET=$AZURE_SECRET")
+    ENVS+=("--env" "AZURE_SECRET=$AZURE_SECRET")
 fi
 AZURE_SUBSCRIPTION_ID=${AZURE_SUBSCRIPTION_ID:-}
 if [ -n "$AZURE_SUBSCRIPTION_ID" ]; then
-    args+=("--env" "AZURE_SUBSCRIPTION_ID=$AZURE_SUBSCRIPTION_ID")
+    ENVS+=("--env" "AZURE_SUBSCRIPTION_ID=$AZURE_SUBSCRIPTION_ID")
 fi
 AZURE_TENANT=${AZURE_TENANT:-}
 if [ "$AZURE_TENANT" != "" ]; then
-    args+=("--env" "AZURE_TENANT=$AZURE_TENANT")
+    ENVS+=("--env" "AZURE_TENANT=$AZURE_TENANT")
 fi
 
 # Hcloud
 # https://docs.ansible.com/ansible/latest/collections/hetzner/hcloud/docsite/guides.html
 HCLOUD_TOKEN=${HCLOUD_TOKEN:-}
 if [ "$HCLOUD_TOKEN" != "" ]; then
-    args+=("--env" "HCLOUD_TOKEN=$HCLOUD_TOKEN")
+    ENVS+=("--env" "HCLOUD_TOKEN=$HCLOUD_TOKEN")
 fi
-
 
 # Run Docker command
 
-docker "${args[@]}" \
+# Secret Options:
+# use this file to authenticate the connection
+#    --private-key PRIVATE_KEY_FILE, --key-file PRIVATE_KEY_FILE
+# ask for vault password
+#    -J, --ask-vault-password, --ask-vault-pass
+# the vault identity to use. This argument may be specified multiple times.
+# --vault-id
+#
+# --env-file shows up in env in inspect
+#
+# Works
+# echo "secret" > /dev/shm/foo
+# docker run --rm -it -v /dev/shm/foo:/tmp/foo  ubuntu bash -c "cat /tmp/foo"
+docker "${ENVS[@]}" \
 	gerardnico/ansible:"$ANSIBLE_VERSION" \
 	"$@"
