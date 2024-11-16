@@ -1,5 +1,15 @@
 #!/bin/bash
 
+# shellcheck source=../../bash-lib/lib/bashlib-error.sh
+source "${BASHLIB_LIBRARY_PATH:-}${BASHLIB_LIBRARY_PATH:+/}bashlib-error.sh"
+error::set_strict_mode
+error::set_trap
+
 SCRIPT_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-source "${SCRIPT_PATH}/ans-x-docker-run.sh" ansible-vault "$@"
+args=("$@")
+if [ "${1:-}" == "synopsis" ]; then
+  args=("-h")
+fi
+
+source "${SCRIPT_PATH}/ans-x-docker-run.sh" "$(basename "$0")" "${args[@]}"

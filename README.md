@@ -126,14 +126,16 @@ They are wrapper scripts that:
 These scripts are the counterpart of the [Ansible Command line clients](https://docs.ansible.com/ansible/latest/command_guide/command_line_tools.html).
 
 
-| Bash (Linux / Windows WSL or Cygwin)       | Dos (Windows)                                    | Description                                                                                                                      |
-|--------------------------------------------|--------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------|
-| [ansible](docs/bin-generated/ansible.md)   | [ansible.cmd](docs/bin-generated/ansible.md)                       | The Ansible cli                                                                                                                  |
-| [ansible-playbook](bin/ansible-playbook)   | [ansible-playbook.cmd](bin/ansible-playbook.cmd)     | The `ansible-playbook` cli                                                                                                       |
-| [ansible-inventory](bin/ansible-inventory) | [ansible-inventory.cmd](bin/ansible-inventory.cmd)   | The `ansible-inventory` cli                                                                                                      |
-| [ansible-config](bin/ansible-config)       | [ansible-config.cmd](bin/ansible-config.cmd)         | The `ansible-config` cli                                                                                                         |
-|                                            | [ansible-pull.cmd](bin/ansible-pull.cmd)             | The [ansible-pull cli](https://docs.ansible.com/ansible/latest/cli/ansible-pull.html)                                            |
-| [ansible-vault](bin/ansible-vault)         | [ansible-vault.cmd](bin/ansible-vault.cmd)           | The [ansible-vault cli](https://docs.ansible.com/ansible/latest/user_guide/vault.html)                                           | 
+| Bash (Linux / Windows WSL or Cygwin)                         | Dos (Windows)                                                    | Description                                                                                                                  |
+|--------------------------------------------------------------|------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------|
+| [ansible](docs/bin-generated/ansible.md)                     | [ansible.cmd](docs/bin-generated/ansible.md)                     | The `ansible` cli runs a single task against a set of hosts                                                                  |
+| [ansible-config](docs/bin-generated/ansible-config.md)       | [ansible-config.cmd](docs/bin-generated/ansible-config.md)       | The `ansible-config` cli shows ansible configuration                                                                         |
+| [ansible-galaxy](docs/bin-generated/ansible-galaxy.md)       | [ansible-galaxy.cmd](docs/bin-generated/ansible-galaxy.md)       | The `ansible-galaxy` cli execute role and Collection related operations                                                      |
+| [ansible-inventory](docs/bin-generated/ansible-inventory.md) | [ansible-inventory.cmd](docs/bin-generated/ansible-inventory.md) | The `ansible-inventory` cli  show Ansible inventory information                                                              |
+| [ansible-playbook](docs/bin-generated/ansible-playbook.md)   | [ansible-playbook.cmd](docs/bin-generated/ansible-inventory.md)  | The `ansible-playbook` cli runs Ansible playbooks                                                                            |
+| [ansible-pull.cmd](docs/bin-generated/ansible-inventory.md)  | [ansible-pull.cmd](docs/bin-generated/ansible-inventory.md)      | The `ansible-pull` pulls and run playbooks from a VCS repo |
+| [ansible-vault](bin/ansible-vault)                           | [ansible-vault.cmd](bin/ansible-vault.cmd)                       | The [ansible-vault cli](https://docs.ansible.com/ansible/latest/user_guide/vault.html)                                       | 
+| [azure_rm](docs/bin-generated/azure_rm.md) | [azure_rm.cmd](docs/bin-generated/azure_rm.md)                   | The Azure Inventory script `azure_rm.py` |
 
 ### Ans-X Scripts
 
@@ -141,22 +143,10 @@ These scripts are utility scripts
 
 | Bash (Linux / Windows WSL or Cygwin) | Dos (Windows)                        | Description                                                                                                                      |
 |--------------------------------------|--------------------------------------|----------------------------------------------------------------------------------------------------------------------------------|
-| [ans-x--bash](bin/ans-x-bash)        | [ans-x-bash.cmd](bin/ans-x-bash.cmd) | Get a bash shell inside the container where all Ansible cli can be started                                                       |
+| [ans-x-bash](bin/ans-x-bash)        | [ans-x-bash.cmd](bin/ans-x-bash.cmd) | Get a bash shell inside the container where all Ansible cli can be started                                                       |
 | [ans-x-encrypt](bin/ans-x-encrypt)   | [ans-x-encrypt](bin/ans-x-encrypt)   | An `ansible-vault encrypt_string` utility cli                                                                                    |
-|  | [ansible-azure-rm.cmd](bin/ans-x-azure-rm.cmd) | The Azure Inventory script `azure_rm.py` |
-
-### Azure Scripts
-
-The scripts below needs to be called from inside the Docker container. You need to call the script [ansible-bash.cmd](bin/ans-x-bash.cmd) first.
-
-* [azure-inventory.sh](bin/ans-x-azure-inventory) - A script to format the output of the Azure Inventory script
-  from [ansible-azure-rm.cmd](bin/ans-x-azure-rm.cmd) or `azure_rm.py`
-* `azure_rm.py` - the Azure Inventory script. Before, you need to copy [azure-conf-dist.cmd](bin/azure-conf-dist.cmd)
-  to `azure-conf.cmd` and set your identity variables
 
 
-* [azure-conf-dist.cmd](bin/azure-conf-dist.cmd) - A script that may be copied to `azure-conf.cmd` where the Azure identity
-  parameters are stored
 
 
 ### Support: SSH UNPROTECTED PRIVATE KEY FILE
@@ -166,7 +156,6 @@ The scripts below needs to be called from inside the Docker container. You need 
 * Even if it can be seen as completely mad, this error can appear when the
   env variable `$ANSIBLE_CONFIG` is bad.
 * Mounting the keys under the `%UserProfile%/.ssh` make the key only readable by owner.
-
 
 
 ## How to contribute

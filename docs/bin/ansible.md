@@ -6,5 +6,5 @@ a single task `playbook` against a set of hosts
 
 # SYNOPSIS
 
-```${SYNOPSIS}
+```bash${SYNOPSIS}
 ```

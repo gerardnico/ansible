@@ -1,13 +1,12 @@
 # Run the Ansible docker image
 # This script is sourced from the other one
 
-# shellcheck source=../..//bash-lib/lib/bashlib-command.sh
+# shellcheck source=../../bash-lib/lib/bashlib-command.sh
 source "${BASHLIB_LIBRARY_PATH:-}${BASHLIB_LIBRARY_PATH:+/}bashlib-command.sh"
-# shellcheck source=../..//bash-lib/lib/bashlib-echo.sh
+# shellcheck source=../../bash-lib/lib/bashlib-echo.sh
 source "${BASHLIB_LIBRARY_PATH:-}${BASHLIB_LIBRARY_PATH:+/}bashlib-echo.sh"
 
 eval "$(source ans-x-env.sh)"
-
 
 
 declare -a ENVS=("run" "--rm")
@@ -20,9 +19,6 @@ fi
 
 # ENVS+=("--entrypoint" "/ansible/bin/entrypoint.sh")
 
-# Working Dir
-# DOCKER_WORKING_DIR is the working directory that is set as a literal in the Dockerfile
-# DOCKER_WORKING_DIR="/ansible/playbooks"
 
 # Mounting the current directory or the home if set
 ENVS+=("--volume" "$ANS_X_PROJECT_DIR:$ANS_X_DOCKER_IMAGE_PWD")
@@ -47,7 +43,7 @@ ANSIBLE_CONFIG=${ANSIBLE_CONFIG:-ansible.cfg}
 ENVS+=("--env" "ANSIBLE_CONFIG=$ANSIBLE_CONFIG")
 
 # Home
-ANSIBLE_HOME=${ANSIBLE_HOME:-$DOCKER_WORKING_DIR}
+ANSIBLE_HOME=${ANSIBLE_HOME:-$ANS_X_DOCKER_IMAGE_PWD}
 ENVS+=("--env" "ANSIBLE_HOME=$ANSIBLE_HOME")
 # DEFAULT_LOCAL_TMP depends of ansible home
 # https://docs.ansible.com/ansible/latest/reference_appendices/config.html#default-local-tmp
@@ -70,8 +66,8 @@ echo::info "Env (Script)"
 echo::info "DOCKER_ANSIBLE_VERSION : $ANS_X_ANSIBLE_VERSION"
 echo::info ""
 echo::info "Env (Inside Docker)"
-echo::info "ANSIBLE_CONFIG : $DOCKER_WORKING_DIR/$ANSIBLE_CONFIG"
-echo::info "ANSIBLE_HOME   : $DOCKER_WORKING_DIR/$ANSIBLE_HOME"
+echo::info "ANSIBLE_CONFIG : $ANS_X_DOCKER_IMAGE_PWD/$ANSIBLE_CONFIG"
+echo::info "ANSIBLE_HOME   : $ANS_X_DOCKER_IMAGE_PWD/$ANSIBLE_HOME"
 echo::info ""
 
 # Azure
@@ -115,7 +111,8 @@ fi
 # Works
 # echo "secret" > /dev/shm/foo
 # docker run --rm -it -v /dev/shm/foo:/tmp/foo  ubuntu bash -c "cat /tmp/foo"
-pass ansible/vault-password > /dev/shm/vault-password
+pass ansible/vault-password >| /dev/shm/vault-password
+
 command::echo_eval "docker ${ENVS[*]} \
   -v /dev/shm/foo:/tmp/vault-password \
   $ANS_X_DOCKER_REGISTRY/gerardnico/ansible:$ANS_X_ANSIBLE_VERSION \

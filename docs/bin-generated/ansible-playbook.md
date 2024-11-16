@@ -1,49 +1,57 @@
-% ansible(1) Version Latest | Define and run a single task ‘playbook’ against a set of hosts
+% ansible-playbook(1) Version Latest | Runs Ansible playbooks
 # NAME
 
-The [Ansible cli](https://docs.ansible.com/ansible/latest/cli/ansible.html) defines and runs 
-a single task `playbook` against a set of hosts
+The `ansible-playbook` cli runs Ansible playbooks, executing the defined tasks on the targeted hosts.
+
+Official documentation: [ansible-playbook command line cli](https://docs.ansible.com/ansible/latest/cli/ansible-playbook.html)
 
 # SYNOPSIS
 
 ```bash
-usage: ansible [-h] [--version] [-v] [-b] [--become-method BECOME_METHOD]
-               [--become-user BECOME_USER]
-               [-K | --become-password-file BECOME_PASSWORD_FILE]
-               [-i INVENTORY] [--list-hosts] [-l SUBSET] [-P POLL_INTERVAL]
-               [-B SECONDS] [-o] [-t TREE] [--private-key PRIVATE_KEY_FILE]
-               [-u REMOTE_USER] [-c CONNECTION] [-T TIMEOUT]
-               [--ssh-common-args SSH_COMMON_ARGS]
-               [--sftp-extra-args SFTP_EXTRA_ARGS]
-               [--scp-extra-args SCP_EXTRA_ARGS]
-               [--ssh-extra-args SSH_EXTRA_ARGS]
-               [-k | --connection-password-file CONNECTION_PASSWORD_FILE] [-C]
-               [-D] [-e EXTRA_VARS] [--vault-id VAULT_IDS]
-               [-J | --vault-password-file VAULT_PASSWORD_FILES] [-f FORKS]
-               [-M MODULE_PATH] [--playbook-dir BASEDIR]
-               [--task-timeout TASK_TIMEOUT] [-a MODULE_ARGS] [-m MODULE_NAME]
-               pattern
+usage: ansible-playbook [-h] [--version] [-v] [--private-key PRIVATE_KEY_FILE]
+                        [-u REMOTE_USER] [-c CONNECTION] [-T TIMEOUT]
+                        [--ssh-common-args SSH_COMMON_ARGS]
+                        [--sftp-extra-args SFTP_EXTRA_ARGS]
+                        [--scp-extra-args SCP_EXTRA_ARGS]
+                        [--ssh-extra-args SSH_EXTRA_ARGS]
+                        [-k | --connection-password-file CONNECTION_PASSWORD_FILE]
+                        [--force-handlers] [--flush-cache] [-b]
+                        [--become-method BECOME_METHOD]
+                        [--become-user BECOME_USER]
+                        [-K | --become-password-file BECOME_PASSWORD_FILE]
+                        [-t TAGS] [--skip-tags SKIP_TAGS] [-C] [-D]
+                        [-i INVENTORY] [--list-hosts] [-l SUBSET]
+                        [-e EXTRA_VARS] [--vault-id VAULT_IDS]
+                        [-J | --vault-password-file VAULT_PASSWORD_FILES]
+                        [-f FORKS] [-M MODULE_PATH] [--syntax-check]
+                        [--list-tasks] [--list-tags] [--step]
+                        [--start-at-task START_AT_TASK]
+                        playbook [playbook ...]
 
-Define and run a single task 'playbook' against a set of hosts
+Runs Ansible playbooks, executing the defined tasks on the targeted hosts.
 
 positional arguments:
-  pattern               host pattern
+  playbook              Playbook(s)
 
 options:
   --become-password-file BECOME_PASSWORD_FILE, --become-pass-file BECOME_PASSWORD_FILE
                         Become password file
   --connection-password-file CONNECTION_PASSWORD_FILE, --conn-pass-file CONNECTION_PASSWORD_FILE
                         Connection password file
+  --flush-cache         clear the fact cache for every host in inventory
+  --force-handlers      run handlers even if a task fails
   --list-hosts          outputs a list of matching hosts; does not execute
                         anything else
-  --playbook-dir BASEDIR
-                        Since this tool does not use playbooks, use this as a
-                        substitute playbook directory. This sets the relative
-                        path for many features including roles/ group_vars/
-                        etc.
-  --task-timeout TASK_TIMEOUT
-                        set task timeout limit in seconds, must be positive
-                        integer.
+  --list-tags           list all available tags
+  --list-tasks          list all tasks that would be executed
+  --skip-tags SKIP_TAGS
+                        only run plays and tasks whose tags do not match these
+                        values. This argument may be specified multiple times.
+  --start-at-task START_AT_TASK
+                        start the playbook at the task matching this name
+  --step                one-step-at-a-time: confirm each task before running
+  --syntax-check        perform a syntax check on the playbook, but do not
+                        execute it
   --vault-id VAULT_IDS  the vault identity to use. This argument may be
                         specified multiple times.
   --vault-password-file VAULT_PASSWORD_FILES, --vault-pass-file VAULT_PASSWORD_FILES
@@ -51,9 +59,6 @@ options:
   --version             show program's version number, config file location,
                         configured module search path, module location,
                         executable location and exit
-  -B SECONDS, --background SECONDS
-                        run asynchronously, failing after X seconds
-                        (default=N/A)
   -C, --check           don't make any changes; instead, try to predict some
                         of the changes that may occur
   -D, --diff            when changing (small) files and templates, show the
@@ -67,12 +72,6 @@ options:
                         (default={{ ANSIBLE_HOME ~
                         "/plugins/modules:/usr/share/ansible/plugins/modules"
                         }}). This argument may be specified multiple times.
-  -P POLL_INTERVAL, --poll POLL_INTERVAL
-                        set the poll interval if using -B (default=15)
-  -a MODULE_ARGS, --args MODULE_ARGS
-                        The action's options in space separated k=v format: -a
-                        'opt1=val1 opt2=val2' or a json string: -a '{"opt1":
-                        "val1", "opt2": "val2"}'
   -e EXTRA_VARS, --extra-vars EXTRA_VARS
                         set additional variables as key=value or YAML/JSON, if
                         filename prepend with @. This argument may be
@@ -88,27 +87,14 @@ options:
   -k, --ask-pass        ask for connection password
   -l SUBSET, --limit SUBSET
                         further limit selected hosts to an additional pattern
-  -m MODULE_NAME, --module-name MODULE_NAME
-                        Name of the action to execute (default=command)
-  -o, --one-line        condense output
-  -t TREE, --tree TREE  log output to this directory
+  -t TAGS, --tags TAGS  only run plays and tasks tagged with these values.
+                        This argument may be specified multiple times.
   -v, --verbose         Causes Ansible to print more debug messages. Adding
                         multiple -v will increase the verbosity, the builtin
                         plugins currently evaluate up to -vvvvvv. A reasonable
                         level to start is -vvv, connection debugging might
                         require -vvvv. This argument may be specified multiple
                         times.
-
-Privilege Escalation Options:
-  control how and which user you become as on target hosts
-
-  --become-method BECOME_METHOD
-                        privilege escalation method to use (default=sudo), use
-                        `ansible-doc -t become -l` to list valid choices.
-  --become-user BECOME_USER
-                        run operations as this user (default=root)
-  -b, --become          run operations with become (does not imply password
-                        prompting)
 
 Connection Options:
   control as whom and how to connect to hosts
@@ -133,5 +119,14 @@ Connection Options:
   -u REMOTE_USER, --user REMOTE_USER
                         connect as this user (default=None)
 
-Some actions do not make sense in Ad-Hoc (include, meta, etc)
+Privilege Escalation Options:
+  control how and which user you become as on target hosts
+
+  --become-method BECOME_METHOD
+                        privilege escalation method to use (default=sudo), use
+                        `ansible-doc -t become -l` to list valid choices.
+  --become-user BECOME_USER
+                        run operations as this user (default=root)
+  -b, --become          run operations with become (does not imply password
+                        prompting)
 ```

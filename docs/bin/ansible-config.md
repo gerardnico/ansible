@@ -5,5 +5,5 @@ The [ansible-config command line cli](https://docs.ansible.com/ansible/latest/cl
 
 # SYNOPSIS
 
-```${SYNOPSIS}
+```bash${SYNOPSIS}
 ```

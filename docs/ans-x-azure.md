@@ -1,7 +1,0 @@
-
-```bash
-set AZURE_CLIENT_ID=
-set AZURE_SECRET=
-set AZURE_SUBSCRIPTION_ID=
-set AZURE_TENANT=
-```

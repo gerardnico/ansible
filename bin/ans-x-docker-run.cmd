@@ -27,29 +27,29 @@ if "%1" == "bash" (
 )
 
 REM Fixed working directory in the Dockerfile
-SET DOCKER_WORKING_DIR=/ansible/playbooks
+SET ANS_X_DOCKER_IMAGE_PWD=/ansible/playbooks
 
 
 if not defined ANSIBLE_CONFIG (SET ANSIBLE_CONFIG=ansible.cfg)
-if not defined ANSIBLE_HOME (SET ANSIBLE_HOME=%DOCKER_WORKING_DIR%)
+if not defined ANSIBLE_HOME (SET ANSIBLE_HOME=%ANS_X_DOCKER_IMAGE_PWD%)
 
 echo Ansible Env Inside Docker:
 echo ANS_X_ANSIBLE_VERSION : %ANS_X_ANSIBLE_VERSION%
-echo ANSIBLE_CONFIG : %DOCKER_WORKING_DIR%/%ANSIBLE_CONFIG%
-echo ANSIBLE_HOME   : %DOCKER_WORKING_DIR%/%ANSIBLE_HOME%
+echo ANSIBLE_CONFIG : %ANS_X_DOCKER_IMAGE_PWD%/%ANSIBLE_CONFIG%
+echo ANSIBLE_HOME   : %ANS_X_DOCKER_IMAGE_PWD%/%ANSIBLE_HOME%
 echo
 
 REM no name is given to the container because otherwise it's not possible to start two ansible session
 docker run ^
 	--rm ^
 	%INTERACTIVE% ^
-	-v %cd%:%DOCKER_WORKING_DIR% ^
+	-v %cd%:%ANS_X_DOCKER_IMAGE_PWD% ^
 	--env AZURE_CLIENT_ID=%AZURE_CLIENT_ID% ^
 	--env AZURE_SECRET=%AZURE_SECRET% ^
 	--env AZURE_SUBSCRIPTION_ID=%AZURE_SUBSCRIPTION_ID% ^
 	--env AZURE_TENANT=%AZURE_TENANT% ^
-	--env ANSIBLE_CONFIG=%DOCKER_WORKING_DIR%/%ANSIBLE_CONFIG% ^
-	--env ANSIBLE_HOME=%DOCKER_WORKING_DIR%/%ANSIBLE_HOME% ^
+	--env ANSIBLE_CONFIG=%ANS_X_DOCKER_IMAGE_PWD%/%ANSIBLE_CONFIG% ^
+	--env ANSIBLE_HOME=%ANS_X_DOCKER_IMAGE_PWD%/%ANSIBLE_HOME% ^
 	--env ANSIBLE_LOCAL_TEMP=/tmp ^
 	--user ansible ^
 	%ENTRY_POINT% ^

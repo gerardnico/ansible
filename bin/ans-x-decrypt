@@ -1,12 +1,21 @@
 #!/bin/bash
 
-SCRIPT_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=../../bash-lib/lib/bashlib-error.sh
+source "${BASHLIB_LIBRARY_PATH:-}${BASHLIB_LIBRARY_PATH:+/}bashlib-error.sh"
+error::set_strict_mode
+error::set_trap
 
-
-if [ -n "$1" ]; then
+if [ "${1:-}" = "" ]; then
   echo "Decrypt from stdin is not yet supported. Use 'ansible-bash' and run you command there"
   exit 1
 fi
 
-"${SCRIPT_PATH}/ans-x-docker-run.sh" ansible-vault decrypt "$@"
+args=("$@")
+if [ "${1:-}" == "synopsis" ]; then
+  args=("-h")
+fi
+
+SCRIPT_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+source "${SCRIPT_PATH}/ans-x-docker-run.sh" ansible-vault decrypt "${args[@]}"
 
