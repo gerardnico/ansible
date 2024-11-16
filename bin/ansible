@@ -1,7 +1,12 @@
 #!/bin/bash
 
 # Run Ansible inside Docker
-
 SCRIPT_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-source "${SCRIPT_PATH}/ans-x-docker-run.sh.sh" ansible "$@"
+args=("$@")
+
+if [ "${1:-}" == "synopsis" ]; then
+  args=("-h")
+fi
+
+source "${SCRIPT_PATH}/ans-x-docker-run.sh" ansible "${args[@]}"

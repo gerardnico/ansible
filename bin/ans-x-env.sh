@@ -12,6 +12,13 @@ fi
 echo "# The docker registry"
 echo "ANS_X_DOCKER_REGISTRY=$ANS_X_DOCKER_REGISTRY"
 
+# ANS_X_DOCKER_IMAGE_PWD
+ANS_X_DOCKER_IMAGE_PWD="/ans-x"
+if [[ "$ANS_X_ANSIBLE_VERSION" =~ "2.8"|"2.7" ]]; then
+  ANS_X_DOCKER_IMAGE_PWD="/ansible/playbook"
+fi
+echo "# The working directory in the image (Internal, used for migration)"
+echo "ANS_X_DOCKER_IMAGE_PWD=$ANS_X_DOCKER_IMAGE_PWD"
 
 # ANS_X_PROJECT_DIR
 ANS_X_PROJECT_DIR=${ANS_X_PROJECT_DIR:-$PWD}

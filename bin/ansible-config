@@ -2,4 +2,10 @@
 
 SCRIPT_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-"${SCRIPT_PATH}/ans-x-docker-run.sh" ansible-config "$@"
+args=("$@")
+
+if [ "${1:-}" == "synopsis" ]; then
+  args=("-h")
+fi
+
+"${SCRIPT_PATH}/ans-x-docker-run.sh" ansible-config "${args[@]}"

@@ -1,23 +1,12 @@
 # Run the Ansible docker image
 # This script is sourced from the other one
 
+# shellcheck source=../..//bash-lib/lib/bashlib-command.sh
+source "${BASHLIB_LIBRARY_PATH:-}${BASHLIB_LIBRARY_PATH:+/}bashlib-command.sh"
+# shellcheck source=../..//bash-lib/lib/bashlib-echo.sh
+source "${BASHLIB_LIBRARY_PATH:-}${BASHLIB_LIBRARY_PATH:+/}bashlib-echo.sh"
 
-
-
-if [[ $(uname -a) =~ "CYGWIN" ]]; then
-  CYGWIN=1
-else
-  CYGWIN=0
-fi
-
-# Set the azure configuration
-# You need to copy the file azure-conf-dist.cmd to azure-conf.cmd and set your values
-AZURE_CONF_FILE="azure-conf.cmd"
-
-if [ -f "$AZURE_CONF_FILE" ]; then
-   # shellcheck disable=SC1090
-   source "$AZURE_CONF_FILE"
-fi
+eval "$(source ans-x-env.sh)"
 
 
 
@@ -36,14 +25,14 @@ fi
 # DOCKER_WORKING_DIR="/ansible/playbooks"
 
 # Mounting the current directory or the home if set
-ENVS+=("--volume" "$ANS_X_PROJECT_DIR:")
+ENVS+=("--volume" "$ANS_X_PROJECT_DIR:$ANS_X_DOCKER_IMAGE_PWD")
 
 # User
 #ANSIBLE_USER="ansible"
 #ENVS+=("--user" "$ANSIBLE_USER")
 
 # Mounting SSH
-echo "Mounting SSH"
+echo::info "Mounting SSH"
 SSH_DOCKER_FORMAT="$HOME/.ssh"
 if [[ $(uname -a) =~ "CYGWIN" ]]; then
   SSH_DOCKER_FORMAT="$HOMEPATH/.ssh"
@@ -65,25 +54,25 @@ ENVS+=("--env" "ANSIBLE_HOME=$ANSIBLE_HOME")
 ENVS+=("--env" "ANSIBLE_LOCAL_TEMP=/tmp")
 
 # SSH
-echo "Env (SSH Key Passphrase)"
+echo::info "Env (SSH Key Passphrase)"
 SSH_PREFIX="ANSIBLE_SSH_KEY_PASSPHRASE_"
 if ! SSH_KEYS=$(printenv | grep -P "^$SSH_PREFIX"); then
   SSH_KEYS="";
 fi
 for var in $SSH_KEYS; do
   varName=$(echo "$var" | grep -oP "^${SSH_PREFIX}[^=]+")
-  echo "The SSH variable ($varName) was passed to docker" > /dev/stderr
+  echo::debug "The SSH variable ($varName) was passed to docker" > /dev/stderr
   ENVS+=("--env" "$var")
 done
 echo
 
-echo "Env (Script)"
-echo "DOCKER_ANSIBLE_VERSION : $ANS_X_ANSIBLE_VERSION"
-echo
-echo "Env (Inside Docker)"
-echo "ANSIBLE_CONFIG : $DOCKER_WORKING_DIR/$ANSIBLE_CONFIG"
-echo "ANSIBLE_HOME   : $DOCKER_WORKING_DIR/$ANSIBLE_HOME"
-echo
+echo::info "Env (Script)"
+echo::info "DOCKER_ANSIBLE_VERSION : $ANS_X_ANSIBLE_VERSION"
+echo::info ""
+echo::info "Env (Inside Docker)"
+echo::info "ANSIBLE_CONFIG : $DOCKER_WORKING_DIR/$ANSIBLE_CONFIG"
+echo::info "ANSIBLE_HOME   : $DOCKER_WORKING_DIR/$ANSIBLE_HOME"
+echo::info ""
 
 # Azure
 AZURE_CLIENT_ID=${AZURE_CLIENT_ID:-}
@@ -127,7 +116,7 @@ fi
 # echo "secret" > /dev/shm/foo
 # docker run --rm -it -v /dev/shm/foo:/tmp/foo  ubuntu bash -c "cat /tmp/foo"
 pass ansible/vault-password > /dev/shm/vault-password
-docker "${ENVS[@]}" \
+command::echo_eval "docker ${ENVS[*]} \
   -v /dev/shm/foo:/tmp/vault-password \
-	"$ANS_X_DOCKER_REGISTRY"/gerardnico/ansible:"$ANS_X_ANSIBLE_VERSION" \
-	"$@"
+  $ANS_X_DOCKER_REGISTRY/gerardnico/ansible:$ANS_X_ANSIBLE_VERSION \
+  $*"

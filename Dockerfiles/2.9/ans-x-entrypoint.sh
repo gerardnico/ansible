@@ -11,7 +11,7 @@ fi
 ## Starting the SSH Agent
 echo Starting the ssh-agent > /dev/stderr
 # -s option set the environment variable SSH_AUTH_SOCK used by third tool such as ssh-add
-eval "$(ssh-agent -s)"
+eval "$(ssh-agent -s)" 1>/dev/stderr
 
 # Loop through the ANSIBLE_SSH_KEY_PASSPHRASE environment variables
 # and add the key to the agent
