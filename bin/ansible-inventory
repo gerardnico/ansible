@@ -2,4 +2,4 @@
 
 SCRIPT_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-"${SCRIPT_PATH}/ansible-docker-run" ansible-playbook "$@"
+"${SCRIPT_PATH}/ans-x-docker-run.sh" ansible-inventory "$@"

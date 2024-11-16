@@ -1,0 +1,5 @@
+#!/bin/bash
+
+SCRIPT_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+source "${SCRIPT_PATH}/ans-x-docker-run.sh" ansible-vault encrypt_string "$@"

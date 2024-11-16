@@ -1,34 +1,7 @@
-#!/bin/bash
 # Run the Ansible docker image
-# This script is called from the other one
+# This script is sourced from the other one
 
-# flag
-# e - Exit if any error
-# u - Treat unset variables as an error when substituting
-# o pipefail - the return value of a pipeline is the status of the last command to exit with a non-zero status or zero if no command exited with a non-zero status
-# E - the ERR trap is inherited by shell functions
-set -Eeuo pipefail
 
-CLI_NAME=$(basename "$0") # Name of the cli
-
-## A trap on ERR, if set, is executed before the shell exits.
-# Because we show the $LINENO, we can;t create a function otherwise the line number would be not correct
-trap 'echo_err ""; echo_err "Command error on line ($0:$LINENO)"; exit 1' ERR
-
-# Echo a message
-function echo_log() {
-  # Not on stdout otherwise
-  # for var in $(command_with_echo_error)
-  # would process the stdout of the error trap
-  echo -e "$CLI_NAME: ${1:-}" > /dev/stderr
-}
-# Print the error message $1
-function echo_err() {
-  RED='\033[0;31m'
-  NC='\033[0m' # No Color
-  #(>&2 echo -e "${RED}$1${NC}")
-  echo_log "${RED}$1${NC}"
-}
 
 
 if [[ $(uname -a) =~ "CYGWIN" ]]; then
@@ -46,8 +19,7 @@ if [ -f "$AZURE_CONF_FILE" ]; then
    source "$AZURE_CONF_FILE"
 fi
 
-# Default Ansible version if not set
-ANSIBLE_VERSION=${ANSIBLE_VERSION:-2.9}
+
 
 declare -a ENVS=("run" "--rm")
 
@@ -57,28 +29,14 @@ if [ "$1" == "bash" ]; then
   ENVS+=("-it")
 fi
 
-ENVS+=("--entrypoint" "/ansible/bin/entrypoint.sh")
+# ENVS+=("--entrypoint" "/ansible/bin/entrypoint.sh")
 
 # Working Dir
 # DOCKER_WORKING_DIR is the working directory that is set as a literal in the Dockerfile
-DOCKER_WORKING_DIR="/ansible/playbooks"
+# DOCKER_WORKING_DIR="/ansible/playbooks"
 
 # Mounting the current directory or the home if set
-PWD_DOCKER_FORMAT=$(pwd)
-ANSIBLE_LOCAL_HOME=${ANSIBLE_LOCAL_HOME:-}
-if [ "$ANSIBLE_LOCAL_HOME" != "" ]; then
-  if [ ! -d "$ANSIBLE_LOCAL_HOME" ]; then
-      echo_err "The local ansible home directory ($ANSIBLE_LOCAL_HOME) of the ANSIBLE_LOCAL_HOME variable does not exist. Are you sure that your ansible project is located there?"
-      exit 1;
-  fi
-  PWD_DOCKER_FORMAT=$ANSIBLE_LOCAL_HOME;
-fi;
-if [ $CYGWIN = 1 ] ; then
-    # Cygwin to Docker Pwd format (ie --volume /c/current/workdir/from/host:/ansible/playbooks)
-    # Note: Deleting the c part seems to work also (ie HOMEPATH=\Users\ngera)
-    PWD_DOCKER_FORMAT=$(cygpath -aw "$PWD_DOCKER_FORMAT" | tr 'C:' '/c' | tr '\\' '/')
-fi
-ENVS+=("--volume" "$PWD_DOCKER_FORMAT:$DOCKER_WORKING_DIR")
+ENVS+=("--volume" "$ANS_X_PROJECT_DIR:")
 
 # User
 #ANSIBLE_USER="ansible"
@@ -87,7 +45,7 @@ ENVS+=("--volume" "$PWD_DOCKER_FORMAT:$DOCKER_WORKING_DIR")
 # Mounting SSH
 echo "Mounting SSH"
 SSH_DOCKER_FORMAT="$HOME/.ssh"
-if [ $CYGWIN = 1 ] ; then
+if [[ $(uname -a) =~ "CYGWIN" ]]; then
   SSH_DOCKER_FORMAT="$HOMEPATH/.ssh"
   SSH_DOCKER_FORMAT=$(cygpath -aw "$SSH_DOCKER_FORMAT" | tr 'C:' '/c' | tr '\\' '/')
 fi
@@ -120,7 +78,7 @@ done
 echo
 
 echo "Env (Script)"
-echo "DOCKER_ANSIBLE_VERSION : $ANSIBLE_VERSION"
+echo "DOCKER_ANSIBLE_VERSION : $ANS_X_ANSIBLE_VERSION"
 echo
 echo "Env (Inside Docker)"
 echo "ANSIBLE_CONFIG : $DOCKER_WORKING_DIR/$ANSIBLE_CONFIG"
@@ -152,6 +110,7 @@ if [ "$HCLOUD_TOKEN" != "" ]; then
     ENVS+=("--env" "HCLOUD_TOKEN=$HCLOUD_TOKEN")
 fi
 
+
 # Run Docker command
 
 # Secret Options:
@@ -167,6 +126,8 @@ fi
 # Works
 # echo "secret" > /dev/shm/foo
 # docker run --rm -it -v /dev/shm/foo:/tmp/foo  ubuntu bash -c "cat /tmp/foo"
+pass ansible/vault-password > /dev/shm/vault-password
 docker "${ENVS[@]}" \
-	gerardnico/ansible:"$ANSIBLE_VERSION" \
+  -v /dev/shm/foo:/tmp/vault-password \
+	"$ANS_X_DOCKER_REGISTRY"/gerardnico/ansible:"$ANS_X_ANSIBLE_VERSION" \
 	"$@"

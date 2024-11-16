@@ -61,6 +61,16 @@ RUN echo "==> Installing Kubectl" && \
     echo "$(cat kubectl.sha256)  kubectl" | sha256sum --check && \
     sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
 
+####################################
+# Label
+# https://docs.docker.com/reference/dockerfile/#label
+# This labels are used by Github
+####################################
+# * connect the repo
+LABEL org.opencontainers.image.source="https://github.com/gerardnico/ansible"
+# * set a description
+LABEL org.opencontainers.image.description="Ansible X - Ansible Easy Execution"
+
 # Ansible Env
 ENV ANSIBLE_GATHERING smart
 ENV ANSIBLE_HOST_KEY_CHECKING false
@@ -80,13 +90,12 @@ ENV ANSIBLE_SSH_PIPELINING True
 ENV DOCKER_ANSIBLE_VERSION 2.9
 
 # Workdir
-RUN mkdir -p /docker-ansible
-WORKDIR /docker-ansible
+RUN mkdir -p /ans-x
+WORKDIR /ans-x
 
 # The Entry point script to start the ssh-agent and add ssh-keys
-COPY --chmod=0755 ansible-entrypoint.sh /usr/local/bin
-ENTRYPOINT [ "ansible-entrypoint.sh" ]
-
+COPY --chmod=0755 ans-x-entrypoint.sh /usr/local/bin
+ENTRYPOINT [ "ans-x-entrypoint.sh" ]
 #
 # Run Example:
 #    docker run --rm -it gerardnico/ansible:2.9 bash

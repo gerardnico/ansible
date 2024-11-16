@@ -1,10 +1,15 @@
 #!/usr/bin/env bash
 
+if [ $# -eq 0 ]; then
+  echo "A command is mandatory" > /dev/stderr
+  exit 1
+fi
+
 ## SSH
 ## We start the SSH agent and add keys if we find env variables that starts with a special prefix
 
 ## Starting the SSH Agent
-echo Starting the ssh-agent new
+echo Starting the ssh-agent > /dev/stderr
 # -s option set the environment variable SSH_AUTH_SOCK used by third tool such as ssh-add
 eval "$(ssh-agent -s)"
 
@@ -46,7 +51,7 @@ do
 done
 
 # For debug
-echo "Command executed: $*"
+echo "Command executed: $*" > /dev/stderr
 
 "$@"
 
