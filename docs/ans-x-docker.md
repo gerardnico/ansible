@@ -2,9 +2,37 @@
 
 ## About
 
-This page documentes the Docker Image.
+This page documentes the [Docker Image](https://github.com/gerardnico/ansible/pkgs/container/ansible)
 
-## Component
+## Ansible version and DockerFiles
+
+There is actually 3 Dockerfiles with the following version:
+
+* [2.9](../Dockerfiles/2.9)
+* [2.8](../Dockerfiles/2.8)
+* [2.7](../Dockerfiles/2.7)
+
+We host only the [latest on github](https://github.com/gerardnico/ansible/pkgs/container/ansible)
+because Docker Hub does not update the README. 
+
+
+## How to build and use an old version ?
+
+If you want to use a precedent version, you need to build it.
+
+Example:
+```bash
+docker build -t "gerardnico/ansible:2.8" "Dockerfiles/2.8"
+```
+
+You need then to set the env variable to another version. Example: Linux, Windows WSL
+```bash
+export ANS_X_ANSIBLE_VERSION=2.8
+ansible --version
+```
+
+
+## Components
 
 ### Collection
 

@@ -8,7 +8,7 @@ With this directory, you can run `Ansible` from any OS.
 
 ### Via the docker image
 
-With [Ansible Docker Image gerardnico/ansible:xxx](https://hub.docker.com/r/gerardnico/ansible/)
+With [Ansible Docker Image gerardnico/ansible:xxx](docs/ans-x-docker.md)
 
 * you can execute an ansible command
 ```bash
@@ -63,12 +63,8 @@ chmod +x bin/*
 ```bash
 export PATH=~/ansible/bin
 ```
-* Run any [Ansible script](#ansible-scripts)
+* Run any [Ansible script](#script-list)
 ```bash
-ansible-playbook --version
-```
-* Dos:
-```dos
 ansible-playbook --version
 ```
 
@@ -83,25 +79,6 @@ of you ansible project.
 
 This directory will then be mounted and used instead of the current working directory.
 
-### Change the Ansible version
-
-There is actually 3 images with the version:
-
-* 2.7
-* 2.8
-* 2.9
-  By default, this is the latest 
-
-You can set the env variable to another version if you want. Example:
-
-* Linux, Windows WSL 
-```bash
-export ANS_X_ANSIBLE_VERSION=2.9
-```
-* Windows Dos
-```dos
-SET ANS_X_ANSIBLE_VERSION=2.9
-```
 
 ### Work with a client encrypted SSH Private Key
 
@@ -149,20 +126,15 @@ These scripts are utility scripts
 
 
 
-### Support: SSH UNPROTECTED PRIVATE KEY FILE
+## Support
+
+### SSH UNPROTECTED PRIVATE KEY FILE
 
 2 tips:
 
 * Even if it can be seen as completely mad, this error can appear when the
   env variable `$ANSIBLE_CONFIG` is bad.
 * Mounting the keys under the `%UserProfile%/.ssh` make the key only readable by owner.
-
-
-## How to contribute
-
-See [CONTRIB](contrib/CONTRIB.md)
-
-## Support
 
 ### On Windows, ansible-vault id should be an executable file
 
@@ -213,3 +185,7 @@ if a file has to be marked executable.
 For that reason, files are marked executable by default when building from a windows client.
 
 You can modify the Dockerfile to change/remove the executable bit afterwards.
+
+## How to contribute
+
+See [CONTRIB](contrib/CONTRIB.md)
