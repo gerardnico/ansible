@@ -75,26 +75,36 @@ fi
 
 
 
-# Secret Options:
-# use this file to authenticate the connection
-#    --private-key PRIVATE_KEY_FILE, --key-file PRIVATE_KEY_FILE
-# ask for vault password
-#    -J, --ask-vault-password, --ask-vault-pass
-# the vault identity to use. This argument may be specified multiple times.
-# --vault-id
-#
-# --env-file shows up in env in inspect
-#
-# Works
-# echo "secret" > /dev/shm/foo
-# docker run --rm -it -v /dev/shm/foo:/tmp/foo  ubuntu bash -c "cat /tmp/foo"
-PASS_FILE="${PASSWORD_STORE_DIR:-"$HOME~/.password-store"}/$ANS_X_VAULT_ID_PASS.gpg"
-if [ -f "$PASS_FILE" ]; then
+
+# ANSIBLE_VAULT_PASSWORD_FILE
+# https://docs.ansible.com/ansible/devel/reference_appendices/config.html#envvar-ANSIBLE_VAULT_PASSWORD_FILE
+if [ ${ANS_X_VAULT_ID_PASS:-} != "" ]; then
+  VAULT_ID_PASS_FILE="${PASSWORD_STORE_DIR:-"$HOME~/.password-store"}/$ANS_X_VAULT_ID_PASS.gpg"
+  if [ ! -f "$VAULT_ID_PASS_FILE" ]; then
+    echo::err "The pass ${ANS_X_VAULT_ID_PASS} of the env ANS_X_VAULT_ID_PASS does not exist"
+    exit 1
+  fi
   PASS_DOCKER_PATH=/tmp/vault-password
   PASS_LOCAL_PATH=/dev/shm/vault-password
   pass $ANS_X_VAULT_ID_PASS >| $PASS_LOCAL_PATH
   # env for --vault-id
   ENVS+=("--env" "ANSIBLE_VAULT_PASSWORD_FILE=$PASS_DOCKER_PATH")
+  ENVS+=("-v" "$PASS_LOCAL_PATH:$PASS_DOCKER_PATH")
+fi
+
+# ANSIBLE_PRIVATE_KEY_FILE
+# https://docs.ansible.com/ansible/devel/reference_appendices/config.html#envvar-ANSIBLE_PRIVATE_KEY_FILE
+if [ ${ANS_X_SSH_KEY_PASS:-} != "" ]; then
+  PRIVATE_KEY_PASS_FILE="${PASSWORD_STORE_DIR:-"$HOME~/.password-store"}/$ANS_X_SSH_KEY_PASS.gpg"
+  if [ ! -f "$PRIVATE_KEY_PASS_FILE" ]; then
+    echo::err "The pass ${ANS_X_SSH_KEY_PASS} of the env ANS_X_SSH_KEY_PASS does not exist ($PRIVATE_KEY_PASS_FILE)"
+    exit 1
+  fi
+  PASS_DOCKER_PATH=/tmp/ssh-key
+  PASS_LOCAL_PATH=/dev/shm/ssh-key
+  pass $ANS_X_SSH_KEY_PASS >| $PASS_LOCAL_PATH
+  # env for --private-key
+  ENVS+=("--env" "ANSIBLE_PRIVATE_KEY_FILE=$PASS_DOCKER_PATH")
   ENVS+=("-v" "$PASS_LOCAL_PATH:$PASS_DOCKER_PATH")
 fi
 

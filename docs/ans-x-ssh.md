@@ -9,7 +9,19 @@ You can then add the key:
 * manually
 * or automatically via the setting of environment variables.
 
-#### Add manually a private key
+## Debug
+
+### Try with SSH
+
+```bash
+ans-x-bash
+```
+```bash
+ssh -i $ANSIBLE_PRIVATE_KEY_FILE user@host
+```
+
+
+## Add manually a private key
 
 Manually, you would:
 
@@ -46,7 +58,7 @@ ansible-playbook xxxxx
 # xxx
 ```
 
-#### Add automatically private keys
+## Add automatically private keys
 
 Automatically, the [entrypoint](Dockerfiles/2.9/ansible-entrypoint.sh) can add the encrypted key automatically to
 the `ssh-agent`

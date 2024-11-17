@@ -45,12 +45,19 @@ fi
 echo "# The local ansible project directory to mount in docker"
 echo "ANS_X_PROJECT_DIR=$ANS_X_PROJECT_DIR"
 
-# Env: HCLOUD_TOKEN, AZURE_TENANT
-echo "# A grep pattern expression that selects the env to pass to Ansible docker"
+# ANS_X_DOCKER_ENVS
+echo "# A grep pattern expression that selects the environment variable to pass to Ansible"
 ANS_X_DOCKER_ENVS="^(ANSIBLE|ACTION|AGNOSTIC|ANY|BECOME|CACHE|CALLBACKS|COLLECTIONS|COLOR|CONNECTION|COVERAGE|DEFAULT|DEPRECATION|DEVEL|DIFF|DISPLAY|DOC|DUPLICATE|EDITOR|ENABLE|ERROR|FACTS_MODULES|GALAXY|HOST|INJECT|INTERPRETER|INVALID|INVENTORY|LOG|MAX_FILE_SIZE_FOR_DIFF|MODULE|HCLOUD|AZURE)"
 echo "ANS_X_DOCKER_ENVS='$ANS_X_DOCKER_ENVS'"
 
-
+# ANS_X_VAULT_ID_PASS
 ANS_X_VAULT_ID_PASS=${ANS_X_VAULT_ID_PASS:-}
 echo "# The location of a vault id in the pass secret manager"
+echo "# This variable will set ANSIBLE_VAULT_PASSWORD_FILE"
 echo "ANS_X_VAULT_ID_PASS=$ANS_X_VAULT_ID_PASS"
+
+# ANS_X_SSH_KEY_PASS
+ANS_X_SSH_KEY_PASS=${ANS_X_SSH_KEY_PASS:-}
+echo "# The location of a ssh key in the pass secret manager"
+echo "# This variable will set ANSIBLE_PRIVATE_KEY_FILE"
+echo "ANS_X_SSH_KEY_PASS=$ANS_X_SSH_KEY_PASS"
