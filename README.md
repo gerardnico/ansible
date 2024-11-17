@@ -129,6 +129,20 @@ These scripts are utility scripts
 
 ### Encrypt/Decrypt
 
+To be able to encrypt and decrypt, you need to set first a `passphrase` known as a `vault-it` in Ansible
+
+You can do:
+* from the [pass secret manager](https://www.passwordstore.org/)
+```bash
+# if you get your vault password with
+pass ansible/vault-id
+# you need to set ANS_X_VAULT_ID_PASS to
+export ANS_X_VAULT_ID_PASS=ansible/vault-id
+```
+`Ans-x` will then create the [ANSIBLE_VAULT_PASSWORD_FILE](https://docs.ansible.com/ansible/devel/reference_appendices/config.html#envvar-ANSIBLE_VAULT_PASSWORD_FILE)
+Otherwise, you can create it manually.
+
+You can then:
 * Encrypt: see [ans-x-encrypt](docs/bin/ans-x-encrypt.md)
 * Decrypt: see [ans-x-decrypt](docs/bin/ans-x-decrypt.md)
 
