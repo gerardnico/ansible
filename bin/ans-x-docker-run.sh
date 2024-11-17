@@ -24,7 +24,7 @@ fi
 ######################
 # Bash
 ######################
-if [ "$0" == "ans-x-bash" ]; then
+if [ "$(basename "$0")" == "ans-x-bash" ]; then
   # The input device is not a TTY. If you are using mintty, try prefixing the command with 'winpty'
   # Docker should not run as an interactive session (only for the docker-bash script)
   ENVS+=("-it")
