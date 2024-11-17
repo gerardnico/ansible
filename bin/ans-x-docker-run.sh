@@ -15,23 +15,36 @@ fi
 
 declare -a ENVS=("run" "--rm")
 
+# DEFAULT_LOCAL_TMP depends of ansible home
+# https://docs.ansible.com/ansible/latest/reference_appendices/config.html#default-local-tmp
+if [ "${ANSIBLE_LOCAL_TEMP:-}" = "" ]; then
+  ENVS+=("--env" "ANSIBLE_LOCAL_TEMP=/tmp")
+fi
 
-if [ "$1" == "bash" ]; then
+######################
+# Bash
+######################
+if [ "$0" == "ans-x-bash" ]; then
   # The input device is not a TTY. If you are using mintty, try prefixing the command with 'winpty'
   # Docker should not run as an interactive session (only for the docker-bash script)
   ENVS+=("-it")
 fi
 
-
-# Mounting the current directory or the home if set
+######################
+# Mount the directory
+######################
+echo::debug "Mounting the current directory or the home if set"
 ENVS+=("--volume" "$ANS_X_PROJECT_DIR:$ANS_X_DOCKER_IMAGE_PWD")
 
 
-# Mounting SSH
+######################
+# Mount SSH Directory
+######################
+echo::debug "Mounting SSH?"
 # https://docs.ansible.com/ansible/devel/reference_appendices/config.html#default-private-key-file
 SSH_VAR_PREFIX='ANS_X_SSH_KEY_PASSPHRASE_'
-if grep -oP "$SSH_VAR_PREFIX|DEFAULT_PRIVATE_KEY_FILE|ANSIBLE_PRIVATE_KEY_FILE"); then
-  echo::info "Mounting SSH"
+if printenv | grep -oP "$SSH_VAR_PREFIX|DEFAULT_PRIVATE_KEY_FILE|ANSIBLE_PRIVATE_KEY_FILE"; then
+  echo::debug "We mount SSH"
   SSH_DOCKER_FORMAT="$HOME/.ssh"
   if [[ $(uname -a) =~ "CYGWIN" ]]; then
     SSH_DOCKER_FORMAT="$HOMEPATH/.ssh"
@@ -40,10 +53,31 @@ if grep -oP "$SSH_VAR_PREFIX|DEFAULT_PRIVATE_KEY_FILE|ANSIBLE_PRIVATE_KEY_FILE")
   ENVS+=("--volume" "$SSH_DOCKER_FORMAT:/home/$ANS_X_DOCKER_USER/.ssh")
 fi
 
+######################
+# Hostname
+######################
+echo::debug "Hostname"
+# (Point are not welcome, so we transform it with a underscore
+ENVS+=("-h" "ansible-${ANS_X_ANSIBLE_VERSION//./_}")
+
+######################
+# Env
+######################
+# We copy the ANSIBLE env
+# https://docs.ansible.com/ansible/latest/reference_appendices/config.html
+if ! ANSIBLE_ENVS=$(printenv | grep -P "$ANS_X_DOCKER_ENVS"); then
+  ANSIBLE_ENVS="";
+fi
+for ANSIBLE_ENV in $ANSIBLE_ENVS; do
+  ENVS+=("--env" "$ANSIBLE_ENV")
+done
+
+
+
 ################
 # SSH Connection
 ################
-echo::info "Env (SSH Key Passphrase)"
+echo::debug "Env (SSH Key Passphrase)"
 SSH_PREFIX="ANSIBLE_SSH_KEY_PASSPHRASE_"
 if ! SSH_KEYS=$(printenv | grep -P "^$SSH_PREFIX"); then
   SSH_KEYS="";
@@ -53,38 +87,13 @@ for var in $SSH_KEYS; do
   ENVS+=("--env" "$var")
 done
 
-# Hostname
-# (Point are not welcome, so we transform it with a underscore
-ENVS+=("-h" "ansible-${ANS_X_ANSIBLE_VERSION//./_}")
-
-# We copy the ANSIBLE env
-# https://docs.ansible.com/ansible/latest/reference_appendices/config.html
-if ! ANSIBLE_ENVS=$(printenv | grep -P "$ANS_X_DOCKER_ENVS"); then
-  ANSIBLE_ENVS="";
-fi
-for ANSIBLE_ENV in $ANSIBLE_ENVS; do
-  ENVS+=("--env" "$ANSIBLE_ENV")
-done
-# Setting the ANSIBLE_CONFIG value to avoid
-# https://docs.ansible.com/ansible/devel/reference_appendices/config.html#cfg-in-world-writable-dir
-# We get a warning so.
-# ANSIBLE_CONFIG=${ANSIBLE_CONFIG:-ansible.cfg}
-# ENVS+=("--env" "ANSIBLE_CONFIG=$ANSIBLE_CONFIG")
-
-# DEFAULT_LOCAL_TMP depends of ansible home
-# https://docs.ansible.com/ansible/latest/reference_appendices/config.html#default-local-tmp
-if [ "${ANSIBLE_LOCAL_TEMP:-}" = "" ]; then
-  ENVS+=("--env" "ANSIBLE_LOCAL_TEMP=/tmp")
-fi
-
-
 # ANSIBLE_CONNECTION_PASSWORD_FILE
 # https://docs.ansible.com/ansible/devel/reference_appendices/config.html#envvar-ANSIBLE_CONNECTION_PASSWORD_FILE
 # Password file
-if [ $ANSIBLE_CONNECTION_PASSWORD_FILE != "" ]; then
+if [ "${ANSIBLE_CONNECTION_PASSWORD_FILE:-}" != "" ]; then
   ENVS+=("-v" "$ANSIBLE_CONNECTION_PASSWORD_FILE:$ANSIBLE_CONNECTION_PASSWORD_FILE")
 else
-  if [ ${ANS_X_PASSWORD_PASS:-} != "" ]; then
+  if [ "${ANS_X_PASSWORD_PASS:-}" != "" ]; then
     PASSWORD_PASS_FILE="${PASSWORD_STORE_DIR:-"$HOME~/.password-store"}/$ANS_X_PASSWORD_PASS.gpg"
     if [ ! -f "$PASSWORD_PASS_FILE" ]; then
       echo::err "The pass ${ANS_X_PASSWORD_PASS} of the env ANS_X_PASSWORD_PASS does not exist"
@@ -103,10 +112,10 @@ fi
 # ANSIBLE_BECOME_PASSWORD_FILE
 # https://docs.ansible.com/ansible/devel/reference_appendices/config.html#envvar-ANSIBLE_BECOME_PASSWORD_FILE
 # Password become file
-if [ $ANSIBLE_BECOME_PASSWORD_FILE != "" ]; then
+if [ "${ANSIBLE_BECOME_PASSWORD_FILE:-}" != "" ]; then
   ENVS+=("-v" "$ANSIBLE_BECOME_PASSWORD_FILE:$ANSIBLE_BECOME_PASSWORD_FILE")
 else
-  if [ ${ANS_X_BECOME_PASSWORD_PASS:-} != "" ]; then
+  if [ "${ANS_X_BECOME_PASSWORD_PASS:-}" != "" ]; then
     BECOME_PASSWORD_PASS_FILE="${PASSWORD_STORE_DIR:-"$HOME~/.password-store"}/$ANS_X_BECOME_PASSWORD_PASS.gpg"
     if [ ! -f "$BECOME_PASSWORD_PASS_FILE" ]; then
       echo::err "The pass ${ANS_X_BECOME_PASSWORD_PASS} of the env ANS_X_BECOME_PASSWORD_PASS does not exist at $BECOME_PASSWORD_PASS_FILE"
@@ -125,7 +134,7 @@ fi
 
 # ANSIBLE_VAULT_PASSWORD_FILE
 # https://docs.ansible.com/ansible/devel/reference_appendices/config.html#envvar-ANSIBLE_VAULT_PASSWORD_FILE
-if [ ${ANSIBLE_VAULT_PASSWORD_FILE:-} != '' ]; then
+if [ "${ANSIBLE_VAULT_PASSWORD_FILE:-}" != '' ]; then
   ENVS+=("-v" "$ANSIBLE_VAULT_PASSWORD_FILE:$ANSIBLE_VAULT_PASSWORD_FILE")
 else
   if [ ${ANS_X_VAULT_ID_PASS:-} != "" ]; then
@@ -146,7 +155,7 @@ fi
 
 # ANSIBLE_PRIVATE_KEY_FILE
 # https://docs.ansible.com/ansible/devel/reference_appendices/config.html#envvar-ANSIBLE_PRIVATE_KEY_FILE
-if [ ${ANSIBLE_PRIVATE_KEY_FILE:-} != '' ]; then
+if [ "${ANSIBLE_PRIVATE_KEY_FILE:-}" != '' ]; then
   ENVS+=("-v" "$ANSIBLE_PRIVATE_KEY_FILE:$ANSIBLE_PRIVATE_KEY_FILE")
 else
   if [ ${ANS_X_SSH_KEY_PASS:-} != "" ]; then
