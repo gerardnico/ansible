@@ -125,6 +125,12 @@ These scripts are utility scripts
 
 
 
+## How to
+
+### Encrypt/Decrypt
+
+* Encrypt: see [ans-x-encrypt](docs/bin/ans-x-encrypt.md)
+* Decrypt: see [ans-x-decrypt](docs/bin/ans-x-decrypt.md)
 
 ## Support
 

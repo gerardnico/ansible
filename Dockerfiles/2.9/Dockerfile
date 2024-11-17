@@ -61,6 +61,7 @@ RUN echo "==> Installing Kubectl" && \
     echo "$(cat kubectl.sha256)  kubectl" | sha256sum --check && \
     sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
 
+
 ####################################
 # Label
 # https://docs.docker.com/reference/dockerfile/#label
@@ -89,18 +90,20 @@ ENV ANSIBLE_SSH_PIPELINING True
 # See the Matrix Support: https://docs.ansible.com/ansible/latest/reference_appendices/release_and_maintenance.html#ansible-core-support-matrix
 ENV DOCKER_ANSIBLE_VERSION 2.9
 
-# Workdir
-RUN mkdir -p /ans-x
-WORKDIR /ans-x
 
 # The Entry point script to start the ssh-agent and add ssh-keys
 COPY --chmod=0755 ans-x-entrypoint.sh /usr/local/bin
 ENTRYPOINT [ "ans-x-entrypoint.sh" ]
-#
-# Run Example:
-#    docker run --rm -it gerardnico/ansible:2.9 bash
-#    docker run --rm -it gerardnico/ansible:2.9 ansible-playbook --version
-#    docker run --rm -it gerardnico/ansible:2.9 ansible --version
-# With OS shell script that wraps Docker
-#    ansible-playbook --version
-#    ansible --version
+
+
+####################################
+# USER
+# Group 1000 is used by `ubuntu`
+####################################
+RUN groupmod --new-name al ubuntu && usermod --login al --move-home --home /home/al ubuntu
+
+# Workdir
+WORKDIR /home/al
+
+# User
+USER al

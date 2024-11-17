@@ -6,10 +6,15 @@ source "${BASHLIB_LIBRARY_PATH:-}${BASHLIB_LIBRARY_PATH:+/}bashlib-command.sh"
 # shellcheck source=../../bash-lib/lib/bashlib-echo.sh
 source "${BASHLIB_LIBRARY_PATH:-}${BASHLIB_LIBRARY_PATH:+/}bashlib-echo.sh"
 
-eval "$(source ans-x-env.sh)"
-
+ENV=$(source ans-x-env.sh)
+if ! eval "$ENV"; then
+  echo::err "Error on env"
+  echo::echo "$ENV"
+  exit 1
+fi
 
 declare -a ENVS=("run" "--rm")
+
 
 if [ "$1" == "bash" ]; then
   # The input device is not a TTY. If you are using mintty, try prefixing the command with 'winpty'
@@ -17,15 +22,10 @@ if [ "$1" == "bash" ]; then
   ENVS+=("-it")
 fi
 
-# ENVS+=("--entrypoint" "/ansible/bin/entrypoint.sh")
-
 
 # Mounting the current directory or the home if set
 ENVS+=("--volume" "$ANS_X_PROJECT_DIR:$ANS_X_DOCKER_IMAGE_PWD")
 
-# User
-#ANSIBLE_USER="ansible"
-#ENVS+=("--user" "$ANSIBLE_USER")
 
 # Mounting SSH
 echo::info "Mounting SSH"
@@ -34,20 +34,8 @@ if [[ $(uname -a) =~ "CYGWIN" ]]; then
   SSH_DOCKER_FORMAT="$HOMEPATH/.ssh"
   SSH_DOCKER_FORMAT=$(cygpath -aw "$SSH_DOCKER_FORMAT" | tr 'C:' '/c' | tr '\\' '/')
 fi
-ENVS+=("--volume" "$SSH_DOCKER_FORMAT:/root/.ssh")
+ENVS+=("--volume" "$SSH_DOCKER_FORMAT:/home/$ANS_X_DOCKER_USER/.ssh")
 
-# Setting the ANSIBLE_CONFIG value to avoid
-# https://docs.ansible.com/ansible/devel/reference_appendices/config.html#cfg-in-world-writable-dir
-# We get a warning so.
-ANSIBLE_CONFIG=${ANSIBLE_CONFIG:-ansible.cfg}
-ENVS+=("--env" "ANSIBLE_CONFIG=$ANSIBLE_CONFIG")
-
-# Home
-ANSIBLE_HOME=${ANSIBLE_HOME:-$ANS_X_DOCKER_IMAGE_PWD}
-ENVS+=("--env" "ANSIBLE_HOME=$ANSIBLE_HOME")
-# DEFAULT_LOCAL_TMP depends of ansible home
-# https://docs.ansible.com/ansible/latest/reference_appendices/config.html#default-local-tmp
-ENVS+=("--env" "ANSIBLE_LOCAL_TEMP=/tmp")
 
 # SSH
 echo::info "Env (SSH Key Passphrase)"
@@ -57,46 +45,35 @@ if ! SSH_KEYS=$(printenv | grep -P "^$SSH_PREFIX"); then
 fi
 for var in $SSH_KEYS; do
   varName=$(echo "$var" | grep -oP "^${SSH_PREFIX}[^=]+")
-  echo::debug "The SSH variable ($varName) was passed to docker" > /dev/stderr
   ENVS+=("--env" "$var")
 done
-echo
 
-echo::info "Env (Script)"
-echo::info "DOCKER_ANSIBLE_VERSION : $ANS_X_ANSIBLE_VERSION"
-echo::info ""
-echo::info "Env (Inside Docker)"
-echo::info "ANSIBLE_CONFIG : $ANS_X_DOCKER_IMAGE_PWD/$ANSIBLE_CONFIG"
-echo::info "ANSIBLE_HOME   : $ANS_X_DOCKER_IMAGE_PWD/$ANSIBLE_HOME"
-echo::info ""
 
-# Azure
-AZURE_CLIENT_ID=${AZURE_CLIENT_ID:-}
-if [ "$AZURE_CLIENT_ID" != "" ]; then
-    ENVS+=("--env" "AZURE_CLIENT_ID=$AZURE_CLIENT_ID")
-fi
-AZURE_SECRET=${AZURE_SECRET:-}
-if [ "$AZURE_SECRET" != "" ]; then
-    ENVS+=("--env" "AZURE_SECRET=$AZURE_SECRET")
-fi
-AZURE_SUBSCRIPTION_ID=${AZURE_SUBSCRIPTION_ID:-}
-if [ -n "$AZURE_SUBSCRIPTION_ID" ]; then
-    ENVS+=("--env" "AZURE_SUBSCRIPTION_ID=$AZURE_SUBSCRIPTION_ID")
-fi
-AZURE_TENANT=${AZURE_TENANT:-}
-if [ "$AZURE_TENANT" != "" ]; then
-    ENVS+=("--env" "AZURE_TENANT=$AZURE_TENANT")
-fi
+# Hostname
+# (Point are not welcome, so we transform it with a underscore
+ENVS+=("-h" "ansible-${ANS_X_ANSIBLE_VERSION//./_}")
 
-# Hcloud
-# https://docs.ansible.com/ansible/latest/collections/hetzner/hcloud/docsite/guides.html
-HCLOUD_TOKEN=${HCLOUD_TOKEN:-}
-if [ "$HCLOUD_TOKEN" != "" ]; then
-    ENVS+=("--env" "HCLOUD_TOKEN=$HCLOUD_TOKEN")
+# We copy the ANSIBLE env
+# https://docs.ansible.com/ansible/latest/reference_appendices/config.html
+if ! ANSIBLE_ENVS=$(printenv | grep -P "$ANS_X_DOCKER_ENVS"); then
+  ANSIBLE_ENVS="";
+fi
+for ANSIBLE_ENV in $ANSIBLE_ENVS; do
+  ENVS+=("--env" "$ANSIBLE_ENV")
+done
+# Setting the ANSIBLE_CONFIG value to avoid
+# https://docs.ansible.com/ansible/devel/reference_appendices/config.html#cfg-in-world-writable-dir
+# We get a warning so.
+# ANSIBLE_CONFIG=${ANSIBLE_CONFIG:-ansible.cfg}
+# ENVS+=("--env" "ANSIBLE_CONFIG=$ANSIBLE_CONFIG")
+
+# DEFAULT_LOCAL_TMP depends of ansible home
+# https://docs.ansible.com/ansible/latest/reference_appendices/config.html#default-local-tmp
+if [ "${ANSIBLE_LOCAL_TEMP:-}" = "" ]; then
+  ENVS+=("--env" "ANSIBLE_LOCAL_TEMP=/tmp")
 fi
 
 
-# Run Docker command
 
 # Secret Options:
 # use this file to authenticate the connection
@@ -111,9 +88,17 @@ fi
 # Works
 # echo "secret" > /dev/shm/foo
 # docker run --rm -it -v /dev/shm/foo:/tmp/foo  ubuntu bash -c "cat /tmp/foo"
-pass ansible/vault-password >| /dev/shm/vault-password
+PASS_FILE="${PASSWORD_STORE_DIR:-"$HOME~/.password-store"}/$ANS_X_VAULT_ID_PASS.gpg"
+if [ -f "$PASS_FILE" ]; then
+  PASS_DOCKER_PATH=/tmp/vault-password
+  PASS_LOCAL_PATH=/dev/shm/vault-password
+  pass $ANS_X_VAULT_ID_PASS >| $PASS_LOCAL_PATH
+  # env for --vault-id
+  ENVS+=("--env" "ANSIBLE_VAULT_PASSWORD_FILE=$PASS_DOCKER_PATH")
+  ENVS+=("-v" "$PASS_LOCAL_PATH:$PASS_DOCKER_PATH")
+fi
+
 
 command::echo_eval "docker ${ENVS[*]} \
-  -v /dev/shm/foo:/tmp/vault-password \
   $ANS_X_DOCKER_REGISTRY/gerardnico/ansible:$ANS_X_ANSIBLE_VERSION \
   $*"
