@@ -28,16 +28,21 @@ ENVS+=("--volume" "$ANS_X_PROJECT_DIR:$ANS_X_DOCKER_IMAGE_PWD")
 
 
 # Mounting SSH
-echo::info "Mounting SSH"
-SSH_DOCKER_FORMAT="$HOME/.ssh"
-if [[ $(uname -a) =~ "CYGWIN" ]]; then
-  SSH_DOCKER_FORMAT="$HOMEPATH/.ssh"
-  SSH_DOCKER_FORMAT=$(cygpath -aw "$SSH_DOCKER_FORMAT" | tr 'C:' '/c' | tr '\\' '/')
+# https://docs.ansible.com/ansible/devel/reference_appendices/config.html#default-private-key-file
+SSH_VAR_PREFIX='ANS_X_SSH_KEY_PASSPHRASE_'
+if grep -oP "$SSH_VAR_PREFIX|DEFAULT_PRIVATE_KEY_FILE|ANSIBLE_PRIVATE_KEY_FILE"); then
+  echo::info "Mounting SSH"
+  SSH_DOCKER_FORMAT="$HOME/.ssh"
+  if [[ $(uname -a) =~ "CYGWIN" ]]; then
+    SSH_DOCKER_FORMAT="$HOMEPATH/.ssh"
+    SSH_DOCKER_FORMAT=$(cygpath -aw "$SSH_DOCKER_FORMAT" | tr 'C:' '/c' | tr '\\' '/')
+  fi
+  ENVS+=("--volume" "$SSH_DOCKER_FORMAT:/home/$ANS_X_DOCKER_USER/.ssh")
 fi
-ENVS+=("--volume" "$SSH_DOCKER_FORMAT:/home/$ANS_X_DOCKER_USER/.ssh")
 
-
-# SSH
+################
+# SSH Connection
+################
 echo::info "Env (SSH Key Passphrase)"
 SSH_PREFIX="ANSIBLE_SSH_KEY_PASSPHRASE_"
 if ! SSH_KEYS=$(printenv | grep -P "^$SSH_PREFIX"); then
@@ -47,6 +52,15 @@ for var in $SSH_KEYS; do
   varName=$(echo "$var" | grep -oP "^${SSH_PREFIX}[^=]+")
   ENVS+=("--env" "$var")
 done
+
+# Password file
+if [ $ANSIBLE_CONNECTION_PASSWORD_FILE != "" ]; then
+  ENVS+=("-v" "$ANSIBLE_CONNECTION_PASSWORD_FILE:$ANSIBLE_CONNECTION_PASSWORD_FILE")
+fi
+# Password become file
+if [ $ANSIBLE_BECOME_PASSWORD_FILE != "" ]; then
+  ENVS+=("-v" "$ANSIBLE_BECOME_PASSWORD_FILE:$ANSIBLE_BECOME_PASSWORD_FILE")
+fi
 
 
 # Hostname
@@ -73,8 +87,40 @@ if [ "${ANSIBLE_LOCAL_TEMP:-}" = "" ]; then
   ENVS+=("--env" "ANSIBLE_LOCAL_TEMP=/tmp")
 fi
 
+# ANSIBLE_CONNECTION_PASSWORD_FILE
+# https://docs.ansible.com/ansible/devel/reference_appendices/config.html#envvar-ANSIBLE_CONNECTION_PASSWORD_FILE
+if [ ${ANS_X_PASSWORD_PASS:-} != "" ]; then
+  PASSWORD_PASS_FILE="${PASSWORD_STORE_DIR:-"$HOME~/.password-store"}/$ANS_X_PASSWORD_PASS.gpg"
+  if [ ! -f "$PASSWORD_PASS_FILE" ]; then
+    echo::err "The pass ${ANS_X_PASSWORD_PASS} of the env ANS_X_PASSWORD_PASS does not exist"
+    exit 1
+  fi
 
+  PASS_DOCKER_PATH=/tmp/user-password
+  PASS_LOCAL_PATH=/dev/shm/user-password
+  pass $ANS_X_PASSWORD_PASS >| $PASS_LOCAL_PATH
 
+  ENVS+=("--env" "ANSIBLE_CONNECTION_PASSWORD_FILE=$PASS_DOCKER_PATH")
+  ENVS+=("-v" "$PASS_LOCAL_PATH:$PASS_DOCKER_PATH")
+fi
+
+# ANSIBLE_BECOME_PASSWORD_FILE
+# https://docs.ansible.com/ansible/devel/reference_appendices/config.html#envvar-ANSIBLE_BECOME_PASSWORD_FILE
+if [ ${ANS_X_BECOME_PASSWORD_PASS:-} != "" ]; then
+  BECOME_PASSWORD_PASS_FILE="${PASSWORD_STORE_DIR:-"$HOME~/.password-store"}/$ANS_X_BECOME_PASSWORD_PASS.gpg"
+  if [ ! -f "$BECOME_PASSWORD_PASS_FILE" ]; then
+    echo::err "The pass ${ANS_X_BECOME_PASSWORD_PASS} of the env ANS_X_BECOME_PASSWORD_PASS does not exist at $BECOME_PASSWORD_PASS_FILE"
+    exit 1
+  fi
+
+  PASS_DOCKER_PATH=/tmp/become-user-password
+  PASS_LOCAL_PATH=/dev/shm/become-user-password
+  pass $ANS_X_BECOME_PASSWORD_PASS >| $PASS_LOCAL_PATH
+
+  ENVS+=("--env" "ANSIBLE_BECOME_PASSWORD_FILE=$PASS_DOCKER_PATH")
+  ENVS+=("-v" "$PASS_LOCAL_PATH:$PASS_DOCKER_PATH")
+
+fi
 
 # ANSIBLE_VAULT_PASSWORD_FILE
 # https://docs.ansible.com/ansible/devel/reference_appendices/config.html#envvar-ANSIBLE_VAULT_PASSWORD_FILE
