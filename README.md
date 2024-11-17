@@ -4,7 +4,7 @@
 
 With this directory, you can run `Ansible` from any OS.
 
-## Two mode of execution
+## Two mode of executions
 
 ### Via the docker image
 
@@ -34,19 +34,20 @@ ansible --version
 
 ## Features
 
+### Scripts Features
+
+* [Handle SSH protected keys](docs/ans-x-ssh.md)
+* [Project Directory: Run your command from any current directory](#define-a-project-location-so-that-the-commands-can-be-run-from-anywhere)
+* [Scripts works on Windows/Linux/iOS](#ansible-scripts)
+* Support [pass](https://www.passwordstore.org/) as password manager to pass a [vault password](#encryptdecrypt) or an [ssh private key/password](docs/ans-x-ssh.md)
+
 ### Docker
 
 * [All collections preinstalled](docs/ans-x-docker#collection)
 * [Kubernetes Ready](docs/ans-x-docker#kubernetes)
 
-### Scripts Features
-
-* [Handle SSH protected keys](docs/ans-x-ssh.md)
-* [Project Directory: Run your command from any current directory](#define-the-ansible_local_home-env-project-location-so-that-the-commands-can-be-run-from-anywhere)
-* [Scripts works on Windows/Linux/iOS](#ansible-scripts)
 
 ## Installation
-
 
 ### Manually
 
@@ -68,21 +69,6 @@ export PATH=~/ansible/bin
 ansible-playbook --version
 ```
 
-
-## How to
-
-### Define the ANS_X_PROJECT_DIR env project location so that the commands can be run from anywhere
-
-If you work in a project and don't want to `cd` into it every time to run
-the ansible command, you can set the env variable `ANS_X_PROJECT_DIR` to the path
-of you ansible project.
-
-This directory will then be mounted and used instead of the current working directory.
-
-
-### Work with a client encrypted SSH Private Key
-
-See [How to define SSH keys](docs/ans-x-ssh.md)
 
 ## Script list
 
@@ -127,6 +113,19 @@ These scripts are utility scripts
 
 ## How to
 
+### Define a project location so that the commands can be run from anywhere
+
+If you work in a project and don't want to `cd` into it every time to run
+the ansible command, you can set the env variable `ANS_X_PROJECT_DIR` to the path
+of you ansible project.
+
+This directory will then be mounted and used instead of the current working directory.
+
+Example:
+```bash
+export ANS_X_PROJECT_DIR=$HOME/my-ansible-project
+```
+
 ### Encrypt/Decrypt
 
 To be able to encrypt and decrypt, you need to set first a `passphrase` known as a `vault-it` in Ansible
@@ -146,9 +145,9 @@ You can then:
 * Encrypt: see [ans-x-encrypt](docs/bin/ans-x-encrypt.md)
 * Decrypt: see [ans-x-decrypt](docs/bin/ans-x-decrypt.md)
 
-### Connect with SSH
+### Connect with SSH 
 
-See [ans-x-ssh](docs/ans-x-ssh.md)
+See [How to define SSH keys or password](docs/ans-x-ssh.md)
 
 ## Support
 
