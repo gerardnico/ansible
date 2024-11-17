@@ -1,4 +1,4 @@
-# How to pass private key to Ansible X script?
+# How to connect with SSH?
 
 ## About
 
@@ -9,30 +9,37 @@ You can then add the key:
 * manually
 * or automatically via the setting of environment variables.
 
-## Debug
+## Private Key Authentication: How to pass a private Key
 
-### Try with SSH
+### Private key stored in Pass
 
+We support passing a private key stored in the [pass secret manager](https://www.passwordstore.org/)
+
+You need to set the variable `ANS_X_SSH_KEY_PASS` to the location of your private key
+
+Example:
 ```bash
-ans-x-bash
-```
-```bash
-ssh -i $ANSIBLE_PRIVATE_KEY_FILE user@host
+export ANS_X_SSH_KEY_PASS=ansible/ssh-key
 ```
 
+When this variable is set, the ansible environment variable [ANSIBLE_PRIVATE_KEY_FILE](https://docs.ansible.com/ansible/devel/reference_appendices/config.html#envvar-ANSIBLE_PRIVATE_KEY_FILE)
+is set
 
-## Add manually a private key
+
+
+### Add manually a private key
 
 Manually, you would:
 
-* call the [ansible-bash.cmd](bin/ansible-bash.cmd) script,
+* call the [ans-x-bash](bin/ans-x-bash.md) script,
 * add your keys with `ssh-add`
 * and call all ansible cli from this session.
 
 Example:
 
-```dos 
-ansible-bash
+* Get a shell in Ansible docker with [ans-x-bash](bin/ans-x-bash.md)
+```bash
+ans-x-bash
 ```
 
 ```
@@ -78,4 +85,18 @@ For instance, you want to add the encrypted private key called `id_rsa`
 ansible xxxxx
 ansible-bash xxxxx
 ansible-playbook xxxxx
+```
+
+
+## Debug
+
+### How to debug your private key 
+
+* Get a shell in Ansible docker with [ans-x-bash](bin/ans-x-bash.md) 
+```bash
+ans-x-bash
+```
+* Try to connect to your host with your key and some verbosity. 
+```bash
+ssh -i $ANSIBLE_PRIVATE_KEY_FILE -vvv user@host
 ```
