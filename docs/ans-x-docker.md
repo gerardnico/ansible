@@ -2,7 +2,7 @@
 
 ## About
 
-[Ans-x scripts](../README.md#ans-x-scripts) uses a Docker image to run Ansible.
+[Ans-x scripts](../README.md#ans-x-scripts) use a Docker image to run Ansible.
 
 
 ## Which Ansible Image is used
@@ -11,6 +11,7 @@
 
 By default, [Ans-x scripts](../README.md#ans-x-scripts) run the [Ans-x Docker Image](https://github.com/gerardnico/ansible/pkgs/container/ansible)
 
+The actual version is `2.9`.
 
 ```bash
 # get bash (same as ans-x-bash)
@@ -40,8 +41,6 @@ export ANS_X_DOCKER_TAG=2.17-alpine-3.16
 export ANS_X_DOCKER_REGISTRY=docker.io # the image registry
 ```
 
-
-
 ## How to pass environment variables to ansible 
 
 We don't copy all envs to Docker to avoid secret leakage.
@@ -57,7 +56,13 @@ If you want to add an env (for a plugin), you need to adjust this env.
 
 We allow [HCLOUD for Hetzner](https://docs.ansible.com/ansible/latest/collections/hetzner/hcloud/docsite/guides.html)
 
-Note that if you want to give a qualified path as value, the working directory on [ans-x image](#ans-x-image) is:
+## Qualified Path as env value
+
+You should give a relatif path:
+* from your current directory.
+* of from your [project directory](../README.md#how-to-define-a-project-location-so-that-the-commands-can-be-run-from-anywhere)
+
+If you *really* want to give a qualified path as value, the working directory of the [ans-x image](ans-x-docker-image.md) is:
 * `/home/al` from 2.9
 * `/ansible/playbooks` before 2.9
 

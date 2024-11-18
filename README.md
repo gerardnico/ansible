@@ -8,7 +8,9 @@ With `Ans-x`, you can run Ansible from anywhere (Windows WSL, Linux, Mac) with y
 * [Handle SSH protected keys and password](docs/ans-x-ssh.md)
 * [Project Directory: Run your command from any current directory](#how-to-define-a-project-location-so-that-the-commands-can-be-run-from-anywhere)
 * [Scripts works on Windows/Linux/iOS](#ansible-scripts)
-* Support [pass](https://www.passwordstore.org/) as password manager to pass a [vault password](#how-to-encryptdecrypt-with-vault) or an [ssh private key/password](docs/ans-x-ssh.md)
+* Support [pass](https://www.passwordstore.org/) as password manager to pass:
+  * a [vault password](#how-to-encryptdecrypt-with-vault) 
+  * an [ssh private key/password](docs/ans-x-ssh.md)
 
 ## Example
 
