@@ -51,7 +51,7 @@ ansible --version
 
 ### HomeBrew
 
-With [Homebrew](https://brew.sh/)
+With [Homebrew](https://brew.sh/), you can install on Linux, Windows WSL or Mac
 
 ```bash
 brew install --HEAD gerardnico/tap/ansx
