@@ -68,7 +68,7 @@ RUN echo "==> Installing Kubectl" && \
 # This labels are used by Github
 ####################################
 # * connect the repo
-LABEL org.opencontainers.image.source="https://github.com/gerardnico/ansible"
+LABEL org.opencontainers.image.source="https://github.com/gerardnico/ansible-x"
 # * set a description
 LABEL org.opencontainers.image.description="Ansible X - Ansible Easy Execution"
 

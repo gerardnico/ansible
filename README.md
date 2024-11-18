@@ -49,22 +49,37 @@ ansible --version
 
 ## Installation
 
+### HomeBrew
+
+With [Homebrew](https://brew.sh/)
+
+```bash
+brew install --HEAD gerardnico/tap/ansx
+```
+
 ### Manually
 
 * Clone the [gerardnico/ansible](https://github.com/gerardnico/ansible) repository to install the [scripts](#script-list)
 ```bash
 cd ~/code
-git clone https://github.com/gerardnico/ansible.git
+git clone https://github.com/gerardnico/ansible-x.git
 ```
-* On Linux, give them execution permissions
+* Give them execution permissions and add the bin directory to your `PATH` environment variable to be able to call the [Ansible script](#ansible-scripts) from anywhere
 ```bash
-chmod +x bin/*
+chmod +x ~/code/ansible/bin/*
+export PATH=~/code/ansible/bin:$PATH
 ```
-* Add this directory to your `PATH` environment variable to be able to call the [Ansible script](#ansible-scripts) from anywhere
+* Clone the [gerardnico/bashlib](https://github.com/gerardnico/ansible) repository to install the library
 ```bash
-export PATH=~/ansible/bin
+cd ~/code
+git clone https://github.com/gerardnico/bashlib.git
 ```
-* Run any [Ansible script](#script-list)
+* Give the executable permission and add the library and bin directory to your `PATH` environment variable
+```bash
+chmod +x ~/code/bashlib/bin/*
+export PATH=~/code/bashlib/lib:~/code/bashlib/bin:$PATH
+```
+* Run any [Ansible script](#script-list) such as [ansible-playbook](docs/bin/ansible-playbook.md)
 ```bash
 ansible-playbook --version
 ```
