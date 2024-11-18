@@ -137,7 +137,7 @@ fi
 if [ "${ANSIBLE_VAULT_PASSWORD_FILE:-}" != '' ]; then
   ENVS+=("-v" "$ANSIBLE_VAULT_PASSWORD_FILE:$ANSIBLE_VAULT_PASSWORD_FILE")
 else
-  if [ ${ANS_X_VAULT_ID_PASS:-} != "" ]; then
+  if [ "${ANS_X_VAULT_ID_PASS:-}" != "" ]; then
     VAULT_ID_PASS_FILE="${PASSWORD_STORE_DIR:-"$HOME~/.password-store"}/$ANS_X_VAULT_ID_PASS.gpg"
     if [ ! -f "$VAULT_ID_PASS_FILE" ]; then
       echo::err "The pass ${ANS_X_VAULT_ID_PASS} of the env ANS_X_VAULT_ID_PASS does not exist"
@@ -158,7 +158,7 @@ fi
 if [ "${ANSIBLE_PRIVATE_KEY_FILE:-}" != '' ]; then
   ENVS+=("-v" "$ANSIBLE_PRIVATE_KEY_FILE:$ANSIBLE_PRIVATE_KEY_FILE")
 else
-  if [ ${ANS_X_SSH_KEY_PASS:-} != "" ]; then
+  if [ "${ANS_X_SSH_KEY_PASS:-}" != "" ]; then
     PRIVATE_KEY_PASS_FILE="${PASSWORD_STORE_DIR:-"$HOME~/.password-store"}/$ANS_X_SSH_KEY_PASS.gpg"
     if [ ! -f "$PRIVATE_KEY_PASS_FILE" ]; then
       echo::err "The pass ${ANS_X_SSH_KEY_PASS} of the env ANS_X_SSH_KEY_PASS does not exist ($PRIVATE_KEY_PASS_FILE)"
