@@ -1,51 +1,113 @@
-# Ansible X - Easy Ansible Execution on Windows, Linux and Mac
+# Ansible X - Easy Ansible Execution (Windows, Linux, Mac, Docker) 
 
 ## About
+With `Ans-x`, you can run Ansible from anywhere (Windows WSL, Linux, Mac) with your secrets privately stored (no env, no unprotected private key).
 
-With this directory, you can run `Ansible` from any OS.
+`Ans-x` is a [collection of Ansible scripts](#ans-x-scripts) with the following features:
 
-## Two mode of executions
+* [Handle SSH protected keys and password](docs/ans-x-ssh.md)
+* [Project Directory: Run your command from any current directory](#how-to-define-a-project-location-so-that-the-commands-can-be-run-from-anywhere)
+* [Scripts works on Windows/Linux/iOS](#ansible-scripts)
+* Support [pass](https://www.passwordstore.org/) as password manager to pass a [vault password](#how-to-encryptdecrypt-with-vault) or an [ssh private key/password](docs/ans-x-ssh.md)
 
-### Via the docker image
+## Example
 
-With [Ansible Docker Image gerardnico/ansible:xxx](docs/ans-x-docker.md)
-
-* you can execute an ansible command
-```bash
-docker run --rm ghcr.io/gerardnico/ansible:2.9 YOUR ANSIBLE COMMAND
-# example
-docker run --rm ghcr.io/gerardnico/ansible:2.9 ansible --version
-```
-* or you can get bash shell
-```bash
-docker run --rm -it ghcr.io/gerardnico/ansible:2.9 bash
-# and execute the ansible command from the shell
-ansible
-```
-
-### Via the companion scripts
-
-With the [companion scripts](#script-list), you can call the ansible cli directly. 
+After [installation](#installation), you can execute any [ansible and ans-x scripts](#ans-x-scripts)
 
 Example:
 ```bash
+cd yourAnsibleProject
 ansible --version
+ansible-playbook your/path/to/your/playbook
 ```
 
-## Features
 
-### Scripts Features
+## Ans-X Scripts
 
-* [Handle SSH protected keys](docs/ans-x-ssh.md)
-* [Project Directory: Run your command from any current directory](#define-a-project-location-so-that-the-commands-can-be-run-from-anywhere)
-* [Scripts works on Windows/Linux/iOS](#ansible-scripts)
-* Support [pass](https://www.passwordstore.org/) as password manager to pass a [vault password](#encryptdecrypt) or an [ssh private key/password](docs/ans-x-ssh.md)
+All scripts are available in:
 
-### Docker
+* POSIX (WSL / Cygwin / Mac) written for `bash`
+* Windows written for `Dos` (Deprecated, on windows, we recommend WSL)
 
-* [All collections preinstalled](docs/ans-x-docker#collection)
-* [Kubernetes Ready](docs/ans-x-docker#kubernetes)
+They are wrapper scripts that:
+* lives in your laptop
+* call the [Ansible Command line clients](https://docs.ansible.com/ansible/latest/command_guide/command_line_tools.html) in the [Docker container](#how-to-define-the-ansible-docker-image)
 
+
+### Ansible Scripts
+
+These scripts are the counterpart of the [Ansible Command line clients](https://docs.ansible.com/ansible/latest/command_guide/command_line_tools.html).
+
+
+| Bash (Linux / Windows WSL or Cygwin)                         | Dos (Windows)                                                    | Description                                                                                                                  |
+|--------------------------------------------------------------|------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------|
+| [ansible](docs/bin-generated/ansible.md)                     | [ansible.cmd](docs/bin-generated/ansible.md)                     | The `ansible` cli runs a single task against a set of hosts                                                                  |
+| [ansible-config](docs/bin-generated/ansible-config.md)       | [ansible-config.cmd](docs/bin-generated/ansible-config.md)       | The `ansible-config` cli shows ansible configuration                                                                         |
+| [ansible-galaxy](docs/bin-generated/ansible-galaxy.md)       | [ansible-galaxy.cmd](docs/bin-generated/ansible-galaxy.md)       | The `ansible-galaxy` cli execute role and Collection related operations                                                      |
+| [ansible-inventory](docs/bin-generated/ansible-inventory.md) | [ansible-inventory.cmd](docs/bin-generated/ansible-inventory.md) | The `ansible-inventory` cli  show Ansible inventory information                                                              |
+| [ansible-playbook](docs/bin-generated/ansible-playbook.md)   | [ansible-playbook.cmd](docs/bin-generated/ansible-inventory.md)  | The `ansible-playbook` cli runs Ansible playbooks                                                                            |
+| [ansible-pull.cmd](docs/bin-generated/ansible-inventory.md)  | [ansible-pull.cmd](docs/bin-generated/ansible-inventory.md)      | The `ansible-pull` pulls and run playbooks from a VCS repo |
+| [ansible-vault](bin/ansible-vault)                           | [ansible-vault.cmd](bin/ansible-vault.cmd)                       | The [ansible-vault cli](https://docs.ansible.com/ansible/latest/user_guide/vault.html)                                       | 
+| [azure_rm](docs/bin-generated/azure_rm.md) | [azure_rm.cmd](docs/bin-generated/azure_rm.md)                   | The Azure Inventory script `azure_rm.py` |
+
+### Ans-X Extra Scripts
+
+These scripts are utility scripts 
+
+| Bash (Linux / Windows WSL or Cygwin) | Dos (Windows)                        | Description                                                                                                                      |
+|--------------------------------------|--------------------------------------|----------------------------------------------------------------------------------------------------------------------------------|
+| [ans-x-bash](bin/ans-x-bash)        | [ans-x-bash.cmd](bin/ans-x-bash.cmd) | Get a bash shell inside the container where all Ansible cli can be started                                                       |
+| [ans-x-encrypt](bin/ans-x-encrypt)   | [ans-x-encrypt](bin/ans-x-encrypt)   | An `ansible-vault encrypt_string` utility cli                                                                                    |
+
+
+
+## How to
+
+### How to define a project location so that the commands can be run from anywhere
+
+If you work in a project and don't want to `cd` into it every time to run
+the ansible command, you can set the env variable `ANS_X_PROJECT_DIR` to the path
+of you ansible project.
+
+This directory will then be mounted and used instead of the current working directory.
+
+Example:
+```bash
+export ANS_X_PROJECT_DIR=$HOME/my-ansible-project
+```
+
+### How to define the Ansible Docker Image?
+
+By default, [ans-x scripts](#ans-x-scripts) executes the [ans-x docker image](docs/ans-x-docker-image.md).
+
+This image has the following features:
+* [All collections preinstalled](docs/ans-x-docker-image.md#collection)
+* [Kubernetes Ready](docs/ans-x-docker-image.md#kubernetes)
+
+You can define [another Ansible Image](docs/ans-x-docker.md#how-to-run-another-image)
+
+### How to encrypt/decrypt with Vault
+
+To be able to encrypt and decrypt, you need to set first a `passphrase` known as a `vault-it` in Ansible
+
+You can do:
+* from the [pass secret manager](https://www.passwordstore.org/)
+```bash
+# if you get your vault password with
+pass ansible/vault-id
+# you need to set ANS_X_VAULT_ID_PASS to
+export ANS_X_VAULT_ID_PASS=ansible/vault-id
+```
+`Ans-x` will then create the [ANSIBLE_VAULT_PASSWORD_FILE](https://docs.ansible.com/ansible/devel/reference_appendices/config.html#envvar-ANSIBLE_VAULT_PASSWORD_FILE)
+Otherwise, you can create it manually.
+
+You can then:
+* Encrypt: see [ans-x-encrypt](docs/bin/ans-x-encrypt.md)
+* Decrypt: see [ans-x-decrypt](docs/bin/ans-x-decrypt.md)
+
+### How to connect with SSH 
+
+See [How to define SSH keys or password](docs/ans-x-ssh.md)
 
 ## Installation
 
@@ -59,7 +121,7 @@ brew install --HEAD gerardnico/tap/ansx
 
 ### Manually
 
-* Clone the [gerardnico/ansible](https://github.com/gerardnico/ansible) repository to install the [scripts](#script-list)
+* Clone the [gerardnico/ansible](https://github.com/gerardnico/ansible) repository to install the [scripts](#ans-x-scripts)
 ```bash
 cd ~/code
 git clone https://github.com/gerardnico/ansible-x.git
@@ -79,90 +141,10 @@ git clone https://github.com/gerardnico/bashlib.git
 chmod +x ~/code/bashlib/bin/*
 export PATH=~/code/bashlib/lib:~/code/bashlib/bin:$PATH
 ```
-* Run any [Ansible script](#script-list) such as [ansible-playbook](docs/bin/ansible-playbook.md)
+* Run any [Ansible script](#ans-x-scripts) such as [ansible-playbook](docs/bin/ansible-playbook.md)
 ```bash
 ansible-playbook --version
 ```
-
-
-## Script list
-
-All scripts are available in:
-
-* POSIX (WSL / Cygwin / Mac) written for `bash`
-* Windows written for `Dos` (We recommend to use WSL on windows)
-
-They are wrapper scripts that:
-* lives in your laptop
-* call the [Ansible Command line clients](https://docs.ansible.com/ansible/latest/command_guide/command_line_tools.html) in the Docker container
-* have [extra features](#scripts-features) such as:
-  * login
-  * and project home.
-
-### Ansible Scripts
-
-These scripts are the counterpart of the [Ansible Command line clients](https://docs.ansible.com/ansible/latest/command_guide/command_line_tools.html).
-
-
-| Bash (Linux / Windows WSL or Cygwin)                         | Dos (Windows)                                                    | Description                                                                                                                  |
-|--------------------------------------------------------------|------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------|
-| [ansible](docs/bin-generated/ansible.md)                     | [ansible.cmd](docs/bin-generated/ansible.md)                     | The `ansible` cli runs a single task against a set of hosts                                                                  |
-| [ansible-config](docs/bin-generated/ansible-config.md)       | [ansible-config.cmd](docs/bin-generated/ansible-config.md)       | The `ansible-config` cli shows ansible configuration                                                                         |
-| [ansible-galaxy](docs/bin-generated/ansible-galaxy.md)       | [ansible-galaxy.cmd](docs/bin-generated/ansible-galaxy.md)       | The `ansible-galaxy` cli execute role and Collection related operations                                                      |
-| [ansible-inventory](docs/bin-generated/ansible-inventory.md) | [ansible-inventory.cmd](docs/bin-generated/ansible-inventory.md) | The `ansible-inventory` cli  show Ansible inventory information                                                              |
-| [ansible-playbook](docs/bin-generated/ansible-playbook.md)   | [ansible-playbook.cmd](docs/bin-generated/ansible-inventory.md)  | The `ansible-playbook` cli runs Ansible playbooks                                                                            |
-| [ansible-pull.cmd](docs/bin-generated/ansible-inventory.md)  | [ansible-pull.cmd](docs/bin-generated/ansible-inventory.md)      | The `ansible-pull` pulls and run playbooks from a VCS repo |
-| [ansible-vault](bin/ansible-vault)                           | [ansible-vault.cmd](bin/ansible-vault.cmd)                       | The [ansible-vault cli](https://docs.ansible.com/ansible/latest/user_guide/vault.html)                                       | 
-| [azure_rm](docs/bin-generated/azure_rm.md) | [azure_rm.cmd](docs/bin-generated/azure_rm.md)                   | The Azure Inventory script `azure_rm.py` |
-
-### Ans-X Scripts
-
-These scripts are utility scripts 
-
-| Bash (Linux / Windows WSL or Cygwin) | Dos (Windows)                        | Description                                                                                                                      |
-|--------------------------------------|--------------------------------------|----------------------------------------------------------------------------------------------------------------------------------|
-| [ans-x-bash](bin/ans-x-bash)        | [ans-x-bash.cmd](bin/ans-x-bash.cmd) | Get a bash shell inside the container where all Ansible cli can be started                                                       |
-| [ans-x-encrypt](bin/ans-x-encrypt)   | [ans-x-encrypt](bin/ans-x-encrypt)   | An `ansible-vault encrypt_string` utility cli                                                                                    |
-
-
-
-## How to
-
-### Define a project location so that the commands can be run from anywhere
-
-If you work in a project and don't want to `cd` into it every time to run
-the ansible command, you can set the env variable `ANS_X_PROJECT_DIR` to the path
-of you ansible project.
-
-This directory will then be mounted and used instead of the current working directory.
-
-Example:
-```bash
-export ANS_X_PROJECT_DIR=$HOME/my-ansible-project
-```
-
-### Encrypt/Decrypt
-
-To be able to encrypt and decrypt, you need to set first a `passphrase` known as a `vault-it` in Ansible
-
-You can do:
-* from the [pass secret manager](https://www.passwordstore.org/)
-```bash
-# if you get your vault password with
-pass ansible/vault-id
-# you need to set ANS_X_VAULT_ID_PASS to
-export ANS_X_VAULT_ID_PASS=ansible/vault-id
-```
-`Ans-x` will then create the [ANSIBLE_VAULT_PASSWORD_FILE](https://docs.ansible.com/ansible/devel/reference_appendices/config.html#envvar-ANSIBLE_VAULT_PASSWORD_FILE)
-Otherwise, you can create it manually.
-
-You can then:
-* Encrypt: see [ans-x-encrypt](docs/bin/ans-x-encrypt.md)
-* Decrypt: see [ans-x-decrypt](docs/bin/ans-x-decrypt.md)
-
-### Connect with SSH 
-
-See [How to define SSH keys or password](docs/ans-x-ssh.md)
 
 ## Support
 

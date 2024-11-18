@@ -12,8 +12,8 @@ if exist %AZURE_CONF_FILE% (
    call %AZURE_CONF_FILE%
 )
 
-if "%ANS_X_ANSIBLE_VERSION%"=="" (
-    SET ANS_X_ANSIBLE_VERSION=2.9
+if "%ANS_X_DOCKER_TAG%"=="" (
+    SET ANS_X_DOCKER_TAG=2.9
 )
 
 if "%1" == "bash" (
@@ -34,7 +34,7 @@ if not defined ANSIBLE_CONFIG (SET ANSIBLE_CONFIG=ansible.cfg)
 if not defined ANSIBLE_HOME (SET ANSIBLE_HOME=%ANS_X_DOCKER_IMAGE_PWD%)
 
 echo Ansible Env Inside Docker:
-echo ANS_X_ANSIBLE_VERSION : %ANS_X_ANSIBLE_VERSION%
+echo ANS_X_DOCKER_TAG : %ANS_X_DOCKER_TAG%
 echo ANSIBLE_CONFIG : %ANS_X_DOCKER_IMAGE_PWD%/%ANSIBLE_CONFIG%
 echo ANSIBLE_HOME   : %ANS_X_DOCKER_IMAGE_PWD%/%ANSIBLE_HOME%
 echo
@@ -53,5 +53,5 @@ docker run ^
 	--env ANSIBLE_LOCAL_TEMP=/tmp ^
 	--user ansible ^
 	%ENTRY_POINT% ^
-	gerardnico/ansible:%ANS_X_ANSIBLE_VERSION% ^
+	gerardnico/ansible:%ANS_X_DOCKER_TAG% ^
 	%*

@@ -58,7 +58,7 @@ fi
 ######################
 echo::debug "Hostname"
 # (Point are not welcome, so we transform it with a underscore
-ENVS+=("-h" "ansible-${ANS_X_ANSIBLE_VERSION//./_}")
+ENVS+=("-h" "ansible-${ANS_X_DOCKER_TAG//./_}")
 
 ######################
 # Env
@@ -170,10 +170,42 @@ else
     # env for --private-key
     ENVS+=("--env" "ANSIBLE_PRIVATE_KEY_FILE=$PASS_DOCKER_PATH")
     ENVS+=("-v" "$PASS_LOCAL_PATH:$PASS_DOCKER_PATH")
+  else
+      # Loop through the ANS_X_SSH_KEY_PASSPHRASE environment variables
+      # and add the key to the agent
+      #
+      # Example:
+      # With the env `ANS_X_SSH_KEY_PASSPHRASE_MY_KEY` the script below will:
+      # * try to find a file at `~/.ssh/my_key`
+      # * add it with the value of `ANS_X_SSH_KEY_PASSPHRASE_MY_KEY` as passphrase
+      #
+      SSH_VAR_PREFIX='ANS_X_SSH_KEY_PASSPHRASE_'
+      if SSH_VARS=$(printenv | grep -oP "^$SSH_VAR_PREFIX\K[^=]+"); then
+        for var in $SSH_VARS
+        do
+          filename=$(echo "$var" | tr '[:upper:]' '[:lower:]')
+          fullVariableName="$SSH_VAR_PREFIX$var"
+          filePath=~/.ssh/"$filename"
+          echo::debug "The SSH env variable $fullVariableName was found"
+          if [ -f "$filePath" ]; then
+            PASS_DOCKER_PATH=/tmp/ssh-key
+            PASS_LOCAL_PATH=/dev/shm/ssh-key
+            PASSPHRASE=$(eval "echo \$$SSH_VAR_PREFIX$var")
+            ssh-keygen -p -P $PASSPHRASE -N "" -f $PASS_LOCAL_PATH
+            # env for --private-key
+            ENVS+=("--env" "ANSIBLE_PRIVATE_KEY_FILE=$PASS_DOCKER_PATH")
+            ENVS+=("-v" "$PASS_LOCAL_PATH:$PASS_DOCKER_PATH")
+          else
+            echo::debug "The env variable $fullVariableName designs a key file ($filePath) that does not exist" >&2
+            exit 1;
+          fi
+        done
+      fi
   fi
+
 fi
 
 
 command::echo_eval "docker ${ENVS[*]} \
-  $ANS_X_DOCKER_REGISTRY/gerardnico/ansible:$ANS_X_ANSIBLE_VERSION \
+  $ANS_X_DOCKER_REGISTRY/$ANS_X_DOCKER_NAMESPACE/$ANS_X_DOCKER_NAME:$ANS_X_DOCKER_TAG \
   $*"

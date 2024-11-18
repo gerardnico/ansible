@@ -91,11 +91,6 @@ ENV ANSIBLE_SSH_PIPELINING True
 ENV DOCKER_ANSIBLE_VERSION 2.9
 
 
-# The Entry point script to start the ssh-agent and add ssh-keys
-COPY --chmod=0755 ans-x-entrypoint.sh /usr/local/bin
-ENTRYPOINT [ "ans-x-entrypoint.sh" ]
-
-
 ####################################
 # USER
 # Group 1000 is used by `ubuntu`

@@ -5,11 +5,15 @@
 This page shows you how you can connect with SSH.
 
 There are 2 methods:
-* via [private key](#private-key-authentication-how-to-pass-a-private-key)
+* via [private key](#private-key-authentication-how-to-pass-a-private-key-with-ansible_private_key_file-env)
 * via [password](#how-to-connect-with-a-password-authentication)
 
 
-## Private Key Authentication: How to pass a private Key
+## Private Key Authentication: How to pass a private Key with ANSIBLE_PRIVATE_KEY_FILE env
+
+All this method will automatically set the ansible environment variable [ANSIBLE_PRIVATE_KEY_FILE](https://docs.ansible.com/ansible/devel/reference_appendices/config.html#envvar-ANSIBLE_PRIVATE_KEY_FILE)
+for you.
+
 
 ### How to use a private key stored in Pass
 
@@ -25,31 +29,23 @@ pass ansible/ssh-key
 export ANS_X_SSH_KEY_PASS=ansible/ssh-key
 ```
 
-When this variable is set, the ansible environment variable [ANSIBLE_PRIVATE_KEY_FILE](https://docs.ansible.com/ansible/devel/reference_appendices/config.html#envvar-ANSIBLE_PRIVATE_KEY_FILE)
-is set.
-
 
 ### How to use a protected private keys stored in .ssh
 
-Automatically, the [entrypoint](../Dockerfiles/2.9/ans-x-entrypoint.sh) can add the encrypted key automatically to
-the `ssh-agent`
 
-How it works?
-For instance, you want to add the encrypted private key called `id_rsa`
-
-* Copy this file to your SSH home directory
-  * Linux: `~/.ssh`
-  * Windows: `%USERPROFILE%/.ssh`
-* Add the environment variable `ANS_X_SSH_KEY_PASSPHRASE_id_rsa` with the passphrase as value where:
+To define a protected key, you can use the environment variable `ANS_X_SSH_KEY_PASSPHRASE_xxx`:
   * `ANS_X_SSH_KEY_PASSPHRASE_` is a prefix
-  * `id_rsa` is the name of the key
-* Use any [wrapper shell script](../README.md#script-list)
+  * `xxxx` is the name of the key
+  * the value is the passphrase
 
+Example for the protected key stored at `~/.ssh/id_rsa` with as passphrase `my-secret` 
 ```bash
-ansible xxxxx
-ansible-bash xxxxx
-ansible-playbook xxxxx
+export ANS_X_SSH_KEY_PASSPHRASE_id_rsa=my-secret
 ```
+
+The key should be in your SSH home directory
+* Linux: `~/.ssh`
+* Windows: `%USERPROFILE%/.ssh`
 
 ### How to use a non-protected key stored in .ssh
 
@@ -62,33 +58,6 @@ Example:
 export ANSIBLE_PRIVATE_KEY_FILE=my_key
 ```
 
-### How to add manually a private key
-
-Manually, you would:
-
-* call the [ans-x-bash](bin/ans-x-bash.md) script,
-* add your keys with `ssh-add`
-* and call all ansible cli from this session.
-
-Example:
-
-* Get a shell in Ansible docker with [ans-x-bash](bin/ans-x-bash.md)
-```bash
-ans-x-bash
-```
-* Then
-```bash
-eval "$(ssh-agent -s)"
-ssh-add privkey.pem
-```
-
-* Use any ansible command line tool
-
-```bash
-ansible xxxxx
-ansible-playbook xxxxx
-# xxx
-```
 
 
 ## How to connect with a password authentication
@@ -117,7 +86,7 @@ export ANS_X_BECOME_PASSWORD_PASS=ansible/ssh-become-password
 ```
 
 When these variables are set, the following ansible environment variable are set:
-* [ANSIBLE_CONNECTION_PASSWORD_FILE](https://docs.ansible.com/ansible/devel/reference_appendices/config.html#envvar-ANSIBLE_CONNECTION_PASSWORD_FILE)
+* [ANSIBLE_CONNECTION_PASSWORD_FILE](https://docs.ansible.com/ansible/devel/reference_appendices/config.html#envvar-ANSIBLE_CONNECTION_PASSWORD_FILE): the login password
 * [ANSIBLE_BECOME_PASSWORD_FILE](https://docs.ansible.com/ansible/devel/reference_appendices/config.html#envvar-ANSIBLE_BECOME_PASSWORD_FILE): the become password file
 
 ### How to connect with a password via environment variable
