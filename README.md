@@ -48,9 +48,9 @@ These scripts are the counterpart of the [Ansible Command line clients](https://
 | [ansible-galaxy](docs/bin-generated/ansible-galaxy.md)       | [ansible-galaxy.cmd](docs/bin-generated/ansible-galaxy.md)       | The `ansible-galaxy` cli execute role and Collection related operations                                                      |
 | [ansible-inventory](docs/bin-generated/ansible-inventory.md) | [ansible-inventory.cmd](docs/bin-generated/ansible-inventory.md) | The `ansible-inventory` cli  show Ansible inventory information                                                              |
 | [ansible-playbook](docs/bin-generated/ansible-playbook.md)   | [ansible-playbook.cmd](docs/bin-generated/ansible-inventory.md)  | The `ansible-playbook` cli runs Ansible playbooks                                                                            |
-| [ansible-pull.cmd](docs/bin-generated/ansible-inventory.md)  | [ansible-pull.cmd](docs/bin-generated/ansible-inventory.md)      | The `ansible-pull` pulls and run playbooks from a VCS repo |
+| [ansible-pull](docs/bin-generated/ansible-pull.md)           | [ansible-pull.cmd](docs/bin-generated/ansible-pull.md)           | The `ansible-pull` pulls and run playbooks from a VCS repo |
 | [ansible-vault](bin/ansible-vault)                           | [ansible-vault.cmd](bin/ansible-vault.cmd)                       | The [ansible-vault cli](https://docs.ansible.com/ansible/latest/user_guide/vault.html)                                       | 
-| [azure_rm](docs/bin-generated/azure_rm.md) | [azure_rm.cmd](docs/bin-generated/azure_rm.md)                   | The Azure Inventory script `azure_rm.py` |
+| [azure_rm](docs/bin-generated/azure_rm.md)                   | [azure_rm.cmd](docs/bin-generated/azure_rm.md)                   | The Azure Inventory script `azure_rm.py` |
 
 ### Ans-X Extra Scripts
 
