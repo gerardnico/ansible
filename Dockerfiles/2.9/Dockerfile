@@ -97,8 +97,13 @@ ENV DOCKER_ANSIBLE_VERSION 2.9
 ####################################
 RUN groupmod --new-name al ubuntu && usermod --login al --move-home --home /home/al ubuntu
 
-# Workdir
-WORKDIR /home/al
-
-# User
-USER al
+####################################
+# WorkDir and Work User
+# The scripts mount the running user
+# therefore the directory should be writable, readable by everybody
+####################################
+RUN mkdir -p /ansible; chmod 0777 /ansible
+WORKDIR /ansible
+# User should not be set as we support now any other image
+# that may not have the al user
+# USER al

@@ -17,13 +17,9 @@ fi
 declare -a ENVS=("run" "--rm")
 
 # User
-# When using another image than ours
-# the default may be the root user
-# We run as the user if WSL, 1000
-# needed to own the data on mount
-#if [ "$(id -u)" -eq 1000 ]; then
-#  ENVS+=("--user" "$(id -u):$(id -g)")
-#fi
+# The OS/laptop user should be the owner as we mount the disk
+# When using another image than ours the default may be the root user
+ENVS+=("--user" "$(id -u):$(id -g)")
 
 
 # DEFAULT_LOCAL_TMP depends of ansible home

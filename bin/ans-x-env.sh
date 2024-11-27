@@ -74,7 +74,7 @@ ANS_X_DOCKER_USER=${ANS_X_DOCKER_USER:-al}
 echo "ANS_X_DOCKER_USER=$ANS_X_DOCKER_USER"
 
 # ANS_X_DOCKER_IMAGE_PWD
-ANS_X_DOCKER_IMAGE_PWD="/home/al"
+ANS_X_DOCKER_IMAGE_PWD="/ansible"
 if [[ "$ANS_X_DOCKER_TAG" =~ "2.8"|"2.7" ]]; then
   ANS_X_DOCKER_IMAGE_PWD="/ansible/playbook"
 fi
