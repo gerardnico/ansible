@@ -1,9 +1,9 @@
-ANS_X_ENV_FILE=${ANS_X_ENV_FILE:-"$HOME/.bashenv.d/ans-x.sh"}
-echo "# The ans-x env file (sourced if exists)"
-echo "ANS_X_ENV_FILE=$ANS_X_ENV_FILE"
-if [ -f $ANS_X_ENV_FILE ]; then
-  source $ANS_X_ENV_FILE
-fi
+
+# Don't load `$HOME/.bashenv.d/ans-x.sh`
+# If we want to get another local environment
+# We don't want to load the default env
+# For instance, if ANS_X_PROJECT_DIR is set and that we have other
+# ansible project, we may want to override this env.
 
 
 # ANS_X_PROJECT_DIR

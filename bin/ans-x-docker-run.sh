@@ -6,6 +6,7 @@ source "${BASHLIB_LIBRARY_PATH:-}${BASHLIB_LIBRARY_PATH:+/}bashlib-command.sh"
 # shellcheck source=../../bash-lib/lib/bashlib-echo.sh
 source "${BASHLIB_LIBRARY_PATH:-}${BASHLIB_LIBRARY_PATH:+/}bashlib-echo.sh"
 
+
 ENV=$(source ans-x-env.sh)
 if ! eval "$ENV"; then
   echo::err "Error on env"
@@ -14,6 +15,16 @@ if ! eval "$ENV"; then
 fi
 
 declare -a ENVS=("run" "--rm")
+
+# User
+# When using another image than ours
+# the default may be the root user
+# We run as the user if WSL, 1000
+# needed to own the data on mount
+#if [ "$(id -u)" -eq 1000 ]; then
+#  ENVS+=("--user" "$(id -u):$(id -g)")
+#fi
+
 
 # DEFAULT_LOCAL_TMP depends of ansible home
 # https://docs.ansible.com/ansible/latest/reference_appendices/config.html#default-local-tmp
@@ -77,16 +88,6 @@ done
 ################
 # SSH Connection
 ################
-echo::debug "Env (SSH Key Passphrase)"
-SSH_PREFIX="ANSIBLE_SSH_KEY_PASSPHRASE_"
-if ! SSH_KEYS=$(printenv | grep -P "^$SSH_PREFIX"); then
-  SSH_KEYS="";
-fi
-for var in $SSH_KEYS; do
-  varName=$(echo "$var" | grep -oP "^${SSH_PREFIX}[^=]+")
-  ENVS+=("--env" "$var")
-done
-
 # ANSIBLE_CONNECTION_PASSWORD_FILE
 # https://docs.ansible.com/ansible/devel/reference_appendices/config.html#envvar-ANSIBLE_CONNECTION_PASSWORD_FILE
 # Password file
@@ -102,7 +103,7 @@ else
 
     PASS_DOCKER_PATH=/tmp/user-password
     PASS_LOCAL_PATH=/dev/shm/user-password
-    pass $ANS_X_PASSWORD_PASS >| $PASS_LOCAL_PATH
+    pass "$ANS_X_PASSWORD_PASS" >| $PASS_LOCAL_PATH
 
     ENVS+=("--env" "ANSIBLE_CONNECTION_PASSWORD_FILE=$PASS_DOCKER_PATH")
     ENVS+=("-v" "$PASS_LOCAL_PATH:$PASS_DOCKER_PATH")
@@ -166,7 +167,7 @@ else
     fi
     PASS_DOCKER_PATH=/tmp/ssh-key
     PASS_LOCAL_PATH=/dev/shm/ssh-key
-    pass $ANS_X_SSH_KEY_PASS >| $PASS_LOCAL_PATH
+    pass "$ANS_X_SSH_KEY_PASS" >| $PASS_LOCAL_PATH
     # env for --private-key
     ENVS+=("--env" "ANSIBLE_PRIVATE_KEY_FILE=$PASS_DOCKER_PATH")
     ENVS+=("-v" "$PASS_LOCAL_PATH:$PASS_DOCKER_PATH")
