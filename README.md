@@ -29,7 +29,7 @@ ansible-playbook your/path/to/your/playbook
 All scripts are available in:
 
 * POSIX (WSL / Cygwin / Mac) written for `bash`
-* Windows written for `Dos` (Deprecated, on windows, we recommend WSL)
+* Windows written for `Dos` (Deprecated, on windows, we recommend [Windows Linux (WSL)](https://learn.microsoft.com/en-us/windows/wsl/))
 
 They are wrapper scripts that:
 * lives in your laptop
@@ -41,25 +41,25 @@ They are wrapper scripts that:
 These scripts are the counterpart of the [Ansible Command line clients](https://docs.ansible.com/ansible/latest/command_guide/command_line_tools.html).
 
 
-| Bash (Linux / Windows WSL or Cygwin)                         | Dos (Windows)                                                    | Description                                                                                                                  |
-|--------------------------------------------------------------|------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------|
-| [ansible](docs/bin-generated/ansible.md)                     | [ansible.cmd](docs/bin-generated/ansible.md)                     | The `ansible` cli runs a single task against a set of hosts                                                                  |
-| [ansible-config](docs/bin-generated/ansible-config.md)       | [ansible-config.cmd](docs/bin-generated/ansible-config.md)       | The `ansible-config` cli shows ansible configuration                                                                         |
-| [ansible-galaxy](docs/bin-generated/ansible-galaxy.md)       | [ansible-galaxy.cmd](docs/bin-generated/ansible-galaxy.md)       | The `ansible-galaxy` cli execute role and Collection related operations                                                      |
-| [ansible-inventory](docs/bin-generated/ansible-inventory.md) | [ansible-inventory.cmd](docs/bin-generated/ansible-inventory.md) | The `ansible-inventory` cli  show Ansible inventory information                                                              |
-| [ansible-playbook](docs/bin-generated/ansible-playbook.md)   | [ansible-playbook.cmd](docs/bin-generated/ansible-inventory.md)  | The `ansible-playbook` cli runs Ansible playbooks                                                                            |
-| [ansible-pull](docs/bin-generated/ansible-pull.md)           | [ansible-pull.cmd](docs/bin-generated/ansible-pull.md)           | The `ansible-pull` pulls and run playbooks from a VCS repo |
-| [ansible-vault](bin/ansible-vault)                           | [ansible-vault.cmd](bin/ansible-vault.cmd)                       | The [ansible-vault cli](https://docs.ansible.com/ansible/latest/user_guide/vault.html)                                       | 
-| [azure_rm](docs/bin-generated/azure_rm.md)                   | [azure_rm.cmd](docs/bin-generated/azure_rm.md)                   | The Azure Inventory script `azure_rm.py` |
+| Bash (Linux / Windows WSL or Cygwin)                         | Dos (Windows)                                                    | Description                                                                            |
+|--------------------------------------------------------------|------------------------------------------------------------------|----------------------------------------------------------------------------------------|
+| [ansible](docs/bin-generated/ansible.md)                     | [ansible.cmd](docs/bin-generated/ansible.md)                     | The `ansible` cli runs a single task against a set of hosts                            |
+| [ansible-config](docs/bin-generated/ansible-config.md)       | [ansible-config.cmd](docs/bin-generated/ansible-config.md)       | The `ansible-config` cli shows ansible configuration                                   |
+| [ansible-galaxy](docs/bin-generated/ansible-galaxy.md)       | [ansible-galaxy.cmd](docs/bin-generated/ansible-galaxy.md)       | The `ansible-galaxy` cli execute role and Collection related operations                |
+| [ansible-inventory](docs/bin-generated/ansible-inventory.md) | [ansible-inventory.cmd](docs/bin-generated/ansible-inventory.md) | The `ansible-inventory` cli  show Ansible inventory information                        |
+| [ansible-playbook](docs/bin-generated/ansible-playbook.md)   | [ansible-playbook.cmd](docs/bin-generated/ansible-inventory.md)  | The `ansible-playbook` cli runs Ansible playbooks                                      |
+| [ansible-pull](docs/bin-generated/ansible-pull.md)           | [ansible-pull.cmd](docs/bin-generated/ansible-pull.md)           | The `ansible-pull` pulls and run playbooks from a VCS repo                             |
+| [ansible-vault](docs/bin-generated/ansible-vault.md)         | [ansible-vault.cmd](docs/bin-generated/ansible-vault.md)                       | The [ansible-vault cli](https://docs.ansible.com/ansible/latest/user_guide/vault.html) | 
+| [azure_rm](docs/bin-generated/azure_rm.md)                   | [azure_rm.cmd](docs/bin-generated/azure_rm.md)                   | The Azure Inventory script `azure_rm.py` (Deprecated, Old)                             |
 
 ### Ans-X Extra Scripts
 
 These scripts are utility scripts 
 
-| Bash (Linux / Windows WSL or Cygwin) | Dos (Windows)                        | Description                                                                                                                      |
-|--------------------------------------|--------------------------------------|----------------------------------------------------------------------------------------------------------------------------------|
-| [ans-x-bash](bin/ans-x-bash)        | [ans-x-bash.cmd](bin/ans-x-bash.cmd) | Get a bash shell inside the container where all Ansible cli can be started                                                       |
-| [ans-x-encrypt](bin/ans-x-encrypt)   | [ans-x-encrypt](bin/ans-x-encrypt)   | An `ansible-vault encrypt_string` utility cli                                                                                    |
+| Bash (Linux / Windows WSL or Cygwin)                 | Dos (Windows)                        | Description                                                                                                                      |
+|------------------------------------------------------|--------------------------------------|----------------------------------------------------------------------------------------------------------------------------------|
+| [ans-x-bash](docs/bin-generated/ans-x-bash.md)       | [ans-x-bash.cmd](docs/bin-generated/ans-x-bash.md) | Get a bash shell inside the container where all Ansible cli can be started                                                       |
+| [ans-x-encrypt](docs/bin-generated/ans-x-encrypt.md) | [ans-x-encrypt](docs/bin-generated/ans-x-encrypt.md)   | An `ansible-vault encrypt_string` utility cli                                                                                    |
 
 
 
