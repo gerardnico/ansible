@@ -8,8 +8,7 @@ Official documentation: [ansible-pull command line cli](https://docs.ansible.com
 
 # SYNOPSIS
 
-```bash
-usage: ansible-pull [-h] [--version] [-v] [--private-key PRIVATE_KEY_FILE]
+```bashusage: ansible-pull [-h] [--version] [-v] [--private-key PRIVATE_KEY_FILE]
                     [-u REMOTE_USER] [-c CONNECTION] [-T TIMEOUT]
                     [--ssh-common-args SSH_COMMON_ARGS]
                     [--sftp-extra-args SFTP_EXTRA_ARGS]

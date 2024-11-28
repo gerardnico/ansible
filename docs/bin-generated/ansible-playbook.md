@@ -7,8 +7,7 @@ Official documentation: [ansible-playbook command line cli](https://docs.ansible
 
 # SYNOPSIS
 
-```bash
-usage: ansible-playbook [-h] [--version] [-v] [--private-key PRIVATE_KEY_FILE]
+```bashusage: ansible-playbook [-h] [--version] [-v] [--private-key PRIVATE_KEY_FILE]
                         [-u REMOTE_USER] [-c CONNECTION] [-T TIMEOUT]
                         [--ssh-common-args SSH_COMMON_ARGS]
                         [--sftp-extra-args SFTP_EXTRA_ARGS]

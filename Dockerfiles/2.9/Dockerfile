@@ -3,7 +3,7 @@
 
 # Check here the supported distro by name
 # https://github.com/ansible-community/ppa/blob/main/latest_builds/matrix.yml
-# For ansible 2.9 (ie version 9): - jammy, mantic, noble
+# For ansible 2.9 (ie ansible-9 / version 9): - jammy, mantic, noble
 # You can check that they are available here:
 # https://ppa.launchpadcontent.net/ansible/ansible-2.9/ubuntu/dists/
 # for ie apt-add-repository --yes --update ppa:ansible/ansible-2.9
@@ -11,11 +11,14 @@
 # https://ppa.launchpadcontent.net/ansible/ansible/ubuntu/dists/
 # ie apt-add-repository --yes --update ppa:ansible/ansible
 #
+
 # if the dist is not disponible, you get:
 # Otherwise you get this error: the repository 'https://ppa.launchpadcontent.net/ansible/ansible-2.8/ubuntu oracular Release' does not have a Release file.
 
-# Ubuntu jammy
-FROM ubuntu:24.04
+# Ubuntu Noble
+# See: https://wiki.ubuntu.com/Releases
+# Noble = 24.04
+FROM ubuntu:noble-20241015
 
 
 RUN echo "==> Update"  && \
@@ -48,18 +51,30 @@ RUN echo "==> Install Python Packages (Pip, ...)"  && \
     # python3-dateutil was required when running ansible
     apt install -y python3-venv python3-pip python3-dateutil python3-selinux
 
-RUN echo "==> Adding hosts for convenience..."  && \
-    mkdir -p /etc/ansible && \
-    echo "[local]" >> /etc/ansible/hosts && \
-    echo "localhost" >> /etc/ansible/hosts
-
-
 # https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/#install-kubectl-on-linux
 RUN echo "==> Installing Kubectl" && \
     curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" && \
     curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl.sha256" && \
     echo "$(cat kubectl.sha256)  kubectl" | sha256sum --check && \
     sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+
+# Molecule (Ubuntu)
+# python3-pip libssl-dev are already here
+# https://ansible.readthedocs.io/projects/molecule/installation/
+# version 1.4.3
+ENV PIPX_HOME=/opt/pipx
+ENV PIPX_MAN_DIR=/usr/local/share/man
+ENV PIPX_BIN_DIR=/usr/local/bin
+RUN echo "==> Install Ansible Dev tools" && \
+    mkdir -p $PIPX_HOME && \
+    apt install -y pipx && \
+    pipx install ansible-dev-tools
+
+
+RUN echo "==> Adding hosts for convenience..."  && \
+    mkdir -p /etc/ansible && \
+    echo "[local]" >> /etc/ansible/hosts && \
+    echo "localhost" >> /etc/ansible/hosts
 
 
 ####################################

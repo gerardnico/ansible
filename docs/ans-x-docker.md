@@ -42,8 +42,18 @@ export ANS_X_DOCKER_IMAGE_PROJECT_DIR=/ansible/project
 export ANS_X_DOCKER_IMAGE_PROJECT_DIR=/ansible/home
 ```
 
+#### How to use the official ansible dev-tools container 
 
-For instance, if you want to use the version [willhallonline 2.17-alpine-3.16](https://github.com/willhallonline/docker-ansible)
+* [Ansible Community Devtools Container](https://ansible.readthedocs.io/projects/dev-tools/container/)
+```bash
+export ANS_X_DOCKER_NAMESPACE=ansible
+export ANS_X_DOCKER_NAME=community-ansible-dev-tools
+export ANS_X_DOCKER_TAG=v24.11.0
+export ANS_X_DOCKER_REGISTRY=ghcr.io # the image registry
+export ANS_X_DOCKER_IMAGE_PROJECT_DIR=/workdir/project
+export ANS_X_DOCKER_IMAGE_PROJECT_DIR=/workdir/home
+```
+* [willhallonline 2.17-alpine-3.16](https://github.com/willhallonline/docker-ansible)
 
 ```bash
 export ANS_X_DOCKER_NAMESPACE=willhallonline
@@ -51,6 +61,7 @@ export ANS_X_DOCKER_NAME=ansible
 export ANS_X_DOCKER_TAG=2.17-alpine-3.16
 export ANS_X_DOCKER_REGISTRY=docker.io # the image registry
 ```
+
 
 ## How to pass environment variables to ansible 
 

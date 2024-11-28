@@ -7,8 +7,7 @@ Official documentation: [ansible-inventory command line cli](https://docs.ansibl
 
 # SYNOPSIS
 
-```bash
-usage: ansible-inventory [-h] [--version] [-v] [-i INVENTORY] [-l SUBSET]
+```bashusage: ansible-inventory [-h] [--version] [-v] [-i INVENTORY] [-l SUBSET]
                          [--vault-id VAULT_IDS]
                          [-J | --vault-password-file VAULT_PASSWORD_FILES]
                          [--playbook-dir BASEDIR] [-e EXTRA_VARS] [--list]

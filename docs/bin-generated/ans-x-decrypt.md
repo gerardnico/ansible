@@ -6,8 +6,7 @@
 
 # SYNOPSIS
 
-```bash
-usage: ansible-vault decrypt [-h] [--output OUTPUT_FILE]
+```bashusage: ansible-vault decrypt [-h] [--output OUTPUT_FILE]
                              [--vault-id VAULT_IDS]
                              [-J | --vault-password-file VAULT_PASSWORD_FILES]
                              [-v]
@@ -32,4 +31,21 @@ options:
                         level to start is -vvv, connection debugging might
                         require -vvvv. This argument may be specified multiple
                         times.
+```
+
+# HOW TO DECRYPT A STRING
+
+It needs `bash` to be:
+* able to pass multiple line (Dos Cmd does not support it)
+* don't fuck up with bash character such as dollar
+* to pass stdin to decrypt
+
+```bash
+ans-x-bash
+```
+
+then
+
+```bash
+echo '$ANSIBLE_VAULT;...<ansible vault string>' | tr -d ' ' | ansible-vault decrypt && echo
 ```

@@ -6,8 +6,7 @@
 
 # SYNOPSIS
 
-```bash
-usage: ansible-vault encrypt_string [-h] [--vault-id VAULT_IDS]
+```bashusage: ansible-vault encrypt_string [-h] [--vault-id VAULT_IDS]
                                     [-J | --vault-password-file VAULT_PASSWORD_FILES]
                                     [-v] [--output OUTPUT_FILE]
                                     [--encrypt-vault-id ENCRYPT_VAULT_ID] [-p]
@@ -45,4 +44,31 @@ options:
                         specified multiple times.
   --stdin-name ENCRYPT_STRING_STDIN_NAME
                         Specify the variable name for stdin
+```
+
+# EXAMPLE: ENCRYPT A STRING
+
+
+```bash
+# from Iterm / Cygwin / Linux / Windows WSL 
+ans-x-encrypt 'the_password_to_encrypt'
+# from DOS
+ans-x-encrypt the_password_to_encrypt
+```
+
+
+It's the same as executing fom [a bash shell](ans-x-bash.md) inside the [Docker Image](../ans-x-docker.md)
+```bash
+ansible-vault encrypt_string 'the_secret_to_encrypt'
+echo 'the_secret_to_encrypt' | ansible-vault encrypt_string 
+```
+
+
+# EXAMPLE: ENCRYPT A FILE
+
+```bash
+# windows
+type cert.pem | ans-x-encrypt
+# bash
+ans-x-encrypt < cert.pem
 ```

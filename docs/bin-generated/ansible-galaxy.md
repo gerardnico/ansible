@@ -7,8 +7,7 @@ Official documentation: [ansible-galaxy command line cli](https://docs.ansible.c
 
 # SYNOPSIS
 
-```bash
-usage: ansible-galaxy [-h] [--version] [-v] TYPE ...
+```bashusage: ansible-galaxy [-h] [--version] [-v] TYPE ...
 
 Perform various Role and Collection related operations.
 

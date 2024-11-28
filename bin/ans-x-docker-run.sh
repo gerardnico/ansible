@@ -22,12 +22,22 @@ declare -a ENVS=("run" "--rm")
 # The OS/laptop user should be the owner as we mount volumes
 # When using another image than ours the default may be the root user
 ENVS+=("--user" "$(id -u):$(id -g)")
+if [ -f /etc/passwd ]; then
+  # User mount so that we are the mounted user
+  # even if user (1000) does not exists in the image
+  # Original idea: https://github.com/ansible/ansible-dev-tools/issues/381
+  ENVS+=("--volume" "/etc/passwd:/etc/passwd")
+fi
+# We don't mount $HOME, otherwise with bash, it will start bashrc
+# .local is needed by pipx
+ENVS+=("--volume" "$HOME/.local:$HOME/.local")
 
 ######################
 # Mount the working directory
 ######################
-echo::debug "Mounting the current directory or the home if set"
+echo::debug "Mounting the project/working directory"
 ENVS+=("--volume" "$ANS_X_PROJECT_DIR:$ANS_X_DOCKER_IMAGE_PROJECT_DIR")
+ENVS+=("--workdir" "$ANS_X_DOCKER_IMAGE_PROJECT_DIR")
 
 # Ansible Home
 # Note ANSIBLE_HOME is not empty as this points because we called the env file

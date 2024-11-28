@@ -6,8 +6,7 @@ a single task `playbook` against a set of hosts
 
 # SYNOPSIS
 
-```bash
-usage: ansible [-h] [--version] [-v] [-b] [--become-method BECOME_METHOD]
+```bashusage: ansible [-h] [--version] [-v] [-b] [--become-method BECOME_METHOD]
                [--become-user BECOME_USER]
                [-K | --become-password-file BECOME_PASSWORD_FILE]
                [-i INVENTORY] [--list-hosts] [-l SUBSET] [-P POLL_INTERVAL]

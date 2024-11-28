@@ -43,3 +43,7 @@ The container runs with the user `al` (id: 1000, user: 1000)
 
 Why ? The UID 1000 is assigned to first non-root user
 and would be therefore the user that would run the scripts.
+
+
+
+

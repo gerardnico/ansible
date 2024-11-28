@@ -9,7 +9,8 @@ the [Azure Resource Manager inventory plugin](https://docs.ansible.com/ansible/l
 
 # SYNOPSIS
 
-```bashDeprecated
+```bash
+# Deprecated
 azure_rm
 ```
 

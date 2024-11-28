@@ -7,8 +7,7 @@ Official documentation: [ansible-vault command line cli](https://docs.ansible.co
 
 # SYNOPSIS
 
-```bash
-usage: ansible-vault [-h] [--version] [-v]
+```bashusage: ansible-vault [-h] [--version] [-v]
                      {create,decrypt,edit,view,encrypt,encrypt_string,rekey}
                      ...
 

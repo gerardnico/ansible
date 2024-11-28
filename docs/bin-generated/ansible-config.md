@@ -5,8 +5,7 @@ The [ansible-config command line cli](https://docs.ansible.com/ansible/latest/cl
 
 # SYNOPSIS
 
-```bash
-usage: ansible-config [-h] [--version] [-v] {list,dump,view,init} ...
+```bashusage: ansible-config [-h] [--version] [-v] {list,dump,view,init} ...
 
 View ansible configuration.
 

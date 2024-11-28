@@ -38,7 +38,9 @@ They are wrapper scripts that:
 
 ### Ansible Scripts
 
-These scripts are the counterpart of the [Ansible Command line clients](https://docs.ansible.com/ansible/latest/command_guide/command_line_tools.html).
+These scripts are the counterpart of:
+* the [Ansible Command line clients](https://docs.ansible.com/ansible/latest/command_guide/command_line_tools.html).
+* and [Ansible Dev Tools](https://ansible.readthedocs.io/projects/dev-tools/)
 
 
 | Bash (Linux / Windows WSL or Cygwin)                         | Dos (Windows)                                                    | Description                                                                            |
@@ -51,6 +53,7 @@ These scripts are the counterpart of the [Ansible Command line clients](https://
 | [ansible-pull](docs/bin-generated/ansible-pull.md)           | [ansible-pull.cmd](docs/bin-generated/ansible-pull.md)           | The `ansible-pull` pulls and run playbooks from a VCS repo                             |
 | [ansible-vault](docs/bin-generated/ansible-vault.md)         | [ansible-vault.cmd](docs/bin-generated/ansible-vault.md)                       | The [ansible-vault cli](https://docs.ansible.com/ansible/latest/user_guide/vault.html) | 
 | [azure_rm](docs/bin-generated/azure_rm.md)                   | [azure_rm.cmd](docs/bin-generated/azure_rm.md)                   | The Azure Inventory script `azure_rm.py` (Deprecated, Old)                             |
+| [molecule](docs/bin-generated/molecule.md)                   |                    | The Role Testing tool            |
 
 ### Ans-X Extra Scripts
 

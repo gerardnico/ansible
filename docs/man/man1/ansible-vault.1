@@ -23,38 +23,28 @@ The \f[V]ansible-vault\f[R] cli encrypts/decrypts Ansible data.
 Official documentation: ansible-vault command line
 cli (https://docs.ansible.com/ansible/latest/cli/ansible-vault.html)
 .SH SYNOPSIS
-.IP
-.nf
-\f[C]
-usage: ansible-vault [-h] [--version] [-v]
-                     {create,decrypt,edit,view,encrypt,encrypt_string,rekey}
-                     ...
-
+.PP
+\[ga]\[ga]\[ga]bashusage: ansible-vault [-h] [\[en]version] [-v]
+{create,decrypt,edit,view,encrypt,encrypt_string,rekey} \&...
+.PP
 encryption/decryption utility for Ansible data files
-
+.PP
 positional arguments:
-  {create,decrypt,edit,view,encrypt,encrypt_string,rekey}
-    create              Create new vault encrypted file
-    decrypt             Decrypt vault encrypted file
-    edit                Edit vault encrypted file
-    view                View vault encrypted file
-    encrypt             Encrypt YAML file
-    encrypt_string      Encrypt a string
-    rekey               Re-key a vault encrypted file
-
-options:
-  --version             show program\[aq]s version number, config file location,
-                        configured module search path, module location,
-                        executable location and exit
-  -h, --help            show this help message and exit
-  -v, --verbose         Causes Ansible to print more debug messages. Adding
-                        multiple -v will increase the verbosity, the builtin
-                        plugins currently evaluate up to -vvvvvv. A reasonable
-                        level to start is -vvv, connection debugging might
-                        require -vvvv. This argument may be specified multiple
-                        times.
-
-See \[aq]ansible-vault <command> --help\[aq] for more information on a specific
+{create,decrypt,edit,view,encrypt,encrypt_string,rekey} create Create
+new vault encrypted file decrypt Decrypt vault encrypted file edit Edit
+vault encrypted file view View vault encrypted file encrypt Encrypt YAML
+file encrypt_string Encrypt a string rekey Re-key a vault encrypted file
+.PP
+options: \[en]version show program\[cq]s version number, config file
+location, configured module search path, module location, executable
+location and exit -h, \[en]help show this help message and exit -v,
+\[en]verbose Causes Ansible to print more debug messages.
+Adding multiple -v will increase the verbosity, the builtin plugins
+currently evaluate up to -vvvvvv.
+A reasonable level to start is -vvv, connection debugging might require
+-vvvv.
+This argument may be specified multiple times.
+.PP
+See `ansible-vault \[en]help' for more information on a specific
 command.
-\f[R]
-.fi
+\[ga]\[ga]\[ga]
