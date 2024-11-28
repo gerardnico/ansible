@@ -32,6 +32,17 @@ export ANS_X_DOCKER_TAG=image-tag
 export ANS_X_DOCKER_REGISTRY=docker.io # the image registry
 ```
 
+`Ansible-X` needs also to know the following directories:
+* `ANS_X_DOCKER_IMAGE_PROJECT_DIR`: the directory where to mount the [project directory](../README.md#how-to-define-a-project-location-so-that-the-commands-can-be-run-from-anywhere)
+```bash
+export ANS_X_DOCKER_IMAGE_PROJECT_DIR=/ansible/project 
+```
+* `ANS_X_DOCKER_IMAGE_ANSIBLE_HOME`: the directory where to mount [ANSIBLE_HOME](https://docs.ansible.com/ansible/latest/reference_appendices/config.html#ansible-home)
+```bash
+export ANS_X_DOCKER_IMAGE_PROJECT_DIR=/ansible/home
+```
+
+
 For instance, if you want to use the version [willhallonline 2.17-alpine-3.16](https://github.com/willhallonline/docker-ansible)
 
 ```bash

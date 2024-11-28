@@ -101,9 +101,14 @@ RUN groupmod --new-name al ubuntu && usermod --login al --move-home --home /home
 # WorkDir and Work User
 # The scripts mount the running user
 # therefore the directory should be writable, readable by everybody
+# These 2 directories are mounted, so the permissions of this dreictories is not really 0777
+# but the permissions of the host
 ####################################
-RUN mkdir -p /ansible; chmod 0777 /ansible
-WORKDIR /ansible
+RUN mkdir -p /ansible && \
+    mkdir -p /ansible/project && \
+    mkdir -p /ansible/home && \
+    chmod -R a+rwx /ansible
+WORKDIR /ansible/project
 # User should not be set as we support now any other image
 # that may not have the al user
 # USER al

@@ -67,9 +67,11 @@ These scripts are utility scripts
 
 ### How to define a project location so that the commands can be run from anywhere
 
-If you work in a project and don't want to `cd` into it every time to run
-the ansible command, you can set the env variable `ANS_X_PROJECT_DIR` to the path
-of you ansible project.
+By default, the project directory is your working directory.
+
+If you work in a project and find you self in a position where you need to `cd` every time 
+to run an ansible command, you can set the env variable `ANS_X_PROJECT_DIR` to the path
+of your ansible project.
 
 This directory will then be mounted and used instead of the current working directory.
 
@@ -77,6 +79,9 @@ Example:
 ```bash
 export ANS_X_PROJECT_DIR=$HOME/my-ansible-project
 ```
+
+!!! Be careful that if you have more than one project and that you forget about it, 
+`ansible` may return that it didn't find your playbook !!!
 
 ### How to define the Ansible Docker Image?
 

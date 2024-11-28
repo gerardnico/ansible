@@ -5,6 +5,8 @@
 source "${BASHLIB_LIBRARY_PATH:-}${BASHLIB_LIBRARY_PATH:+/}bashlib-command.sh"
 # shellcheck source=../../bash-lib/lib/bashlib-echo.sh
 source "${BASHLIB_LIBRARY_PATH:-}${BASHLIB_LIBRARY_PATH:+/}bashlib-echo.sh"
+# shellcheck source=../../bash-lib/lib/bashlib-path.sh
+source "${BASHLIB_LIBRARY_PATH:-}${BASHLIB_LIBRARY_PATH:+/}bashlib-path.sh"
 
 
 ENV=$(source ans-x-env.sh)
@@ -17,16 +19,33 @@ fi
 declare -a ENVS=("run" "--rm")
 
 # User
-# The OS/laptop user should be the owner as we mount the disk
+# The OS/laptop user should be the owner as we mount volumes
 # When using another image than ours the default may be the root user
 ENVS+=("--user" "$(id -u):$(id -g)")
 
+######################
+# Mount the working directory
+######################
+echo::debug "Mounting the current directory or the home if set"
+ENVS+=("--volume" "$ANS_X_PROJECT_DIR:$ANS_X_DOCKER_IMAGE_PROJECT_DIR")
 
-# DEFAULT_LOCAL_TMP depends of ansible home
-# https://docs.ansible.com/ansible/latest/reference_appendices/config.html#default-local-tmp
-if [ "${ANSIBLE_LOCAL_TEMP:-}" = "" ]; then
-  ENVS+=("--env" "ANSIBLE_LOCAL_TEMP=/tmp")
+# Ansible Home
+# Note ANSIBLE_HOME is not empty as this points because we called the env file
+# All ANSIBLE_XXX env are set later
+# Ansible home should exist as we mount it so that it get
+if [ ! -d "$ANSIBLE_HOME" ]; then
+  mkdir -p "$ANSIBLE_HOME"
 fi
+if ! ANSIBLE_HOME_RELATIVE_PATH=$(path::relative_to "$ANSIBLE_HOME" "$ANS_X_PROJECT_DIR"); then
+  ENVS+=("--volume" "$ANSIBLE_HOME:$ANS_X_DOCKER_IMAGE_ANSIBLE_HOME")
+  ANSIBLE_HOME="$ANS_X_DOCKER_IMAGE_ANSIBLE_HOME"
+else
+  ANSIBLE_HOME="$ANS_X_DOCKER_IMAGE_ANSIBLE_HOME/$ANSIBLE_HOME_RELATIVE_PATH"
+fi
+
+# ANSIBLE_LOCAL_TEMP Default to ANSIBLE_HOME
+# we don't need to define it anymore
+# https://docs.ansible.com/ansible/latest/reference_appendices/config.html#default-local-tmp
 
 ######################
 # Bash
@@ -37,11 +56,7 @@ if [ "$(basename "$0")" == "ans-x-bash" ]; then
   ENVS+=("-it")
 fi
 
-######################
-# Mount the directory
-######################
-echo::debug "Mounting the current directory or the home if set"
-ENVS+=("--volume" "$ANS_X_PROJECT_DIR:$ANS_X_DOCKER_IMAGE_PWD")
+
 
 
 ######################

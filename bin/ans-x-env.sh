@@ -73,15 +73,35 @@ echo "# The docker user (the user running the command in the container)"
 ANS_X_DOCKER_USER=${ANS_X_DOCKER_USER:-al}
 echo "ANS_X_DOCKER_USER=$ANS_X_DOCKER_USER"
 
-# ANS_X_DOCKER_IMAGE_PWD
-ANS_X_DOCKER_IMAGE_PWD="/ansible"
-if [[ "$ANS_X_DOCKER_TAG" =~ "2.8"|"2.7" ]]; then
-  ANS_X_DOCKER_IMAGE_PWD="/ansible/playbook"
-fi
-echo "# The working directory in the image (Internal, used for migration)"
-echo "ANS_X_DOCKER_IMAGE_PWD=$ANS_X_DOCKER_IMAGE_PWD"
 
 # ANS_X_DOCKER_ENVS
 echo "# A grep pattern expression that selects the environment variable to pass to Ansible"
 ANS_X_DOCKER_ENVS="^(ANS_X|ANSIBLE|ACTION|AGNOSTIC|ANY|BECOME|CACHE|CALLBACKS|COLLECTIONS|COLOR|CONNECTION|COVERAGE|DEFAULT|DEPRECATION|DEVEL|DIFF|DOC|DUPLICATE|EDITOR|ENABLE|ERROR|FACTS_MODULES|GALAXY|HOST|INJECT|INTERPRETER|INVALID|INVENTORY|LOG|MAX_FILE_SIZE_FOR_DIFF|MODULE|HCLOUD|AZURE)"
 echo "ANS_X_DOCKER_ENVS='$ANS_X_DOCKER_ENVS'"
+echo ""
+
+
+# ANS_X_DOCKER_IMAGE_PROJECT_DIR
+ANS_X_DOCKER_IMAGE_PROJECT_DIR=${ANS_X_DOCKER_IMAGE_PROJECT_DIR:-}
+if [ "$ANS_X_DOCKER_IMAGE_PROJECT_DIR" == "" ]; then
+  if [[ "$ANS_X_DOCKER_TAG" =~ "2.8"|"2.7" ]]; then
+    ANS_X_DOCKER_IMAGE_PROJECT_DIR="/ansible/playbook"
+  else
+    ANS_X_DOCKER_IMAGE_PROJECT_DIR="/ansible/project"
+  fi
+fi
+echo "# The project directory in the image (ie working directory)"
+echo "ANS_X_DOCKER_IMAGE_PROJECT_DIR=$ANS_X_DOCKER_IMAGE_PROJECT_DIR"
+echo ""
+
+# ANS_X_DOCKER_IMAGE_ANSIBLE_HOME
+ANS_X_DOCKER_IMAGE_ANSIBLE_HOME=${ANS_X_DOCKER_IMAGE_ANSIBLE_HOME:-"/ansible/home"}
+echo "# The ANSIBLE_HOME directory in the image"
+echo "ANS_X_DOCKER_IMAGE_ANSIBLE_HOME=$ANS_X_DOCKER_IMAGE_ANSIBLE_HOME"
+echo ""
+
+# Ansible
+# We set them here so that they are not empty
+echo "# Ansible Home: ANSIBLE_HOME (The directory where collections and roles are installed and searched by ansible)"
+ANSIBLE_HOME=${ANSIBLE_HOME:-"$HOME/.ansible"}
+echo "ANSIBLE_HOME='$ANSIBLE_HOME'"
