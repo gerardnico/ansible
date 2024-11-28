@@ -42,9 +42,10 @@ export ANS_X_DOCKER_IMAGE_PROJECT_DIR=/ansible/project
 export ANS_X_DOCKER_IMAGE_PROJECT_DIR=/ansible/home
 ```
 
-#### How to use the official ansible dev-tools container 
+#### How to use the official ansible dev-tools container? 
 
-* [Ansible Community Devtools Container](https://ansible.readthedocs.io/projects/dev-tools/container/)
+In this example, we use the [Ansible Community Devtools Container](https://ansible.readthedocs.io/projects/dev-tools/container/).
+
 ```bash
 export ANS_X_DOCKER_NAMESPACE=ansible
 export ANS_X_DOCKER_NAME=community-ansible-dev-tools
@@ -52,15 +53,22 @@ export ANS_X_DOCKER_TAG=v24.11.0
 export ANS_X_DOCKER_REGISTRY=ghcr.io # the image registry
 export ANS_X_DOCKER_IMAGE_PROJECT_DIR=/workdir/project
 export ANS_X_DOCKER_IMAGE_PROJECT_DIR=/workdir/home
+export ANS_X_DOCKER_IMAGE_SHELL="/usr/bin/env bash"
 ```
-* [willhallonline 2.17-alpine-3.16](https://github.com/willhallonline/docker-ansible)
+
+#### How to use a willhallonline container?
+
+In this example, we use the [willhallonline 2.17-alpine-3.16](https://github.com/willhallonline/docker-ansible)
 
 ```bash
 export ANS_X_DOCKER_NAMESPACE=willhallonline
 export ANS_X_DOCKER_NAME=ansible
 export ANS_X_DOCKER_TAG=2.17-alpine-3.16
 export ANS_X_DOCKER_REGISTRY=docker.io # the image registry
+export ANS_X_DOCKER_IMAGE_SHELL="/usr/bin/env sh" 
 ```
+Bash does not exist in this image, you need to set `ANS_X_DOCKER_IMAGE_SHELL` 
+so that [ans-x-shell](bin-generated/ans-x-shell.md) will work. 
 
 
 ## How to pass environment variables to ansible 

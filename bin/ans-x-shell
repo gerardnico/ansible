@@ -13,4 +13,5 @@ fi
 SCRIPT_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # --norc because we mount the HOME and don't want it to start the bashrc
-source "${SCRIPT_PATH}/ans-x-docker-run.sh" bash "--norc" "$@"
+ANS_X_DOCKER_IMAGE_SHELL="${ANS_X_DOCKER_IMAGE_SHELL:-"/usr/bin/env bash"}"
+source "${SCRIPT_PATH}/ans-x-docker-run.sh" "$ANS_X_DOCKER_IMAGE_SHELL" "--norc" "$@"

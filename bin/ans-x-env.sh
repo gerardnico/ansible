@@ -100,6 +100,13 @@ echo "# The ANSIBLE_HOME directory in the image"
 echo "ANS_X_DOCKER_IMAGE_ANSIBLE_HOME=$ANS_X_DOCKER_IMAGE_ANSIBLE_HOME"
 echo ""
 
+# ANS_X_DOCKER_IMAGE_SHELL
+ANS_X_DOCKER_IMAGE_SHELL="${ANS_X_DOCKER_IMAGE_SHELL:-"/usr/bin/env bash"}"
+echo "# The shell in the image"
+echo "ANS_X_DOCKER_IMAGE_SHELL='$ANS_X_DOCKER_IMAGE_SHELL'"
+echo ""
+
+
 # Ansible
 # We set them here so that they are not empty
 echo "# Ansible Home: ANSIBLE_HOME (The directory where collections and roles are installed and searched by ansible)"

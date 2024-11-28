@@ -18,11 +18,20 @@
 .hy
 .SH NAME
 .PP
-\f[V]ans-x-bash\f[R] gets you a Bash shell in Ansible Docker.
+\f[V]ans-x-bash\f[R] gets you a shell in Ansible Docker.
 .SH SYNOPSIS
 .IP
 .nf
 \f[C]
-ans-x-bash [args]
+ans-x-shell [args]
+\f[R]
+.fi
+.SH ENV
+.PP
+You can define the shell that you want to use with:
+.IP
+.nf
+\f[C]
+export ANS_X_DOCKER_IMAGE_SHELL=\[dq]/usr/bin/env bash\[dq]
 \f[R]
 .fi

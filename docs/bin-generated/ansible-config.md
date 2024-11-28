@@ -5,16 +5,19 @@ The [ansible-config command line cli](https://docs.ansible.com/ansible/latest/cl
 
 # SYNOPSIS
 
-```bashusage: ansible-config [-h] [--version] [-v] {list,dump,view,init} ...
+```bashusage: ansible-config [-h] [--version] [-v] {list,dump,view,init,validate} ...
 
 View ansible configuration.
 
 positional arguments:
-  {list,dump,view,init}
+  {list,dump,view,init,validate}
     list                Print all config options
     dump                Dump configuration
     view                View configuration file
     init                Create initial configuration
+    validate            Validate the configuration file and environment
+                        variables. By default it only checks the base settings
+                        without accounting for plugins (see -t).
 
 options:
   --version             show program's version number, config file location,

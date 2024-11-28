@@ -57,7 +57,7 @@ ans-x-encrypt the_password_to_encrypt
 ```
 
 
-It's the same as executing fom [a bash shell](ans-x-bash.md) inside the [Docker Image](../ans-x-docker.md)
+It's the same as executing fom [a bash shell](ans-x-shell) inside the [Docker Image](../ans-x-docker.md)
 ```bash
 ansible-vault encrypt_string 'the_secret_to_encrypt'
 echo 'the_secret_to_encrypt' | ansible-vault encrypt_string 

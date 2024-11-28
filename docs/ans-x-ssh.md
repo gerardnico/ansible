@@ -129,7 +129,7 @@ The files are then automatically mounted into the [Docker container](ans-x-docke
 
 ### How to debug your private key 
 
-* Get a shell in Ansible docker with [ans-x-bash](bin/ans-x-bash.md) 
+* Get a shell in Ansible docker with [ans-x-bash](bin/ans-x-shell) 
 ```bash
 ans-x-bash
 ```

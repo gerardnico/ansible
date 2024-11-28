@@ -23,7 +23,7 @@ positional arguments:
                         using --graph
 
 options:
-  --export              When doing an --list, represent in a way that is
+  --export              When doing --list, represent in a way that is
                         optimized for export,not as an accurate representation
                         of how Ansible has processed it
   --output OUTPUT_FILE  When doing --list, send the inventory to a file

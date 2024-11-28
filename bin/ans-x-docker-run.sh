@@ -8,7 +8,7 @@ source "${BASHLIB_LIBRARY_PATH:-}${BASHLIB_LIBRARY_PATH:+/}bashlib-echo.sh"
 # shellcheck source=../../bash-lib/lib/bashlib-path.sh
 source "${BASHLIB_LIBRARY_PATH:-}${BASHLIB_LIBRARY_PATH:+/}bashlib-path.sh"
 
-
+echo::debug "Loading env"
 ENV=$(source ans-x-env.sh)
 if ! eval "$ENV"; then
   echo::err "Error on env"
@@ -18,7 +18,7 @@ fi
 
 declare -a ENVS=("run" "--rm")
 
-# User
+echo::debug "User Environment Configuration"
 # The OS/laptop user should be the owner as we mount volumes
 # When using another image than ours the default may be the root user
 ENVS+=("--user" "$(id -u):$(id -g)")
@@ -63,7 +63,7 @@ fi
 ######################
 # Bash
 ######################
-if [ "$(basename "$0")" == "ans-x-bash" ]; then
+if [ "$(basename "$0")" == "ans-x-shell" ]; then
   # The input device is not a TTY. If you are using mintty, try prefixing the command with 'winpty'
   # Docker should not run as an interactive session (only for the docker-bash script)
   # Docker it, not bash it
@@ -71,23 +71,23 @@ if [ "$(basename "$0")" == "ans-x-bash" ]; then
 fi
 
 
-
-
+# Deprecated: 2024-11-28
+# We mount the home and therefore also ~/.ssh
 ######################
 # Mount SSH Directory
 ######################
-echo::debug "Mounting SSH?"
-# https://docs.ansible.com/ansible/devel/reference_appendices/config.html#default-private-key-file
-SSH_VAR_PREFIX='ANS_X_SSH_KEY_PASSPHRASE_'
-if printenv | grep -oP "$SSH_VAR_PREFIX|DEFAULT_PRIVATE_KEY_FILE|ANSIBLE_PRIVATE_KEY_FILE"; then
-  echo::debug "We mount SSH"
-  SSH_DOCKER_FORMAT="$HOME/.ssh"
-  if [[ $(uname -a) =~ "CYGWIN" ]]; then
-    SSH_DOCKER_FORMAT="$HOMEPATH/.ssh"
-    SSH_DOCKER_FORMAT=$(cygpath -aw "$SSH_DOCKER_FORMAT" | tr 'C:' '/c' | tr '\\' '/')
-  fi
-  ENVS+=("--volume" "$SSH_DOCKER_FORMAT:/home/$ANS_X_DOCKER_USER/.ssh")
-fi
+#echo::debug "Mounting SSH if needed"
+## https://docs.ansible.com/ansible/devel/reference_appendices/config.html#default-private-key-file
+#SSH_VAR_PREFIX='ANS_X_SSH_KEY_PASSPHRASE_'
+#if printenv | grep -oP "$SSH_VAR_PREFIX|DEFAULT_PRIVATE_KEY_FILE|ANSIBLE_PRIVATE_KEY_FILE"; then
+#  echo::debug "We mount SSH"
+#  SSH_DOCKER_FORMAT="$HOME/.ssh"
+#  if [[ $(uname -a) =~ "CYGWIN" ]]; then
+#    SSH_DOCKER_FORMAT="$HOMEPATH/.ssh"
+#    SSH_DOCKER_FORMAT=$(cygpath -aw "$SSH_DOCKER_FORMAT" | tr 'C:' '/c' | tr '\\' '/')
+#  fi
+#  ENVS+=("--volume" "$SSH_DOCKER_FORMAT:/home/$ANS_X_DOCKER_USER/.ssh")
+#fi
 
 ######################
 # Hostname
@@ -150,7 +150,7 @@ else
 
     PASS_DOCKER_PATH=/tmp/become-user-password
     PASS_LOCAL_PATH=/dev/shm/become-user-password
-    pass $ANS_X_BECOME_PASSWORD_PASS >| $PASS_LOCAL_PATH
+    pass "$ANS_X_BECOME_PASSWORD_PASS" >| $PASS_LOCAL_PATH
 
     ENVS+=("--env" "ANSIBLE_BECOME_PASSWORD_FILE=$PASS_DOCKER_PATH")
     ENVS+=("-v" "$PASS_LOCAL_PATH:$PASS_DOCKER_PATH")
@@ -217,7 +217,7 @@ else
             PASS_DOCKER_PATH=/tmp/ssh-key
             PASS_LOCAL_PATH=/dev/shm/ssh-key
             PASSPHRASE=$(eval "echo \$$SSH_VAR_PREFIX$var")
-            ssh-keygen -p -P $PASSPHRASE -N "" -f $PASS_LOCAL_PATH
+            ssh-keygen -p -P "$PASSPHRASE" -N "" -f $PASS_LOCAL_PATH
             # env for --private-key
             ENVS+=("--env" "ANSIBLE_PRIVATE_KEY_FILE=$PASS_DOCKER_PATH")
             ENVS+=("-v" "$PASS_LOCAL_PATH:$PASS_DOCKER_PATH")

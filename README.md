@@ -59,10 +59,10 @@ These scripts are the counterpart of:
 
 These scripts are utility scripts 
 
-| Bash (Linux / Windows WSL or Cygwin)                 | Dos (Windows)                        | Description                                                                                                                      |
-|------------------------------------------------------|--------------------------------------|----------------------------------------------------------------------------------------------------------------------------------|
-| [ans-x-bash](docs/bin-generated/ans-x-bash.md)       | [ans-x-bash.cmd](docs/bin-generated/ans-x-bash.md) | Get a bash shell inside the container where all Ansible cli can be started                                                       |
-| [ans-x-encrypt](docs/bin-generated/ans-x-encrypt.md) | [ans-x-encrypt](docs/bin-generated/ans-x-encrypt.md)   | An `ansible-vault encrypt_string` utility cli                                                                                    |
+| Bash (Linux / Windows WSL or Cygwin)                 | Dos (Windows)                                        | Description                                                                                                                      |
+|------------------------------------------------------|------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------|
+| [ans-x-shell](docs/bin-generated/ans-x-shell.md)     | [ans-x-shell.cmd](docs/bin-generated/ans-x-shell.md) | Get a shell inside the container where all Ansible cli can be started                                                       |
+| [ans-x-encrypt](docs/bin-generated/ans-x-encrypt.md) | [ans-x-encrypt](docs/bin-generated/ans-x-encrypt.md) | An `ansible-vault encrypt_string` utility cli                                                                                    |
 
 
 
