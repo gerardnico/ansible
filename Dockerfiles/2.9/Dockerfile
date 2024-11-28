@@ -61,15 +61,21 @@ RUN echo "==> Installing Kubectl" && \
 # Molecule (Ubuntu)
 # python3-pip libssl-dev are already here
 # https://ansible.readthedocs.io/projects/molecule/installation/
-# version 1.4.3
+# old version 1.4.3, we can't use the --global flag
 ENV PIPX_HOME=/opt/pipx
 ENV PIPX_MAN_DIR=/usr/local/share/man
 ENV PIPX_BIN_DIR=/usr/local/bin
+# Permission denied: '/opt/pipx/.cache/7b9fc6075525630'
+# pipx run APP
 RUN echo "==> Install Ansible Dev tools" && \
     mkdir -p $PIPX_HOME && \
+    mkdir -p $PIPX_HOME\.cache && \
     apt install -y pipx && \
-    pipx install ansible-dev-tools
+    pipx install ansible-dev-tools && \
+    echo "==> Pipx Owner is root, we change that" && \
+    chmod -R a+rwx $PIPX_HOME
 
+ENV PATH=$PIPX_HOME/venvs/ansible-dev-tools/bin:$PATH
 
 RUN echo "==> Adding hosts for convenience..."  && \
     mkdir -p /etc/ansible && \

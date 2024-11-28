@@ -28,9 +28,11 @@ if [ -f /etc/passwd ]; then
   # Original idea: https://github.com/ansible/ansible-dev-tools/issues/381
   ENVS+=("--volume" "/etc/passwd:/etc/passwd")
 fi
-# We don't mount $HOME, otherwise with bash, it will start bashrc
-# .local is needed by pipx
-ENVS+=("--volume" "$HOME/.local:$HOME/.local")
+# Tools use the HOME user for tmp, ...
+# We need to mount it otherwise
+# [Errno 13] Permission denied: b'/home/hostUser'
+ENVS+=("--volume" "$HOME:$HOME")
+
 
 ######################
 # Mount the working directory
@@ -38,6 +40,7 @@ ENVS+=("--volume" "$HOME/.local:$HOME/.local")
 echo::debug "Mounting the project/working directory"
 ENVS+=("--volume" "$ANS_X_PROJECT_DIR:$ANS_X_DOCKER_IMAGE_PROJECT_DIR")
 ENVS+=("--workdir" "$ANS_X_DOCKER_IMAGE_PROJECT_DIR")
+
 
 # Ansible Home
 # Note ANSIBLE_HOME is not empty as this points because we called the env file
@@ -63,6 +66,7 @@ fi
 if [ "$(basename "$0")" == "ans-x-bash" ]; then
   # The input device is not a TTY. If you are using mintty, try prefixing the command with 'winpty'
   # Docker should not run as an interactive session (only for the docker-bash script)
+  # Docker it, not bash it
   ENVS+=("-it")
 fi
 

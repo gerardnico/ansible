@@ -6,6 +6,17 @@ See [Dockerfile](../docs/ans-x-dockerfile.md)
 
 ## Dev Docker Documentation
 
+We install: 
+* ansible via [ppa](#ansible-package-repository-ppa) over Ubuntu
+* [DevTool](#ansible-development-tools) via pipx
+
+### Base Image
+
+We started with Ubuntu due to the Ansible Installation doc.
+
+But we could just reuse the [Ansible-development-tools](#ansible-development-tools) container
+as base container and install tool such as `kubectl` over.
+
 ### Ansible Package Repository (PPA)
 
 We use PPA (Personal Package Archives (PPAs))
@@ -35,16 +46,22 @@ that helps manage the repository files located at:
 
 
 ### Ansible Development Tools
-Not used for now.
+
 
 [Ansible Development Tools](https://ansible.readthedocs.io/projects/dev-tools/)
-aims to streamline the setup and usage of several tools needed in order to create Ansible content. It combines critical Ansible development packages into a unified Python package.
+aims to streamline the setup and usage of several tools needed in order to create Ansible content. 
+It combines critical Ansible development packages into a unified Python package.
 
 https://github.com/ansible/ansible-dev-tools
-https://ansible.readthedocs.io/projects/dev-tools/container/#related-links
+[Container](https://ansible.readthedocs.io/projects/dev-tools/container/#related-links)
 ```bash
 docker pull ghcr.io/ansible/community-ansible-dev-tools:v24.11.0
 ```
+
+Installation is done via pipx but
+https://github.com/pypa/pipx/discussions/1341
+https://github.com/pypa/pipx/issues/1337
+https://github.com/pypa/pipx/issues/754
 
 https://pipx.pypa.io/stable/#on-linux
 https://pipx.pypa.io/stable/installation/#on-linux
