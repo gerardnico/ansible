@@ -11,6 +11,8 @@ With `Ans-x`, you can run Ansible from anywhere (Windows WSL, Linux, Mac) with y
 * Support [pass](https://www.passwordstore.org/) as password manager to pass:
   * a [vault password](#how-to-encryptdecrypt-with-vault) 
   * an [ssh private key/password](docs/ans-x-ssh.md)
+* Inject Natively [Ansible environments](https://docs.ansible.com/ansible/latest/playbook_guide/playbooks_environment.html) (`ANSIBLE_HOME`, ...)
+
 
 ## Example
 
@@ -83,8 +85,9 @@ Example:
 export ANS_X_PROJECT_DIR=$HOME/my-ansible-project
 ```
 
-!!! Be careful that if you have more than one project and that you forget about it, 
-`ansible` may return that it didn't find your playbook !!!
+> [!WARNING] 
+> Be careful that if you have more than one project and that you forget about it, 
+> `ansible` may return that it didn't find your playbook.
 
 ### How to define the Ansible Docker Image?
 
@@ -93,8 +96,10 @@ By default, [ans-x scripts](#ans-x-scripts) executes the [ans-x docker image](do
 This image has the following features:
 * [All collections preinstalled](docs/ans-x-docker-image.md#collection)
 * [Kubernetes Ready](docs/ans-x-docker-image.md#kubernetes)
+* [Ansible Dev Tool included](docs/ans-x-docker-image.md#ansible-dev-tool)
 
 You can define [another Ansible Image](docs/ans-x-docker.md#how-to-run-another-image)
+
 
 ### How to encrypt/decrypt with Vault
 

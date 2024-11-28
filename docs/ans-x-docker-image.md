@@ -37,4 +37,9 @@ Example : [2.9 Collections](../Dockerfiles/2.9/README-2.9.md#collection)
 The `kubectl` client is also installed.
 (Needed by the [lookup plugin](../Dockerfiles/2.9/README-2.9.md#clients)
 
+### Ansible Dev Tool
+
+The [Ansible Development Tools](https://ansible.readthedocs.io/projects/dev-tools/) are included.
+
+
 
