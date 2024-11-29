@@ -2,12 +2,22 @@
 
 ## About
 
-This page shows you how you can connect with SSH.
+This page shows you how you can pass your secret to SSH.
 
-There are 2 methods:
-* via [private key](#private-key-authentication-how-to-pass-a-private-key-with-ansible_private_key_file-env)
-* via [password](#how-to-connect-with-a-password-authentication)
+There are 2 secrets type:
+* a [private key](#private-key-authentication-how-to-pass-a-private-key-with-ansible_private_key_file-env)
+* a [password](#how-to-connect-with-a-password-authentication)
 
+> [!TIP]
+> For the user, you can define it:
+> * inside your inventory file with the [ansible_user](https://docs.ansible.com/ansible/latest/reference_appendices/special_variables.html#connection-variables), 
+> * at the command line passing the same var 
+> * or via the ANSIBLE_USER env
+> 
+> Example with the `ANSIBLE_USER` env
+> ```bash
+> export ANSIBLE_USER=root
+> ```
 
 ## Private Key Authentication: How to pass a private Key with ANSIBLE_PRIVATE_KEY_FILE env
 

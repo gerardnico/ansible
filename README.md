@@ -133,7 +133,7 @@ You can then:
 
 ### How to connect with SSH
 
-See [How to define SSH keys or password](docs/ans-x-ssh.md)
+See [How to define SSH key or password](docs/ans-x-ssh.md)
 
 ### How to use Ans-x in your script (disable terminal)?
 
