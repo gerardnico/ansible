@@ -11,7 +11,9 @@ With `Ans-x`, you can run Ansible from anywhere (Windows WSL, Linux, Mac) with y
 * Support [pass](https://www.passwordstore.org/) as password manager to pass:
   * a [vault password](#how-to-encryptdecrypt-with-vault) 
   * an [ssh private key/password](docs/ans-x-ssh.md)
-* Inject Natively [Ansible environments](https://docs.ansible.com/ansible/latest/playbook_guide/playbooks_environment.html) (`ANSIBLE_HOME`, ...)
+* Inject Natively [Ansible environments](https://docs.ansible.com/ansible/latest/reference_appendices/config.html):
+  * [ANSIBLE_HOME](https://docs.ansible.com/ansible/latest/reference_appendices/config.html#ansible-home)
+  * [ANSIBLE_COLLECTION_PATH](https://docs.ansible.com/ansible/latest/reference_appendices/config.html#collections-paths)
 
 
 ## Example
@@ -72,22 +74,31 @@ These scripts are utility scripts
 
 ### How to define a project location so that the commands can be run from anywhere
 
-By default, the project directory is your working directory.
+By default, the project directory available to Ansible is your working directory.
 
-If you work in a project and find you self in a position where you need to `cd` every time 
-to run an ansible command, you can set the env variable `ANS_X_PROJECT_DIR` to the path
-of your ansible project.
+If you:
+  * want to start a command inside your project directory such as a [molecule](docs/bin-generated/molecule.md) command in the extensions directory of a collection
+  * find you self in a position where you need to `cd` every time to run an ansible command
+you can set the env variable `ANS_X_PROJECT_DIR` to the path of your ansible project.
 
 This directory will then be mounted and used instead of the current working directory.
 
 Example:
+* In a `.envrc` at the root directory of your project with `direnv`
 ```bash
-export ANS_X_PROJECT_DIR=$HOME/my-ansible-project
+export ANS_X_PROJECT_DIR=$PWD
+```
+* In your `bashrc` globally (If you have only one project)
+```bash
+export ANS_X_PROJECT_DIR=$HOME/my-only-ansible-project
 ```
 
 > [!WARNING] 
-> Be careful that if you have more than one project and that you forget about it, 
-> `ansible` may return that it didn't find your playbook.
+> Be careful with bashrc. If you have more than one project and that you forget about it, 
+> `ansible` commands:
+>   * may return that it didn't find your playbook.
+>   * will create files elsewhere
+ 
 
 ### How to define the Ansible Docker Image?
 
@@ -120,9 +131,20 @@ You can then:
 * Encrypt: see [ans-x-encrypt](docs/bin/ans-x-encrypt.md)
 * Decrypt: see [ans-x-decrypt](docs/bin/ans-x-decrypt.md)
 
-### How to connect with SSH 
+### How to connect with SSH
 
 See [How to define SSH keys or password](docs/ans-x-ssh.md)
+
+### How to use Ans-x in your script (disable terminal)?
+
+By default, we allocate a terminal to output colors.
+
+If you use `Ans-x` in a script to retrieve data, you need to disable this behavior
+so that you don't get any terminal specific characters.
+
+```bash
+export ANS_X_DOCKER_TERMINAL=0
+```
 
 ## Installation
 

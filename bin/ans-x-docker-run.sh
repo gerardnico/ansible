@@ -39,7 +39,21 @@ ENVS+=("--volume" "$HOME:$HOME")
 ######################
 echo::debug "Mounting the project/working directory"
 ENVS+=("--volume" "$ANS_X_PROJECT_DIR:$ANS_X_DOCKER_IMAGE_PROJECT_DIR")
-ENVS+=("--workdir" "$ANS_X_DOCKER_IMAGE_PROJECT_DIR")
+
+# Home is mounted
+# The project may lies in
+# $HOME/.ansible/collections/ansible_collections/
+if ! WORK_DIR_RELATIVE_PATH=$(path::relative_to "$HOME" "$PWD"); then
+  ENVS+=("--workdir" "$PWD")
+else
+  # Working directory may be a sub-directory of the project
+  # ie molecule starts in extensions
+  if ! WORK_DIR_RELATIVE_PATH=$(path::relative_to "$PWD" "$ANS_X_DOCKER_IMAGE_PROJECT_DIR"); then
+    ENVS+=("--workdir" "$ANS_X_DOCKER_IMAGE_PROJECT_DIR")
+  else
+    ENVS+=("--workdir" "$ANS_X_DOCKER_IMAGE_PROJECT_DIR/$WORK_DIR_RELATIVE_PATH")
+  fi
+fi
 
 
 # Ansible Home
@@ -56,6 +70,16 @@ else
   ANSIBLE_HOME="$ANS_X_DOCKER_IMAGE_ANSIBLE_HOME/$ANSIBLE_HOME_RELATIVE_PATH"
 fi
 
+# Collections
+# https://docs.ansible.com/ansible/latest/reference_appendices/config.html#collections-paths
+if [ "$ANSIBLE_COLLECTIONS_PATH" != "" ]; then
+  # Set the internal field separator to a colon, but only for the code inside the braces
+  while IFS=':' read -r COLLECTION_PATH; do
+    ENVS+=("--volume" "$COLLECTION_PATH:$COLLECTION_PATH")
+  done <<< "$ANSIBLE_COLLECTIONS_PATH"
+fi
+
+
 # ANSIBLE_LOCAL_TEMP Default to ANSIBLE_HOME
 # we don't need to define it anymore
 # https://docs.ansible.com/ansible/latest/reference_appendices/config.html#default-local-tmp
@@ -67,9 +91,13 @@ if [ "$(basename "$0")" == "ans-x-shell" ]; then
   # The input device is not a TTY. If you are using mintty, try prefixing the command with 'winpty'
   # Docker should not run as an interactive session (only for the docker-bash script)
   # Docker it, not bash it
-  ENVS+=("-it")
+  ENVS+=("-i")
 fi
 
+# Terminal (Colors!)
+if [ "$ANS_X_DOCKER_TERMINAL" == "1" ]; then
+  ENVS+=("-t")
+fi
 
 # Deprecated: 2024-11-28
 # We mount the home and therefore also ~/.ssh

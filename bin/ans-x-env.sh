@@ -80,6 +80,12 @@ ANS_X_DOCKER_ENVS="^(ANS_X|ANSIBLE|ACTION|AGNOSTIC|ANY|BECOME|CACHE|CALLBACKS|CO
 echo "ANS_X_DOCKER_ENVS='$ANS_X_DOCKER_ENVS'"
 echo ""
 
+# ANS_X_DOCKER_TERMINAL
+echo "# Allocate a terminal to Docker and get colors"
+echo "Colors are extra characters. You need to set this variable to 0 to retrieve raw data in a script"
+ANS_X_DOCKER_TERMINAL="${ANS_X_DOCKER_TERMINAL:-"1"}"
+echo "ANS_X_DOCKER_TERMINAL='$ANS_X_DOCKER_TERMINAL'"
+echo ""
 
 # ANS_X_DOCKER_IMAGE_PROJECT_DIR
 ANS_X_DOCKER_IMAGE_PROJECT_DIR=${ANS_X_DOCKER_IMAGE_PROJECT_DIR:-}
@@ -108,7 +114,25 @@ echo ""
 
 
 # Ansible
-# We set them here so that they are not empty
+
+# Ansible HOME
+# We set it so that it's not empty and defined to the Ansible default because we mount it
 echo "# Ansible Home: ANSIBLE_HOME (The directory where collections and roles are installed and searched by ansible)"
+echo "# "
 ANSIBLE_HOME=${ANSIBLE_HOME:-"$HOME/.ansible"}
 echo "ANSIBLE_HOME='$ANSIBLE_HOME'"
+echo ""
+
+# Ansible Collections path
+ANSIBLE_COLLECTIONS_PATH=${ANSIBLE_COLLECTIONS_PATH:-}
+if [ "$ANSIBLE_COLLECTIONS_PATH" == "" ]; then
+  # may be called ANSIBLE_COLLECTIONS_PATHS
+  ANSIBLE_COLLECTIONS_PATH=${ANSIBLE_COLLECTIONS_PATHS:-}
+fi
+if [ "$ANSIBLE_COLLECTIONS_PATH" == "" ]; then
+  # may be called COLLECTIONS_PATHS
+  ANSIBLE_COLLECTIONS_PATH=${COLLECTIONS_PATHS:-}
+fi
+echo "# Ansible Collections Path: ANSIBLE_COLLECTIONS_PATH (The base collections directory)"
+echo "# https://docs.ansible.com/ansible/latest/reference_appendices/config.html#collections-paths"
+echo "ANSIBLE_COLLECTIONS_PATH='$ANSIBLE_COLLECTIONS_PATH'"
