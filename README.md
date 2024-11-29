@@ -15,18 +15,19 @@ ansible --version
 ## Features
 
 With `Ans-x`, you get:
-* [Docker Ansible Execution Environment](docs/ans-x-docker.md)
-* [Full collection of Ansible scripts](#ans-x-scripts) that works [on Windows/Linux/iOS](#ansible-scripts)
+* a [Docker Ansible Execution Environment](docs/ans-x-docker.md)
+* a [full collection of Ansible scripts](#ans-x-scripts) that works [on Windows/Linux/iOS](#ansible-scripts)
 * [SSH protected keys and password](docs/ans-x-ssh.md)
-* [Project Aware Execution](#how-to-define-a-project-location-so-that-the-commands-can-be-run-from-anywhere)
+* a [Project Aware Execution](#how-to-define-a-project-location-so-that-the-commands-can-be-run-from-anywhere)
 * support for [pass](https://www.passwordstore.org/) as password manager to pass:
   * a [vault password](#how-to-encryptdecrypt-with-vault) 
   * an [ssh private key/password](docs/ans-x-ssh.md)
-* native [Ansible environments](https://docs.ansible.com/ansible/latest/reference_appendices/config.html)  injection:
+* native [Ansible environments](https://docs.ansible.com/ansible/latest/reference_appendices/config.html)  injection for:
   * [ANSIBLE_HOME](https://docs.ansible.com/ansible/latest/reference_appendices/config.html#ansible-home)
   * [ANSIBLE_COLLECTIONS_PATH](https://docs.ansible.com/ansible/latest/reference_appendices/config.html#collections-paths)
-* [a Kubernetes Ready Ansible](docs/ans-x-docker-image.md#kubernetes)
+* a [Kubernetes Ready Ansible](docs/ans-x-docker-image.md#kubernetes)
 * the [Ansible Dev Tools packaged](docs/ans-x-docker-image.md#ansible-dev-tool)
+* [Docker in Docker ready](#what-is-docker-in-docker-feature)
 
 
 ## Ans-X Scripts
@@ -134,6 +135,14 @@ so that you don't get any terminal specific characters.
 ```bash
 export ANS_X_DOCKER_TERMINAL=0
 ```
+
+## FAQ
+
+### What is Docker in Docker feature?
+
+If you use [molecule](docs/bin-generated/molecule.md) to create test, you will create container
+as test host. By default, a docker execution does not have this functionality.
+We enable it by mounting the docker socket and giving the right permissions.
 
 ## Installation
 

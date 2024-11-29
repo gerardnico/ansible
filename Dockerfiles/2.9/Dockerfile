@@ -133,3 +133,6 @@ WORKDIR /ansible/project
 # User should not be set as we support now any other image
 # that may not have the al user
 # USER al
+
+# Docker
+RUN groupadd -g 1001 docker

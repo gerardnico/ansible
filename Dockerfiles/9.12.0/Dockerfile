@@ -71,7 +71,7 @@ RUN echo "==> Install Ansible" && \
 # The version are in
 # https://github.com/ansible/ansible-dev-tools/blob/main/.config/constraints.txt
 RUN echo "==> Install Ansible Dev tools" && \
-    pipx install --include-deps ansible-dev-tools
+    pipx inject --include-deps ansible ansible-dev-tools
 
 
 # https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/#install-kubectl-on-linux
@@ -81,7 +81,11 @@ RUN echo "==> Installing Kubectl" && \
     echo "$(cat kubectl.sha256)  kubectl" | sha256sum --check && \
     sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
 
-
+# Running molecule test with `community.docker' 3.13.1`
+# The error was: ModuleNotFoundError: No module named 'requests'
+# https://pypi.org/project/requests/
+RUN echo "==> Install Python Requests" && \
+    pipx inject --include-deps ansible requests==2.32.3
 
 RUN echo "==> Adding hosts for convenience..."  && \
     mkdir -p /etc/ansible && \

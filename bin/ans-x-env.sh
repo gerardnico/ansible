@@ -69,9 +69,6 @@ ANS_X_DOCKER_REGISTRY=${ANS_X_DOCKER_REGISTRY:-"ghcr.io"}
 echo "# The docker image registry"
 echo "ANS_X_DOCKER_REGISTRY=$ANS_X_DOCKER_REGISTRY"
 
-#echo "# The docker user (the user running the command in the container)"
-#ANS_X_DOCKER_USER=${ANS_X_DOCKER_USER:-al}
-#echo "ANS_X_DOCKER_USER=$ANS_X_DOCKER_USER"
 
 
 # ANS_X_DOCKER_ENVS

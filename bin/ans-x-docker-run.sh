@@ -41,23 +41,35 @@ ENVS+=("--volume" "$HOME:$HOME")
 # Mount the working directory
 ######################
 echo::debug "Mounting the project/working directory"
-ENVS+=("--volume" "$ANS_X_PROJECT_DIR:$ANS_X_DOCKER_IMAGE_PROJECT_DIR")
+ENVS+=("--volume" "$ANS_X_PROJECT_DIR:$ANS_X_PROJECT_DIR")
 
 # Home is mounted
 # The project may lies in
 # $HOME/.ansible/collections/ansible_collections/
-if ! WORK_DIR_RELATIVE_PATH=$(path::relative_to "$HOME" "$PWD"); then
+if ! path::relative_to "$HOME" "$PWD"; then
   ENVS+=("--workdir" "$PWD")
 else
   # Working directory may be a sub-directory of the project
   # ie molecule starts in extensions
-  if ! WORK_DIR_RELATIVE_PATH=$(path::relative_to "$PWD" "$ANS_X_DOCKER_IMAGE_PROJECT_DIR"); then
-    ENVS+=("--workdir" "$ANS_X_DOCKER_IMAGE_PROJECT_DIR")
+  if ! path::relative_to "$PWD" "$ANS_X_PROJECT_DIR"; then
+    ENVS+=("--workdir" "$ANS_X_PROJECT_DIR")
   else
-    ENVS+=("--workdir" "$ANS_X_DOCKER_IMAGE_PROJECT_DIR/$WORK_DIR_RELATIVE_PATH")
+    ENVS+=("--workdir" "$PWD")
   fi
 fi
 
+# Docker mount
+# If the docker group id exists and is valid the value
+# ANS_X_DOCKER_HOST_GROUP_ID is not set
+if HOST_DOCKER_GROUP_ID=$(getent group docker | awk -F: '{print $3}'); then
+  # Mount Docker
+  ENVS+=("--volume" "/var/run/docker.sock:/var/run/docker.sock")
+  # Without the docker group, it does not have any permission on /var/run/docker.sock
+  # We don't mount the name but the group id because it does a lookup before mounting /etc/group and fails
+  ENVS+=("--group-add" "$HOST_DOCKER_GROUP_ID")
+  # group injection happens before mounting
+  ENVS+=("--volume" "/etc/group:/etc/group")
+fi
 
 # Ansible Home
 # Note ANSIBLE_HOME is not empty as this points because we called the env file
