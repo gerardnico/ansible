@@ -1,36 +1,30 @@
 # Ansible eXpress (Ans-x) - Easy Ansible Execution (Windows, Linux, Mac, Docker) 
 
 ## About
-With `Ansible eXpress (Ans-x)`, you can run Ansible from anywhere (Windows WSL, Linux, Mac) with your secrets privately stored (no env, no unprotected private key).
+Run any [Ansible cli](#ansible-scripts) from anywhere (Windows WSL, Linux, Mac) in 2 steps.
 
-`Ans-x` is:
-* an [Docker Ansible Execution Environment](https://docs.ansible.com/ansible/devel/getting_started_ee/index.html) 
-* and a [collection of Ansible scripts](#ans-x-scripts)
+
+* [Install Ansible Express](#installation), 
+* Run any [ansible scripts](#ans-x-scripts)
+```bash
+ansible --version
+```
 
 ## Features
 
-* [Handle SSH protected keys and password](docs/ans-x-ssh.md)
-* [Project Aware](#how-to-define-a-project-location-so-that-the-commands-can-be-run-from-anywhere)
-* [Scripts works on Windows/Linux/iOS](#ansible-scripts)
-* Support [pass](https://www.passwordstore.org/) as password manager to pass:
+With `Ans-x`, you get:
+* [Docker Ansible Execution Environment](docs/ans-x-docker.md)
+* [Full collection of Ansible scripts](#ans-x-scripts) that works [on Windows/Linux/iOS](#ansible-scripts)
+* [SSH protected keys and password](docs/ans-x-ssh.md)
+* [Project Aware Execution](#how-to-define-a-project-location-so-that-the-commands-can-be-run-from-anywhere)
+* support for [pass](https://www.passwordstore.org/) as password manager to pass:
   * a [vault password](#how-to-encryptdecrypt-with-vault) 
   * an [ssh private key/password](docs/ans-x-ssh.md)
-* Inject Natively [Ansible environments](https://docs.ansible.com/ansible/latest/reference_appendices/config.html):
+* native [Ansible environments](https://docs.ansible.com/ansible/latest/reference_appendices/config.html)  injection:
   * [ANSIBLE_HOME](https://docs.ansible.com/ansible/latest/reference_appendices/config.html#ansible-home)
   * [ANSIBLE_COLLECTIONS_PATH](https://docs.ansible.com/ansible/latest/reference_appendices/config.html#collections-paths)
-* [Kubernetes Ready](docs/ans-x-docker-image.md#kubernetes)
-* [Ansible Dev Tools Ready](docs/ans-x-docker-image.md#ansible-dev-tool)
-
-## Example
-
-After [installation](#installation), you can execute any [ansible and ans-x scripts](#ans-x-scripts)
-
-Example:
-```bash
-cd yourAnsibleProject
-ansible --version
-ansible-playbook your/path/to/your/playbook
-```
+* [a Kubernetes Ready Ansible](docs/ans-x-docker-image.md#kubernetes)
+* the [Ansible Dev Tools packaged](docs/ans-x-docker-image.md#ansible-dev-tool)
 
 
 ## Ans-X Scripts
