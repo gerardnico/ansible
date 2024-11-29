@@ -69,6 +69,8 @@ if HOST_DOCKER_GROUP_ID=$(getent group docker | awk -F: '{print $3}'); then
   ENVS+=("--group-add" "$HOST_DOCKER_GROUP_ID")
   # group injection happens before mounting
   ENVS+=("--volume" "/etc/group:/etc/group")
+  # TODO: Check if file ~/.docker/config as the value `desktop`
+  # To avoid Error pulling image xxx - docker-credential-desktop.exe not installed or not available in PATH
 fi
 
 # Ansible Home
