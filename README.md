@@ -142,7 +142,26 @@ export ANS_X_DOCKER_TERMINAL=0
 
 If you use [molecule](docs/bin-generated/molecule.md) to create test, you will create container
 as test host. By default, a docker execution does not have this functionality.
-We enable it by mounting the docker socket and giving the right permissions.
+
+We enable it by:
+* mounting the docker socket and giving the right permissions.
+* installing the docker cli (Mandatory for [molecule tasks](docs/bin-generated/molecule.md)) 
+
+How can I test that my image is `docker in docker` enabled?
+* Get a shell in the docker ansible image with [ans-x-shell.md](docs/bin-generated/ans-x-shell.md)
+```bash
+ans-x-shell
+```
+* Run docker command. 
+```bash
+docker ps
+```
+You should be able to see at minimum the ansible image where the shell is running. Example:
+```
+CONTAINER ID   IMAGE                               COMMAND                  CREATED         STATUS         PORTS     NAMES
+a84f4740356d   ghcr.io/gerardnico/ansible:9.12.0   "/usr/bin/env bash -…"   3 seconds ago   Up 2 seconds             vigilant_gauss
+```
+
 
 ## Installation
 

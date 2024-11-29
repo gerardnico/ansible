@@ -87,6 +87,25 @@ RUN echo "==> Installing Kubectl" && \
 RUN echo "==> Install Python Requests" && \
     pipx inject --include-deps ansible requests==2.32.3
 
+# https://docs.docker.com/engine/install/ubuntu/
+# Molecule needs the docker cli
+# containerd.io docker-buildx-plugin docker-compose-plugin
+RUN echo "==> Docker install"  && \
+    echo "==> Add Docker's official GPG key" && \
+    apt-get install ca-certificates curl && \
+    install -m 0755 -d /etc/apt/keyrings && \
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc && \
+    chmod a+r /etc/apt/keyrings/docker.asc
+
+RUN echo "==> Add the repository to Apt sources" && \
+    echo \
+      "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+      $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+      sudo tee /etc/apt/sources.list.d/docker.list > /dev/null && \
+    apt-get update && \
+    echo "==> Install Docker cli" && \
+    apt-get install -y docker-ce-cli
+
 RUN echo "==> Adding hosts for convenience..."  && \
     mkdir -p /etc/ansible && \
     echo "[local]" >> /etc/ansible/hosts && \
