@@ -183,66 +183,6 @@ export PATH=~/code/bashlib/lib:~/code/bashlib/bin:$PATH
 ansible-playbook --version
 ```
 
-## Support
-
-### SSH UNPROTECTED PRIVATE KEY FILE
-
-2 tips:
-
-* Even if it can be seen as completely mad, this error can appear when the
-  env variable `$ANSIBLE_CONFIG` is bad.
-* Mounting the keys under the `%UserProfile%/.ssh` make the key only readable by owner.
-
-### On Windows, ansible-vault id should be an executable file
-
-When running Docker on Windows, the default permission makes the files executable in Docker.
-See [Windows Permissions](#windows-permissions)
-You get this kind of error:
-
-```txt
-[WARNING]: Error in vault password file loading (None): Problem running vault password script
-/ansible/playbooks/vault_pwd_file.txt ([Errno 8] Exec format error). If this is not a script, remove the executable
-bit from the file.
-```
-
-To resolve this problem, you need to create an executable file that will output your password:
-
-```bash 
-#!/usr/bin/env bash
-echo myPassword
-```
-
-and to use it in your command line or set it in your `ansible.cfg` file
-
-```dos
-ansible-vault encrypt_string --vault-id vault_pwd_file.sh 'foobar' --name 'the_secret'
-'the_secret': !vault |
-          $ANSIBLE_VAULT;1.1;AES256
-          39373333356435366461373363663939363837623530363061353461326365353832366363363439
-          3665393437373663646561373762656439333365643334640a346236323639366637393937666134
-          66653037326466663262626337616435396461646239316163666437356332363066333935376364
-          3136333031616339370a323330373163333466396339343834653830356131316564626636663332
-          3330
-Encryption successful
-```
-
-### Windows Permissions
-
-```txt
-SECURITY WARNING: You are building a Docker image from Windows against a non-Windows Docker host. 
-All files and directories added to build context will have '-rwxr-xr-x' permissions. 
-It is recommended to double check and reset permissions for sensitive files and directories.
-```
-
-The Windows filesystem does not have an option to mark a file as `executable`.
-
-Building a Linux image from a Windows machine would therefore break the image
-if a file has to be marked executable.
-
-For that reason, files are marked executable by default when building from a windows client.
-
-You can modify the Dockerfile to change/remove the executable bit afterwards.
-
 ## How to contribute
 
 See [CONTRIB](contrib/CONTRIB.md)
