@@ -1,11 +1,13 @@
 # Ansible eXpress (Ans-x) - Easy Ansible Execution (Windows, Linux, Mac, Docker) 
 
 ## About
-Run any [Ansible cli](#ansible-scripts) from anywhere (Windows WSL, Linux, Mac) in 2 steps.
+Run any [Ansible cli](#ansible-scripts) in `2` steps.
 
-
-* [Install Ansible Express](#installation), 
-* Run any [ansible scripts](#ans-x-scripts)
+* Install
+```bash
+brew install --HEAD gerardnico/tap/ansx
+```
+* Run
 ```bash
 ansible --version
 ```
