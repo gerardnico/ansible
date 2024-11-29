@@ -154,7 +154,6 @@ for ANSIBLE_ENV in $ANSIBLE_ENVS; do
 done
 
 
-
 ################
 # SSH Connection
 ################
@@ -164,7 +163,7 @@ done
 if [ "${ANSIBLE_CONNECTION_PASSWORD_FILE:-}" != "" ]; then
   ENVS+=("-v" "$ANSIBLE_CONNECTION_PASSWORD_FILE:$ANSIBLE_CONNECTION_PASSWORD_FILE")
 else
-  if [ "${ANS_X_PASSWORD_PASS:-}" != "" ]; then
+  if [ "${ANS_X_PASSWORD_PASS:-}" != "" ] && [ "$ANS_X_PASS_ENABLED" == "1" ]; then
     PASSWORD_PASS_FILE="${PASSWORD_STORE_DIR:-"$HOME~/.password-store"}/$ANS_X_PASSWORD_PASS.gpg"
     if [ ! -f "$PASSWORD_PASS_FILE" ]; then
       echo::err "The pass ${ANS_X_PASSWORD_PASS} of the env ANS_X_PASSWORD_PASS does not exist"
@@ -186,7 +185,7 @@ fi
 if [ "${ANSIBLE_BECOME_PASSWORD_FILE:-}" != "" ]; then
   ENVS+=("-v" "$ANSIBLE_BECOME_PASSWORD_FILE:$ANSIBLE_BECOME_PASSWORD_FILE")
 else
-  if [ "${ANS_X_BECOME_PASSWORD_PASS:-}" != "" ]; then
+  if [ "${ANS_X_BECOME_PASSWORD_PASS:-}" != "" ] && [ "$ANS_X_PASS_ENABLED" == "1" ]; then
     BECOME_PASSWORD_PASS_FILE="${PASSWORD_STORE_DIR:-"$HOME~/.password-store"}/$ANS_X_BECOME_PASSWORD_PASS.gpg"
     if [ ! -f "$BECOME_PASSWORD_PASS_FILE" ]; then
       echo::err "The pass ${ANS_X_BECOME_PASSWORD_PASS} of the env ANS_X_BECOME_PASSWORD_PASS does not exist at $BECOME_PASSWORD_PASS_FILE"
@@ -208,7 +207,7 @@ fi
 if [ "${ANSIBLE_VAULT_PASSWORD_FILE:-}" != '' ]; then
   ENVS+=("-v" "$ANSIBLE_VAULT_PASSWORD_FILE:$ANSIBLE_VAULT_PASSWORD_FILE")
 else
-  if [ "${ANS_X_VAULT_ID_PASS:-}" != "" ]; then
+  if [ "${ANS_X_VAULT_ID_PASS:-}" != "" ] && [ "$ANS_X_PASS_ENABLED" == "1" ]; then
     VAULT_ID_PASS_FILE="${PASSWORD_STORE_DIR:-"$HOME~/.password-store"}/$ANS_X_VAULT_ID_PASS.gpg"
     if [ ! -f "$VAULT_ID_PASS_FILE" ]; then
       echo::err "The pass ${ANS_X_VAULT_ID_PASS} of the env ANS_X_VAULT_ID_PASS does not exist"
@@ -216,7 +215,7 @@ else
     fi
     PASS_DOCKER_PATH=/tmp/vault-password
     PASS_LOCAL_PATH=/dev/shm/vault-password
-    pass $ANS_X_VAULT_ID_PASS >| $PASS_LOCAL_PATH
+    pass "$ANS_X_VAULT_ID_PASS" >| $PASS_LOCAL_PATH
     # env for --vault-id
     ENVS+=("--env" "ANSIBLE_VAULT_PASSWORD_FILE=$PASS_DOCKER_PATH")
     ENVS+=("-v" "$PASS_LOCAL_PATH:$PASS_DOCKER_PATH")
@@ -229,7 +228,7 @@ fi
 if [ "${ANSIBLE_PRIVATE_KEY_FILE:-}" != '' ]; then
   ENVS+=("-v" "$ANSIBLE_PRIVATE_KEY_FILE:$ANSIBLE_PRIVATE_KEY_FILE")
 else
-  if [ "${ANS_X_SSH_KEY_PASS:-}" != "" ]; then
+  if [ "${ANS_X_SSH_KEY_PASS:-}" != "" ] && [ "$ANS_X_PASS_ENABLED" == "1" ]; then
     PRIVATE_KEY_PASS_FILE="${PASSWORD_STORE_DIR:-"$HOME~/.password-store"}/$ANS_X_SSH_KEY_PASS.gpg"
     if [ ! -f "$PRIVATE_KEY_PASS_FILE" ]; then
       echo::err "The pass ${ANS_X_SSH_KEY_PASS} of the env ANS_X_SSH_KEY_PASS does not exist ($PRIVATE_KEY_PASS_FILE)"

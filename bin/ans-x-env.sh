@@ -35,16 +35,27 @@ ANS_X_SSH_KEY_PASS=${ANS_X_SSH_KEY_PASS:-}
 echo "# The location of a ssh key in the pass secret manager"
 echo "# This variable will set ANSIBLE_PRIVATE_KEY_FILE"
 echo "ANS_X_SSH_KEY_PASS=$ANS_X_SSH_KEY_PASS"
+echo ""
 
 # ANS_X_PASSWORD_PASS
 ANS_X_PASSWORD_PASS=${ANS_X_PASSWORD_PASS:-}
 echo "# The SSH user password in pass"
 echo "ANS_X_PASSWORD_PASS=$ANS_X_PASSWORD_PASS"
+echo ""
 
 # ANS_X_BECOME_PASSWORD_PASS
 ANS_X_BECOME_PASSWORD_PASS=${ANS_X_BECOME_PASSWORD_PASS:-}
 echo "# The become password in pass"
 echo "ANS_X_BECOME_PASSWORD_PASS=$ANS_X_BECOME_PASSWORD_PASS"
+echo ""
+
+# ANS_X_PASS_ENABLED
+LOAD_PASS_DEFAULT=$([ "$(basename "$0")" != "molecule" ] && echo "1" || echo "0")
+ANS_X_PASS_ENABLED=${ANS_X_PASS_ENABLED:-$LOAD_PASS_DEFAULT}
+# With molecule we don't need to have secret as we connect locally
+echo "# Do we load secret from pass (disabled for molecule by default)"
+echo "ANS_X_PASS_ENABLED=$ANS_X_PASS_ENABLED"
+echo ""
 
 ##################################
 # Docker
