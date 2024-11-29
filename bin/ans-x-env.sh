@@ -60,7 +60,7 @@ echo "# The docker image name"
 echo "ANS_X_DOCKER_NAME=$ANS_X_DOCKER_NAME"
 
 # ANS_X_DOCKER_TAG
-ANS_X_DOCKER_TAG=${ANS_X_DOCKER_TAG:-2.9}
+ANS_X_DOCKER_TAG=${ANS_X_DOCKER_TAG:-9.12.0}
 echo "# The docker image tag"
 echo "ANS_X_DOCKER_TAG=$ANS_X_DOCKER_TAG"
 
@@ -69,9 +69,9 @@ ANS_X_DOCKER_REGISTRY=${ANS_X_DOCKER_REGISTRY:-"ghcr.io"}
 echo "# The docker image registry"
 echo "ANS_X_DOCKER_REGISTRY=$ANS_X_DOCKER_REGISTRY"
 
-echo "# The docker user (the user running the command in the container)"
-ANS_X_DOCKER_USER=${ANS_X_DOCKER_USER:-al}
-echo "ANS_X_DOCKER_USER=$ANS_X_DOCKER_USER"
+#echo "# The docker user (the user running the command in the container)"
+#ANS_X_DOCKER_USER=${ANS_X_DOCKER_USER:-al}
+#echo "ANS_X_DOCKER_USER=$ANS_X_DOCKER_USER"
 
 
 # ANS_X_DOCKER_ENVS
@@ -82,21 +82,21 @@ echo ""
 
 # ANS_X_DOCKER_TERMINAL
 echo "# Allocate a terminal to Docker and get colors"
-echo "Colors are extra characters. You need to set this variable to 0 to retrieve raw data in a script"
+echo "# Colors are extra characters. You need to set this variable to 0 to retrieve raw data in a script"
 ANS_X_DOCKER_TERMINAL="${ANS_X_DOCKER_TERMINAL:-"1"}"
 echo "ANS_X_DOCKER_TERMINAL='$ANS_X_DOCKER_TERMINAL'"
 echo ""
 
 # ANS_X_DOCKER_IMAGE_PROJECT_DIR
-ANS_X_DOCKER_IMAGE_PROJECT_DIR=${ANS_X_DOCKER_IMAGE_PROJECT_DIR:-}
-if [ "$ANS_X_DOCKER_IMAGE_PROJECT_DIR" == "" ]; then
-  if [[ "$ANS_X_DOCKER_TAG" =~ "2.8"|"2.7" ]]; then
-    ANS_X_DOCKER_IMAGE_PROJECT_DIR="/ansible/playbook"
-  else
-    ANS_X_DOCKER_IMAGE_PROJECT_DIR="/ansible/project"
-  fi
-fi
-echo "# The project directory in the image (ie working directory)"
+ANS_X_DOCKER_IMAGE_PROJECT_DIR=${ANS_X_DOCKER_IMAGE_PROJECT_DIR:-"$PWD"}
+#if [ "$ANS_X_DOCKER_IMAGE_PROJECT_DIR" == "" ]; then
+#  if [[ "$ANS_X_DOCKER_TAG" =~ "2.8"|"2.7" ]]; then
+#    ANS_X_DOCKER_IMAGE_PROJECT_DIR="/ansible/playbook"
+#  else
+#    ANS_X_DOCKER_IMAGE_PROJECT_DIR="/ansible/project"
+#  fi
+#fi
+echo "# The project directory in the image (by default, the working directory)"
 echo "ANS_X_DOCKER_IMAGE_PROJECT_DIR=$ANS_X_DOCKER_IMAGE_PROJECT_DIR"
 echo ""
 

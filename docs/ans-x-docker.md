@@ -11,15 +11,15 @@
 
 By default, [Ans-x scripts](../README.md#ans-x-scripts) run the [Ans-x Docker Image](https://github.com/gerardnico/ansible/pkgs/container/ansible)
 
-The actual version is `2.9`.
+The actual version is [9.12](https://pypi.org/project/ansible/9.12.0/).
 
 ```bash
 # get bash (same as ans-x-bash)
-docker run --rm -it ghcr.io/gerardnico/ansible:2.9 bash
+docker run --rm -it ghcr.io/gerardnico/ansible:9.12 bash
 # Run ansible-playbook cli
-docker run --rm ghcr.io/gerardnico/ansible:2.9 ansible-playbook --version
+docker run --rm ghcr.io/gerardnico/ansible:9.12 ansible-playbook --version
 # Run ansible cli
-docker run --rm ghcr.io/gerardnico/ansible:2.9 ansible --version
+docker run --rm ghcr.io/gerardnico/ansible:9.12 ansible --version
 ```
 
 ### How to run another image
@@ -88,11 +88,9 @@ We allow [HCLOUD for Hetzner](https://docs.ansible.com/ansible/latest/collection
 
 ## Qualified Path as env value
 
+We mount the full path of all 
 You should give a relatif path:
 * from your current directory.
 * of from your [project directory](../README.md#how-to-define-a-project-location-so-that-the-commands-can-be-run-from-anywhere)
 
-If you *really* want to give a qualified path as value, the working directory of the [ans-x image](ans-x-docker-image.md) is:
-* `/home/al` from 2.9
-* `/ansible/playbooks` before 2.9
 

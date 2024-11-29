@@ -3,9 +3,11 @@
 ## About
 The `Ans-x Docker Image` is the [default image](ans-x-docker.md#ans-x-image) used by the `ans-x scripts`.
 
+It's an [Ansible Execution Environment](../contrib/contrib-ee)
+
 The image is:
 * hosted on Github at [Ans-x Docker Image](https://github.com/gerardnico/ansible/pkgs/container/ansible)
-* created with this [Dockerfile](ans-x-dockerfile.md)
+* created with this [Dockerfile](../contrib/contrib-dockerfile)
 
 ## Usage
 
@@ -29,13 +31,13 @@ ansible
 
 The installation contains a lot of collection.
 
-Example : [2.9 Collections](../Dockerfiles/2.9/README-2.9.md#collection)
+Example : [2.9 Collections](../Dockerfiles/2.9/README-9#collection)
 
 
 ### Kubernetes
 
 The `kubectl` client is also installed.
-(Needed by the [lookup plugin](../Dockerfiles/2.9/README-2.9.md#clients)
+(Needed by the [lookup plugin](../Dockerfiles/2.9/README-9#clients)
 
 ### Ansible Dev Tool
 

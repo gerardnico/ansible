@@ -1,20 +1,25 @@
-# Ansible X - Easy Ansible Execution (Windows, Linux, Mac, Docker) 
+# Ansible eXpress (Ans-x) - Easy Ansible Execution (Windows, Linux, Mac, Docker) 
 
 ## About
-With `Ans-x`, you can run Ansible from anywhere (Windows WSL, Linux, Mac) with your secrets privately stored (no env, no unprotected private key).
+With `Ansible eXpress (Ans-x)`, you can run Ansible from anywhere (Windows WSL, Linux, Mac) with your secrets privately stored (no env, no unprotected private key).
 
-`Ans-x` is a [collection of Ansible scripts](#ans-x-scripts) with the following features:
+`Ans-x` is:
+* an [Docker Ansible Execution Environment](https://docs.ansible.com/ansible/devel/getting_started_ee/index.html) 
+* and a [collection of Ansible scripts](#ans-x-scripts)
+
+## Features
 
 * [Handle SSH protected keys and password](docs/ans-x-ssh.md)
-* [Project Directory: Run your command from any current directory](#how-to-define-a-project-location-so-that-the-commands-can-be-run-from-anywhere)
+* [Project Aware](#how-to-define-a-project-location-so-that-the-commands-can-be-run-from-anywhere)
 * [Scripts works on Windows/Linux/iOS](#ansible-scripts)
 * Support [pass](https://www.passwordstore.org/) as password manager to pass:
   * a [vault password](#how-to-encryptdecrypt-with-vault) 
   * an [ssh private key/password](docs/ans-x-ssh.md)
 * Inject Natively [Ansible environments](https://docs.ansible.com/ansible/latest/reference_appendices/config.html):
   * [ANSIBLE_HOME](https://docs.ansible.com/ansible/latest/reference_appendices/config.html#ansible-home)
-  * [ANSIBLE_COLLECTION_PATH](https://docs.ansible.com/ansible/latest/reference_appendices/config.html#collections-paths)
-
+  * [ANSIBLE_COLLECTIONS_PATH](https://docs.ansible.com/ansible/latest/reference_appendices/config.html#collections-paths)
+* [Kubernetes Ready](docs/ans-x-docker-image.md#kubernetes)
+* [Ansible Dev Tools Ready](docs/ans-x-docker-image.md#ansible-dev-tool)
 
 ## Example
 
@@ -76,9 +81,7 @@ These scripts are utility scripts
 
 By default, the project directory available to Ansible is your working directory.
 
-If you:
-  * want to start a command inside your project directory such as a [molecule](docs/bin-generated/molecule.md) command in the extensions directory of a collection
-  * find you self in a position where you need to `cd` every time to run an ansible command
+If you want to start a command inside your project directory such as a [molecule](docs/bin-generated/molecule.md) command in the `extensions` directory of a collection
 you can set the env variable `ANS_X_PROJECT_DIR` to the path of your ansible project.
 
 This directory will then be mounted and used instead of the current working directory.
@@ -88,21 +91,11 @@ Example:
 ```bash
 export ANS_X_PROJECT_DIR=$PWD
 ```
-* In your `bashrc` globally (If you have only one project)
-```bash
-export ANS_X_PROJECT_DIR=$HOME/my-only-ansible-project
-```
-
-> [!WARNING] 
-> Be careful with bashrc. If you have more than one project and that you forget about it, 
-> `ansible` commands:
->   * may return that it didn't find your playbook.
->   * will create files elsewhere
  
 
 ### How to define the Ansible Docker Image?
 
-By default, [ans-x scripts](#ans-x-scripts) executes the [ans-x docker image](docs/ans-x-docker-image.md).
+By default, [ans-x scripts](#ans-x-scripts) executes the [ans-x docker image (Execution Environment)](docs/ans-x-docker-image.md).
 
 This image has the following features:
 * [All collections preinstalled](docs/ans-x-docker-image.md#collection)

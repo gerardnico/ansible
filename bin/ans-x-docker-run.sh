@@ -7,14 +7,17 @@ source "${BASHLIB_LIBRARY_PATH:-}${BASHLIB_LIBRARY_PATH:+/}bashlib-command.sh"
 source "${BASHLIB_LIBRARY_PATH:-}${BASHLIB_LIBRARY_PATH:+/}bashlib-echo.sh"
 # shellcheck source=../../bash-lib/lib/bashlib-path.sh
 source "${BASHLIB_LIBRARY_PATH:-}${BASHLIB_LIBRARY_PATH:+/}bashlib-path.sh"
+# shellcheck source=../../bash-lib/lib/bashlib-bash.sh
+source "${BASHLIB_LIBRARY_PATH:-}${BASHLIB_LIBRARY_PATH:+/}bashlib-bash.sh"
 
 echo::debug "Loading env"
 ENV=$(source ans-x-env.sh)
-if ! eval "$ENV"; then
+if ! ERROR=$(bash::eval_validate "$ENV"); then
   echo::err "Error on env"
-  echo::echo "$ENV"
+  echo::echo "$ERROR"
   exit 1
 fi
+eval "$ENV"
 
 declare -a ENVS=("run" "--rm")
 
