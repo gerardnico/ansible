@@ -27,7 +27,7 @@ for you.
 
 ### How to use a private key stored in Pass
 
-We support passing a private key stored in the [pass secret manager](https://www.passwordstore.org/)
+We support passing a private key stored in the [pass secret manager](ans-x-pass.md)
 
 You need to set the variable `ANS_X_SSH_KEY_PASS` to the location of your private key
 
@@ -74,7 +74,7 @@ export ANSIBLE_PRIVATE_KEY_FILE=my_key
 
 ### How to use a password stored in Pass
 
-We support passing passwords stored in the [pass secret manager](https://www.passwordstore.org/)
+We support passing passwords stored in the [pass secret manager](ans-x-pass.md)
 
 You need to set to the location of your password the variable
 * `ANS_X_PASSWORD_PASS`: the user password
@@ -139,11 +139,17 @@ The files are then automatically mounted into the [Docker container](ans-x-docke
 
 ### How to debug your private key 
 
-* Get a shell in Ansible docker with [ans-x-bash](bin/ans-x-shell) 
+* Get a shell in Ansible docker with [ans-x-shell](bin/ans-x-shell) 
 ```bash
-ans-x-bash
+ans-x-shell
 ```
 * Try to connect to your host with your key and some verbosity. 
 ```bash
 ssh -i $ANSIBLE_PRIVATE_KEY_FILE -vvv user@host
 ```
+
+## Conf
+
+### How to enable pass on demand?
+
+You can enable pass on demand. See [pass](ans-x-pass.md).

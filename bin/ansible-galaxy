@@ -7,9 +7,39 @@ error::set_trap
 
 SCRIPT_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
+collections_list_with_path(){
+
+  # Get the collection paths from Ansible configuration
+  collection_paths=$(
+  ANS_X_DOCKER_TERMINAL=0 ansible-config dump --format json \
+    | jq '.[] | select(.name == "COLLECTIONS_PATHS").value | @sh'
+  )
+
+  echo "Ansible Collection Paths:"
+  # Loop through each path and display installed collections
+  IFS=: read -ra paths <<< "$collection_paths"
+  for path in "${paths[@]}"; do
+      echo "Path: $path"
+#      if [[ -d $path ]]; then
+#          find "$path" -type d -name "ansible_collections" -exec ls -d {}/*/* 2>/dev/null \;
+#      else
+#          echo "  Directory does not exist."
+#      fi
+  done
+
+}
+
 args=("$@")
 if [ "${1:-}" == "synopsis" ]; then
   args=("-h")
 fi
+
+# A
+if [ "${1:-}" == 'collection' ] && [ "${2:-}" == 'list' ] && [ "${3:-}" == '--format' ] && [ "${4:-}" == 'with-path' ]; then
+
+  collections_list_with_path
+
+fi
+
 
 source "${SCRIPT_PATH}/ans-x-docker-run.sh" "$(basename "$0")" "${args[@]}"

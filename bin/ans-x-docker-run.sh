@@ -11,7 +11,7 @@ source "${BASHLIB_LIBRARY_PATH:-}${BASHLIB_LIBRARY_PATH:+/}bashlib-path.sh"
 source "${BASHLIB_LIBRARY_PATH:-}${BASHLIB_LIBRARY_PATH:+/}bashlib-bash.sh"
 
 echo::debug "Loading env"
-ENV=$(source ans-x-env.sh)
+ENV=$(source ans-x-env.sh "$@")
 if ! ERROR=$(bash::eval_validate "$ENV"); then
   echo::err "Error on env"
   echo::echo "$ERROR"
@@ -116,30 +116,18 @@ if [ "$ANS_X_DOCKER_TERMINAL" == "1" ]; then
   ENVS+=("-t")
 fi
 
-# Deprecated: 2024-11-28
-# We mount the home and therefore also ~/.ssh
 ######################
 # Mount SSH Directory
 ######################
-#echo::debug "Mounting SSH if needed"
-## https://docs.ansible.com/ansible/devel/reference_appendices/config.html#default-private-key-file
-#SSH_VAR_PREFIX='ANS_X_SSH_KEY_PASSPHRASE_'
-#if printenv | grep -oP "$SSH_VAR_PREFIX|DEFAULT_PRIVATE_KEY_FILE|ANSIBLE_PRIVATE_KEY_FILE"; then
-#  echo::debug "We mount SSH"
-#  SSH_DOCKER_FORMAT="$HOME/.ssh"
-#  if [[ $(uname -a) =~ "CYGWIN" ]]; then
-#    SSH_DOCKER_FORMAT="$HOMEPATH/.ssh"
-#    SSH_DOCKER_FORMAT=$(cygpath -aw "$SSH_DOCKER_FORMAT" | tr 'C:' '/c' | tr '\\' '/')
-#  fi
-#  ENVS+=("--volume" "$SSH_DOCKER_FORMAT:/home/$ANS_X_DOCKER_USER/.ssh")
-#fi
+# Deprecated: 2024-11-28
+# We mount the home and therefore also ~/.ssh
 
 ######################
 # Hostname
 ######################
 echo::debug "Hostname"
-# (Point are not welcome, so we transform it with a underscore
-ENVS+=("-h" "ansible-${ANS_X_DOCKER_TAG//./_}")
+# Points are not welcome, so we transform it with a underscore
+ENVS+=("--hostname" "ansible-${ANS_X_DOCKER_TAG//./_}")
 
 ######################
 # Env
@@ -157,7 +145,7 @@ done
 ################
 # SSH Connection
 ################
-# ANSIBLE_CONNECTION_PASSWORD_FILE
+# SSH - ANSIBLE_CONNECTION_PASSWORD_FILE
 # https://docs.ansible.com/ansible/devel/reference_appendices/config.html#envvar-ANSIBLE_CONNECTION_PASSWORD_FILE
 # Password file
 if [ "${ANSIBLE_CONNECTION_PASSWORD_FILE:-}" != "" ]; then
@@ -179,7 +167,7 @@ else
   fi
 fi
 
-# ANSIBLE_BECOME_PASSWORD_FILE
+# SSH - ANSIBLE_BECOME_PASSWORD_FILE
 # https://docs.ansible.com/ansible/devel/reference_appendices/config.html#envvar-ANSIBLE_BECOME_PASSWORD_FILE
 # Password become file
 if [ "${ANSIBLE_BECOME_PASSWORD_FILE:-}" != "" ]; then
@@ -202,28 +190,7 @@ else
   fi
 fi
 
-# ANSIBLE_VAULT_PASSWORD_FILE
-# https://docs.ansible.com/ansible/devel/reference_appendices/config.html#envvar-ANSIBLE_VAULT_PASSWORD_FILE
-if [ "${ANSIBLE_VAULT_PASSWORD_FILE:-}" != '' ]; then
-  ENVS+=("-v" "$ANSIBLE_VAULT_PASSWORD_FILE:$ANSIBLE_VAULT_PASSWORD_FILE")
-else
-  if [ "${ANS_X_VAULT_ID_PASS:-}" != "" ] && [ "$ANS_X_PASS_ENABLED" == "1" ]; then
-    VAULT_ID_PASS_FILE="${PASSWORD_STORE_DIR:-"$HOME~/.password-store"}/$ANS_X_VAULT_ID_PASS.gpg"
-    if [ ! -f "$VAULT_ID_PASS_FILE" ]; then
-      echo::err "The pass ${ANS_X_VAULT_ID_PASS} of the env ANS_X_VAULT_ID_PASS does not exist"
-      exit 1
-    fi
-    PASS_DOCKER_PATH=/tmp/vault-password
-    PASS_LOCAL_PATH=/dev/shm/vault-password
-    pass "$ANS_X_VAULT_ID_PASS" >| $PASS_LOCAL_PATH
-    # env for --vault-id
-    ENVS+=("--env" "ANSIBLE_VAULT_PASSWORD_FILE=$PASS_DOCKER_PATH")
-    ENVS+=("-v" "$PASS_LOCAL_PATH:$PASS_DOCKER_PATH")
-  fi
-fi
-
-
-# ANSIBLE_PRIVATE_KEY_FILE
+# SSH - ANSIBLE_PRIVATE_KEY_FILE
 # https://docs.ansible.com/ansible/devel/reference_appendices/config.html#envvar-ANSIBLE_PRIVATE_KEY_FILE
 if [ "${ANSIBLE_PRIVATE_KEY_FILE:-}" != '' ]; then
   ENVS+=("-v" "$ANSIBLE_PRIVATE_KEY_FILE:$ANSIBLE_PRIVATE_KEY_FILE")
@@ -275,7 +242,31 @@ else
 
 fi
 
+################
+# Vault
+################
+# ANSIBLE_VAULT_PASSWORD_FILE
+# https://docs.ansible.com/ansible/devel/reference_appendices/config.html#envvar-ANSIBLE_VAULT_PASSWORD_FILE
+if [ "${ANSIBLE_VAULT_PASSWORD_FILE:-}" != '' ]; then
+  ENVS+=("-v" "$ANSIBLE_VAULT_PASSWORD_FILE:$ANSIBLE_VAULT_PASSWORD_FILE")
+else
+  if [ "${ANS_X_VAULT_ID_PASS:-}" != "" ] && [ "$ANS_X_PASS_ENABLED" == "1" ]; then
+    VAULT_ID_PASS_FILE="${PASSWORD_STORE_DIR:-"$HOME~/.password-store"}/$ANS_X_VAULT_ID_PASS.gpg"
+    if [ ! -f "$VAULT_ID_PASS_FILE" ]; then
+      echo::err "The pass ${ANS_X_VAULT_ID_PASS} of the env ANS_X_VAULT_ID_PASS does not exist"
+      exit 1
+    fi
+    PASS_DOCKER_PATH=/tmp/vault-password
+    PASS_LOCAL_PATH=/dev/shm/vault-password
+    pass "$ANS_X_VAULT_ID_PASS" >| $PASS_LOCAL_PATH
+    # env for --vault-id
+    ENVS+=("--env" "ANSIBLE_VAULT_PASSWORD_FILE=$PASS_DOCKER_PATH")
+    ENVS+=("-v" "$PASS_LOCAL_PATH:$PASS_DOCKER_PATH")
+  fi
+fi
 
-command::echo_eval "docker ${ENVS[*]} \
+
+
+command::echo_debug_eval "docker ${ENVS[*]} \
   $ANS_X_DOCKER_REGISTRY/$ANS_X_DOCKER_NAMESPACE/$ANS_X_DOCKER_NAME:$ANS_X_DOCKER_TAG \
   $*"

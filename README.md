@@ -19,8 +19,8 @@ With `Ans-x`, you get:
 * a [full collection of Ansible scripts](#ans-x-scripts) that works [on Windows/Linux/iOS](#ansible-scripts)
 * [SSH protected keys and password](docs/ans-x-ssh.md)
 * a [Project Aware Execution](#how-to-define-a-project-location-so-that-the-commands-can-be-run-from-anywhere)
-* support for [pass](https://www.passwordstore.org/) as password manager to pass:
-  * a [vault password](#how-to-encryptdecrypt-with-vault) 
+* support for [pass](docs/ans-x-pass.md) as secret store to get:
+  * a [vault id](#how-to-encryptdecrypt-with-vault) 
   * an [ssh private key/password](docs/ans-x-ssh.md)
 * native [Ansible environments](https://docs.ansible.com/ansible/latest/reference_appendices/config.html)  injection for:
   * [ANSIBLE_HOME](https://docs.ansible.com/ansible/latest/reference_appendices/config.html#ansible-home)
@@ -107,7 +107,7 @@ You can define [another Ansible Image](docs/ans-x-docker.md#how-to-run-another-i
 To be able to encrypt and decrypt, you need to set first a `passphrase` known as a `vault-it` in Ansible
 
 You can do:
-* from the [pass secret manager](https://www.passwordstore.org/)
+* from the [pass secret manager](docs/ans-x-pass.md)
 ```bash
 # if you get your vault password with
 pass ansible/vault-id
@@ -120,6 +120,7 @@ Otherwise, you can create it manually.
 You can then:
 * Encrypt: see [ans-x-encrypt](docs/bin/ans-x-encrypt.md)
 * Decrypt: see [ans-x-decrypt](docs/bin/ans-x-decrypt.md)
+* or use [ansible-vault](docs/bin-generated/ansible-vault.md) directly
 
 ### How to connect with SSH
 
@@ -134,6 +135,15 @@ so that you don't get any terminal specific characters.
 
 ```bash
 export ANS_X_DOCKER_TERMINAL=0
+```
+
+A one-liner example on how to extract the `COLLECTIONS_PATHS` env
+of [ansible-galax](docs/bin-generated/ansible-galaxy.md) with [ansible-config](docs/bin-generated/ansible-config.md)   
+```bash
+collection_paths=$(
+  ANS_X_DOCKER_TERMINAL=0 ansible-config dump --format json \
+    | jq '.[] | select(.name == "COLLECTIONS_PATHS").value | @sh'
+  )
 ```
 
 ## FAQ

@@ -1,13 +1,7 @@
 % ans-x-encrypt(1) Version Latest | Ansible-vault encrypt_string
 # NAME
 
-`ans-x-encrypt` is a `ansible-vault encrypt_string` shortcut
-
-
-# SYNOPSIS
-
-```bash${SYNOPSIS}
-```
+`ans-x-encrypt` is a [ansible-vault](../bin-generated/ansible-vault.md) shortcut for `ansible-vault encrypt_string` 
 
 # EXAMPLE: ENCRYPT A STRING
 
@@ -35,3 +29,9 @@ type cert.pem | ans-x-encrypt
 # bash
 ans-x-encrypt < cert.pem
 ```
+
+# SYNOPSIS
+
+```bash${SYNOPSIS}
+```
+

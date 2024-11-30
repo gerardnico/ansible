@@ -5,6 +5,34 @@
 # For instance, if ANS_X_PROJECT_DIR is set and that we have other
 # ansible project, we may want to override this env.
 
+# Flag parsing
+# ANS_X_PASS_ENABLED Default
+ANS_X_PASS_ENABLED="${ANS_X_PASS_ENABLED:-"1"}"
+#if [ "$ANS_X_PASS_ENABLED" == "" ]; then
+#  ANS_X_PASS_ENABLED="1"
+#  if [[ "$(basename "$0")" =~ "molecule"|"ansible-galaxy"|"ansible-conf" ]] ; then
+#    ANS_X_PASS_ENABLED="0"
+#  fi
+#fi
+while [[ $# -gt 0 ]]
+do
+   case "$1" in
+    "--xp"|"--xpass"|"--ans-x-pass")
+      if [ "$ANS_X_PASS_ENABLED" = "1" ]; then
+        ANS_X_PASS_ENABLED="0"
+      else
+        ANS_X_PASS_ENABLED="1"
+      fi
+      ;;
+    "--ans-x-with-pass")
+      ANS_X_PASS_ENABLED="1"
+      ;;
+    "--ans-x-without-pass")
+      ANS_X_PASS_ENABLED="0"
+      ;;
+   esac
+   shift
+done
 
 # ANS_X_PROJECT_DIR
 ANS_X_PROJECT_DIR=${ANS_X_PROJECT_DIR:-$PWD}
@@ -49,11 +77,9 @@ echo "# The become password in pass"
 echo "ANS_X_BECOME_PASSWORD_PASS=$ANS_X_BECOME_PASSWORD_PASS"
 echo ""
 
-# ANS_X_PASS_ENABLED
-LOAD_PASS_DEFAULT=$([ "$(basename "$0")" != "molecule" ] && echo "1" || echo "0")
-ANS_X_PASS_ENABLED=${ANS_X_PASS_ENABLED:-$LOAD_PASS_DEFAULT}
+# ANS_X_PASS_ENABLED (SSH)
 # With molecule we don't need to have secret as we connect locally
-echo "# Do we load secret from pass (disabled for molecule by default)"
+echo "# Do we load secret from pass (disabled for non-ssh cli such as molecule, ansible-config, ansible-galaxy, ... by default)"
 echo "ANS_X_PASS_ENABLED=$ANS_X_PASS_ENABLED"
 echo ""
 
@@ -97,13 +123,6 @@ echo ""
 
 # ANS_X_DOCKER_IMAGE_PROJECT_DIR
 ANS_X_DOCKER_IMAGE_PROJECT_DIR=${ANS_X_DOCKER_IMAGE_PROJECT_DIR:-"$PWD"}
-#if [ "$ANS_X_DOCKER_IMAGE_PROJECT_DIR" == "" ]; then
-#  if [[ "$ANS_X_DOCKER_TAG" =~ "2.8"|"2.7" ]]; then
-#    ANS_X_DOCKER_IMAGE_PROJECT_DIR="/ansible/playbook"
-#  else
-#    ANS_X_DOCKER_IMAGE_PROJECT_DIR="/ansible/project"
-#  fi
-#fi
 echo "# The project directory in the image (by default, the working directory)"
 echo "ANS_X_DOCKER_IMAGE_PROJECT_DIR=$ANS_X_DOCKER_IMAGE_PROJECT_DIR"
 echo ""
