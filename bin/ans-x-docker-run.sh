@@ -1,6 +1,8 @@
 # Run the Ansible docker image
 # This script is sourced from the other one
 
+SCRIPT_DIR=$(dirname "$(realpath "$0")")
+
 # shellcheck source=../../bash-lib/lib/bashlib-command.sh
 source "${BASHLIB_LIBRARY_PATH:-}${BASHLIB_LIBRARY_PATH:+/}bashlib-command.sh"
 # shellcheck source=../../bash-lib/lib/bashlib-echo.sh
@@ -72,6 +74,12 @@ if HOST_DOCKER_GROUP_ID=$(getent group docker | awk -F: '{print $3}'); then
   # TODO: Check if file ~/.docker/config as the value `desktop`
   # To avoid Error pulling image xxx - docker-credential-desktop.exe not installed or not available in PATH
 fi
+
+######################
+# Mount the extra bin script
+######################
+ENVS+=("--volume" "$SCRIPT_DIR/../bin-docker/ans-x-galaxy-collections-list-with-path:/usr/local/bin/ans-x-galaxy-collections-list-with-path")
+
 
 # Ansible Home
 # Note ANSIBLE_HOME is not empty as this points because we called the env file

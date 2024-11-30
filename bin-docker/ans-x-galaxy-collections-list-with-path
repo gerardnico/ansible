@@ -1,0 +1,27 @@
+#!/bin/bash
+
+
+# Get the collection paths from Ansible configuration
+BASE_COLLECTION_PATHS=($(
+  ANS_X_DOCKER_TERMINAL=0 ansible-config dump --format json \
+  | jq -r '.[] | select(.name == "COLLECTIONS_PATHS").value | @sh'
+))
+# Add default BASE_COLLECTION_PATH
+# https://docs.ansible.com/ansible/latest/collections_guide/collections_installing.html#installing-collections-with-ansible-galaxy
+BASE_COLLECTION_PATHS+=($HOME/.ansible/collections/ansible_collections)
+
+# Community collections (comes with the ansible package)
+# https://pypi.org/project/ansible/
+# https://docs.ansible.com/ansible/latest/collections/index.html
+BASE_COLLECTION_PATHS+=(/opt/pipx/venvs/ansible/lib/python3.12/site-packages/ansible_collections)
+
+for BASE_COLLECTION_PATH in "${BASE_COLLECTION_PATHS[@]}"; do
+    if [[ -d $BASE_COLLECTION_PATH ]]; then
+        for COLLECTION_NAMESPACE in $(ls $BASE_COLLECTION_PATH); do
+          if [[ -d "$BASE_COLLECTION_PATH/$COLLECTION_NAMESPACE" ]]; then
+            echo $COLLECTION_NAMESPACE at "$BASE_COLLECTION_PATH/$COLLECTION_NAMESPACE"
+          fi
+        done
+    fi
+done
+

@@ -28,10 +28,21 @@ export ANS_X_PASS_ENABLED="1"
 If `pass` has a Time to live (TTL) configured (ie [Gpg default-cache-ttl](https://www.gnupg.org/documentation/manuals/gnupg/Agent-Options.html#index-default_002dcache_002dttl)), it can become annoying
 to get a prompt every couple of minutes.
 
-We supports 2 modes :
+We support 3 modes :
+* [enable once and for all](#how-to-enable-it-once-and-for-all)
 * [enable on demand](#how-to-disable-it-globally-enable-it-on-demand)
 * [disable on demand](#how-to-disable-it-on-demand)
 
+### How to enable it once and for all
+
+You may just work in the shell with [ans-x-shell](bin-generated/ans-x-shell.md). 
+An instance is started, `pass` asks your passphrase, 
+and you never need to put it again.
+
+Example:
+```bash
+ans-x-shell
+```
 
 ### How to disable it globally, enable it on demand
 

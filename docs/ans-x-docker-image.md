@@ -29,9 +29,13 @@ ansible
 
 ### Collection
 
-The installation contains a lot of collection.
+The installation contains the [community collections](https://docs.ansible.com/ansible/latest/collections/index.html)
 
-Example : [2.9 Collections](../Dockerfiles/2.9/README-9#collection)
+Get them with [ansible-galaxy](bin-generated/ansible-galaxy.md)
+
+```bash
+ansible-galaxy collection list
+```
 
 
 ### Kubernetes
