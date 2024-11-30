@@ -87,6 +87,22 @@ RUN echo "==> Installing Kubectl" && \
 RUN echo "==> Install Python Requests" && \
     pipx inject --include-deps ansible requests==2.32.3
 
+ENV MOLECULE_PLUGIN_VERSION 23.5.3
+# https://pypi.org/project/molecule-plugins/
+# Molecule Docker driver and others goodies
+RUN echo "==> Install Molecule Plugins" && \
+    pipx inject --include-deps ansible molecule-plugins==${MOLECULE_PLUGIN_VERSION} && \
+    echo "==> Install the Molecule Plugins dependencies" && \
+    pipx inject --include-deps ansible molecule-plugins['azure']==${MOLECULE_PLUGIN_VERSION} && \
+    pipx inject --include-deps ansible molecule-plugins['containers']==${MOLECULE_PLUGIN_VERSION} && \
+    pipx inject --include-deps ansible molecule-plugins['docker']==${MOLECULE_PLUGIN_VERSION} && \
+    pipx inject --include-deps ansible molecule-plugins['ec2']==${MOLECULE_PLUGIN_VERSION} && \
+    pipx inject --include-deps ansible molecule-plugins['gce']==${MOLECULE_PLUGIN_VERSION} && \
+    pipx inject --include-deps ansible molecule-plugins['openstack']==${MOLECULE_PLUGIN_VERSION} && \
+    pipx inject --include-deps ansible molecule-plugins['podman']==${MOLECULE_PLUGIN_VERSION} && \
+    pipx inject --include-deps ansible molecule-plugins['vagrant']==${MOLECULE_PLUGIN_VERSION}
+
+
 # https://docs.docker.com/engine/install/ubuntu/
 # Molecule needs the docker cli
 # containerd.io docker-buildx-plugin docker-compose-plugin

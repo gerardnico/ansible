@@ -29,15 +29,15 @@ cli (https://docs.ansible.com/ansible/latest/cli/ansible-inventory.html)
 INVENTORY] [-l SUBSET] [\[en]vault-id VAULT_IDS] [-J |
 \[en]vault-password-file VAULT_PASSWORD_FILES] [\[en]playbook-dir
 BASEDIR] [-e EXTRA_VARS] [\[en]list] [\[en]host HOST] [\[en]graph] [-y]
-[\[en]toml] [\[en]vars] [\[en]export] [\[en]output OUTPUT_FILE] [group]
+[\[en]toml] [\[en]vars] [\[en]export] [\[en]output OUTPUT_FILE]
+[host|group]
 .PP
 Show Ansible inventory information, by default it uses the inventory
 script JSON format
 .PP
-positional arguments: group The name of a group in the inventory,
-relevant when using \[en]graph
+positional arguments: host|group
 .PP
-options: \[en]export When doing \[en]list, represent in a way that is
+options: \[en]export When doing an \[en]list, represent in a way that is
 optimized for export,not as an accurate representation of how Ansible
 has processed it \[en]output OUTPUT_FILE When doing \[en]list, send the
 inventory to a file instead of to the screen \[en]playbook-dir BASEDIR

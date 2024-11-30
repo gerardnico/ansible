@@ -76,12 +76,41 @@ if HOST_DOCKER_GROUP_ID=$(getent group docker | awk -F: '{print $3}'); then
 fi
 
 ######################
-# Mount the extra bin script
+# Mount the extras
 ######################
-ENVS+=("--volume" "$SCRIPT_DIR/../bin-docker/ans-x-galaxy-collections-list-with-path:/usr/local/bin/ans-x-galaxy-collections-list-with-path")
+ENVS+=("--volume" "$SCRIPT_DIR/../docker-mount/bin/ans-x-galaxy-collections-list-with-path:/usr/local/bin/ans-x-galaxy-collections-list-with-path")
 
+# Docker Auth
+# By default, on WSL, you get .docker/config.json
+# {
+#  "credsStore": "desktop.exe"
+# }
+# Desktop.exe is the docker windows credentials store
+# but is not present in the image
+# because we mount the home, docker in docker (called by molecule) would not work.
+# We replace it with an empty json for now
+#
+# Possible solution: we could generate it.
+# Example of a config file with unencrypted auth secret
+# {
+#    "auths": {
+#        "ghcr.io": {
+#           "auth": "Z2VyYXJkbmljb0BnbWFpbC5jb206Z2hwX2FQNGhZc2JyTDFQYzdjRlpiUnE0Qm44bVBldDFmNzFFQndSUQ=="
+#        }
+#    }
+# }
+#
+DOCKER_CONFIG="$HOME/.docker/config.json"
+if [ -f $DOCKER_CONFIG ]; then
+  DOCKER_CREDS_STORE=$(jq -r '.credsStore' "$HOME/.docker/config.json")
+  if [ "$DOCKER_CREDS_STORE" == "desktop.exe" ]; then
+    ENVS+=("--volume" "$SCRIPT_DIR/../docker-mount/home/.docker/config.json:$HOME/.docker/config.json")
+  fi
+fi
 
+######################
 # Ansible Home
+######################
 # Note ANSIBLE_HOME is not empty as this points because we called the env file
 # All ANSIBLE_XXX env are set later
 # Ansible home should exist as we mount it so that it get

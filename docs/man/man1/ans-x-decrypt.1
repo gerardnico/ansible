@@ -18,7 +18,32 @@
 .hy
 .SH NAME
 .PP
-\f[V]ans-x-decrypt\f[R] is a Ansible-vault decrypt shortcut
+\f[V]ans-x-decrypt\f[R] is an ansible-vault shortcut for
+\f[V]ansible-vault decrypt\f[R] but works for now in a really limited
+cases.
+.PP
+We recommend to use a shell as explained below.
+.SH HOW TO DECRYPT A STRING
+.PP
+It needs a shell (\f[V]bash\f[R]) to be: * able to pass multiple line
+(Dos Cmd does not support it) * don\[cq]t fuck up with bash character
+such as dollar * to pass stdin to decrypt
+.PP
+Start a shell with ans-x-shell
+.IP
+.nf
+\f[C]
+ans-x-shell
+\f[R]
+.fi
+.PP
+then
+.IP
+.nf
+\f[C]
+echo \[aq]$ANSIBLE_VAULT;...<ansible vault string>\[aq] | tr -d \[aq] \[aq] | ansible-vault decrypt && echo
+\f[R]
+.fi
 .SH SYNOPSIS
 .PP
 \[ga]\[ga]\[ga]bashusage: ansible-vault decrypt [-h] [\[en]output
@@ -40,25 +65,4 @@ currently evaluate up to -vvvvvv.
 A reasonable level to start is -vvv, connection debugging might require
 -vvvv.
 This argument may be specified multiple times.
-.IP
-.nf
-\f[C]
-# HOW TO DECRYPT A STRING
-
-It needs \[ga]bash\[ga] to be:
-* able to pass multiple line (Dos Cmd does not support it)
-* don\[aq]t fuck up with bash character such as dollar
-* to pass stdin to decrypt
-
-\[ga]\[ga]\[ga]bash
-ans-x-bash
-\f[R]
-.fi
-.PP
-then
-.IP
-.nf
-\f[C]
-echo \[aq]$ANSIBLE_VAULT;...<ansible vault string>\[aq] | tr -d \[aq] \[aq] | ansible-vault decrypt && echo
-\f[R]
-.fi
+\[ga]\[ga]\[ga]

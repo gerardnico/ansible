@@ -13,17 +13,16 @@ Official documentation: [ansible-inventory command line cli](https://docs.ansibl
                          [--playbook-dir BASEDIR] [-e EXTRA_VARS] [--list]
                          [--host HOST] [--graph] [-y] [--toml] [--vars]
                          [--export] [--output OUTPUT_FILE]
-                         [group]
+                         [host|group]
 
 Show Ansible inventory information, by default it uses the inventory script
 JSON format
 
 positional arguments:
-  group                 The name of a group in the inventory, relevant when
-                        using --graph
+  host|group
 
 options:
-  --export              When doing --list, represent in a way that is
+  --export              When doing an --list, represent in a way that is
                         optimized for export,not as an accurate representation
                         of how Ansible has processed it
   --output OUTPUT_FILE  When doing --list, send the inventory to a file

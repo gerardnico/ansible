@@ -18,8 +18,37 @@
 .hy
 .SH NAME
 .PP
-\f[V]ans-x-encrypt\f[R] is a \f[V]ansible-vault encrypt_string\f[R]
-shortcut
+\f[V]ans-x-encrypt\f[R] is a ansible-vault shortcut for
+\f[V]ansible-vault encrypt_string\f[R]
+.SH EXAMPLE: ENCRYPT A STRING
+.IP
+.nf
+\f[C]
+# from Iterm / Cygwin / Linux / Windows WSL 
+ans-x-encrypt \[aq]the_password_to_encrypt\[aq]
+# from DOS
+ans-x-encrypt the_password_to_encrypt
+\f[R]
+.fi
+.PP
+It\[cq]s the same as executing fom a bash shell inside the Docker Image
+.IP
+.nf
+\f[C]
+ansible-vault encrypt_string \[aq]the_secret_to_encrypt\[aq]
+echo \[aq]the_secret_to_encrypt\[aq] | ansible-vault encrypt_string 
+\f[R]
+.fi
+.SH EXAMPLE: ENCRYPT A FILE
+.IP
+.nf
+\f[C]
+# windows
+type cert.pem | ans-x-encrypt
+# bash
+ans-x-encrypt < cert.pem
+\f[R]
+.fi
 .SH SYNOPSIS
 .PP
 \[ga]\[ga]\[ga]bashusage: ansible-vault encrypt_string [-h]
@@ -51,36 +80,4 @@ prompted for the string to encrypt -n ENCRYPT_STRING_NAMES, \[en]name
 ENCRYPT_STRING_NAMES Specify the variable name.
 This argument may be specified multiple times.
 \[en]stdin-name ENCRYPT_STRING_STDIN_NAME Specify the variable name for
-stdin
-.IP
-.nf
-\f[C]
-# EXAMPLE: ENCRYPT A STRING
-
-
-\[ga]\[ga]\[ga]bash
-# from Iterm / Cygwin / Linux / Windows WSL 
-ans-x-encrypt \[aq]the_password_to_encrypt\[aq]
-# from DOS
-ans-x-encrypt the_password_to_encrypt
-\f[R]
-.fi
-.PP
-It\[cq]s the same as executing fom a bash shell inside the Docker Image
-.IP
-.nf
-\f[C]
-ansible-vault encrypt_string \[aq]the_secret_to_encrypt\[aq]
-echo \[aq]the_secret_to_encrypt\[aq] | ansible-vault encrypt_string 
-\f[R]
-.fi
-.SH EXAMPLE: ENCRYPT A FILE
-.IP
-.nf
-\f[C]
-# windows
-type cert.pem | ans-x-encrypt
-# bash
-ans-x-encrypt < cert.pem
-\f[R]
-.fi
+stdin \[ga]\[ga]\[ga]

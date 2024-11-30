@@ -53,13 +53,14 @@ These scripts are the counterpart of:
 |--------------------------------------------------------------|------------------------------------------------------------------|----------------------------------------------------------------------------------------|
 | [ansible](docs/bin-generated/ansible.md)                     | [ansible.cmd](docs/bin-generated/ansible.md)                     | The `ansible` cli runs a single task against a set of hosts                            |
 | [ansible-config](docs/bin-generated/ansible-config.md)       | [ansible-config.cmd](docs/bin-generated/ansible-config.md)       | The `ansible-config` cli shows ansible configuration                                   |
-| [ansible-galaxy](docs/bin-generated/ansible-galaxy.md)       | [ansible-galaxy.cmd](docs/bin-generated/ansible-galaxy.md)       | The `ansible-galaxy` cli execute role and Collection related operations                |
-| [ansible-inventory](docs/bin-generated/ansible-inventory.md) | [ansible-inventory.cmd](docs/bin-generated/ansible-inventory.md) | The `ansible-inventory` cli  show Ansible inventory information                        |
+| [ansible-galaxy](docs/bin-generated/ansible-galaxy.md)       | [ansible-galaxy.cmd](docs/bin-generated/ansible-galaxy.md)       | The `ansible-galaxy` cli executes role and Collection related operations               |
+| [ansible-inventory](docs/bin-generated/ansible-inventory.md) | [ansible-inventory.cmd](docs/bin-generated/ansible-inventory.md) | The `ansible-inventory` cli  shows Ansible inventory information                       |
+| [ansible-navigator](docs/bin-generated/ansible-navigator.md) |  | The `ansible-navigator` cli helps with troubleshooting                                 |
 | [ansible-playbook](docs/bin-generated/ansible-playbook.md)   | [ansible-playbook.cmd](docs/bin-generated/ansible-inventory.md)  | The `ansible-playbook` cli runs Ansible playbooks                                      |
 | [ansible-pull](docs/bin-generated/ansible-pull.md)           | [ansible-pull.cmd](docs/bin-generated/ansible-pull.md)           | The `ansible-pull` pulls and run playbooks from a VCS repo                             |
 | [ansible-vault](docs/bin-generated/ansible-vault.md)         | [ansible-vault.cmd](docs/bin-generated/ansible-vault.md)                       | The [ansible-vault cli](https://docs.ansible.com/ansible/latest/user_guide/vault.html) | 
 | [azure_rm](docs/bin-generated/azure_rm.md)                   | [azure_rm.cmd](docs/bin-generated/azure_rm.md)                   | The Azure Inventory script `azure_rm.py` (Deprecated, Old)                             |
-| [molecule](docs/bin-generated/molecule.md)                   |                    | The Role Testing tool            |
+| [molecule](docs/bin-generated/molecule.md)                   |                    | The Role Testing tool                                                                  |
 
 ### Ans-X Extra Scripts
 

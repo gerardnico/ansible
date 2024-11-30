@@ -22,6 +22,33 @@ The \f[V]ansible-vault\f[R] cli encrypts/decrypts Ansible data.
 .PP
 Official documentation: ansible-vault command line
 cli (https://docs.ansible.com/ansible/latest/cli/ansible-vault.html)
+.SS Pass support for vault-id
+.PP
+The \f[V]vault-id\f[R] is the passphrase that encrypts the secret in
+\f[V]Ansible Vault\f[R]
+.PP
+\f[V]Ansible X\f[R] scripts support pass as secret store to store and
+retrieve your \f[V]vault-id\f[R] by setting the
+\f[V]ANS_X_VAULT_ID_PASS\f[R] environment variable.
+.PP
+Example:
+.IP
+.nf
+\f[C]
+# if you get your vault id with
+pass ansible/vault-id
+# you need to set ANS_X_PASSWORD_PASS to
+export ANS_X_VAULT_ID_PASS=ansible/vault-id
+\f[R]
+.fi
+.PP
+\f[V]Ans-x\f[R] will then create the
+ANSIBLE_VAULT_PASSWORD_FILE (https://docs.ansible.com/ansible/devel/reference_appendices/config.html#envvar-ANSIBLE_VAULT_PASSWORD_FILE)
+Otherwise, you can create it manually.
+.SS Encrypt/Decrypt Wrapper
+.PP
+We support wrappers for a one argument encryption and decryption *
+Encrypt: see ans-x-encrypt * Decrypt: see ans-x-decrypt
 .SH SYNOPSIS
 .PP
 \[ga]\[ga]\[ga]bashusage: ansible-vault [-h] [\[en]version] [-v]
