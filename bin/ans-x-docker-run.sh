@@ -273,8 +273,16 @@ else
   fi
 fi
 
-
+args=()
+while [[ $# -gt 0 ]]
+do
+ # delete ans-x flag
+ if  [[ ! "$1" =~ "--ans-x" ]]; then
+     args+=("$1")
+ fi
+ shift
+done
 
 command::echo_debug_eval "docker ${ENVS[*]} \
   $ANS_X_DOCKER_REGISTRY/$ANS_X_DOCKER_NAMESPACE/$ANS_X_DOCKER_NAME:$ANS_X_DOCKER_TAG \
-  $*"
+  ${args[*]}"
