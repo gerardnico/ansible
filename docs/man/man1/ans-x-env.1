@@ -26,9 +26,8 @@ Execution Environment.
 The Ansible Express Env
 .SS ANS_X_PROJECT_DIR
 .PP
-The local ansible project directory to mount in
-docker (https://github.com//gerardnico/ansible-x/blob/main/home/admin/code/ans-x-project-directory.md#ans_x_project_dir)
-Mount the directory if set
+The local ansible project directory to mount in docker Mount the
+directory if set
 .IP
 .nf
 \f[C]
@@ -37,9 +36,8 @@ export ANS_X_PROJECT_DIR=/home/admin/code/ansible
 .fi
 .SS ANS_X_VAULT_ID_PASS
 .PP
-The location of a vault id in the pass secret
-manager (https://github.com//gerardnico/ansible-x/blob/main/home/admin/code/ansible/ansible-vault.md#ans_x_vault_id_pass)
-This variable will set ANSIBLE_VAULT_PASSWORD_FILE
+The location of a vault id in the pass secret manager This variable will
+set ANSIBLE_VAULT_PASSWORD_FILE
 .IP
 .nf
 \f[C]
@@ -48,9 +46,8 @@ export ANS_X_VAULT_ID_PASS=ansible/vault-password
 .fi
 .SS ANS_X_SSH_KEY_PASS
 .PP
-The location of a ssh key in the pass secret
-manager (https://github.com//gerardnico/ansible-x/blob/main/home/admin/code/ans-x-ssh.md#ans_x_ssh_key_pass)
-This variable will set ANSIBLE_PRIVATE_KEY_FILE
+The location of a ssh key in the pass secret manager This variable will
+set ANSIBLE_PRIVATE_KEY_FILE
 .IP
 .nf
 \f[C]
@@ -59,9 +56,8 @@ export ANS_X_SSH_KEY_PASS=ssh-x/id_gerardnico_kube
 .fi
 .SS ANS_X_CONNECTION_PASSWORD_PASS
 .PP
-The SSH user password in
-pass (https://github.com//gerardnico/ansible-x/blob/main/home/admin/code/ans-x-ssh.md#ans_x_connection_password_pass)
-This variable will set ANSIBLE_CONNECTION_PASSWORD_FILE
+The SSH user password in pass This variable will set
+ANSIBLE_CONNECTION_PASSWORD_FILE
 .IP
 .nf
 \f[C]
@@ -70,9 +66,8 @@ export ANS_X_CONNECTION_PASSWORD_PASS=
 .fi
 .SS ANS_X_BECOME_PASSWORD_PASS
 .PP
-The become password in
-pass (https://github.com//gerardnico/ansible-x/blob/main/home/admin/code/ans-x-ssh.md#ans_x_become_password_pass)
-This variable will set ANSIBLE_BECOME_PASSWORD_FILE
+The become password in pass This variable will set
+ANSIBLE_BECOME_PASSWORD_FILE
 .IP
 .nf
 \f[C]
@@ -81,9 +76,7 @@ export ANS_X_BECOME_PASSWORD_PASS=
 .fi
 .SS ANS_X_PASS_ENABLED
 .PP
-Enable or disable the pass
-secret (https://github.com//gerardnico/ansible-x/blob/main/home/admin/code/ans-x-pass.md#ans_x_pass_enabled)
-1 (default, enabled), 0 (disabled)
+Enable or disable the pass secret 1 (default, enabled), 0 (disabled)
 .IP
 .nf
 \f[C]
@@ -92,9 +85,7 @@ export ANS_X_PASS_ENABLED=1
 .fi
 .SS ANS_X_DOCKER_NAMESPACE
 .PP
-The docker image
-namespace (https://github.com//gerardnico/ansible-x/blob/main/home/admin/code/ans-x-docker.md#ans_x_docker_namespace)
-Set the namespace of the docker image used
+The docker image namespace Set the namespace of the docker image used
 .IP
 .nf
 \f[C]
@@ -103,9 +94,7 @@ export ANS_X_DOCKER_NAMESPACE=gerardnico
 .fi
 .SS ANS_X_DOCKER_NAME
 .PP
-The docker image
-name (https://github.com//gerardnico/ansible-x/blob/main/home/admin/code/ans-x-docker.md#ans_x_docker_name)
-Set the name of the docker image used
+The docker image name Set the name of the docker image used
 .IP
 .nf
 \f[C]
@@ -114,9 +103,7 @@ export ANS_X_DOCKER_NAME=ansible
 .fi
 .SS ANS_X_DOCKER_TAG
 .PP
-The docker image
-tag (https://github.com//gerardnico/ansible-x/blob/main/home/admin/code/ans-x-docker.md#ans_x_docker_tag)
-Set the tag of the docker image used
+The docker image tag Set the tag of the docker image used
 .IP
 .nf
 \f[C]
@@ -125,9 +112,7 @@ export ANS_X_DOCKER_TAG=9.12.0
 .fi
 .SS ANS_X_DOCKER_REGISTRY
 .PP
-The docker image
-registry (https://github.com//gerardnico/ansible-x/blob/main/home/admin/code/ans-x-docker.md#ans_x_docker_registry)
-Set the registry of the docker image used
+The docker image registry Set the registry of the docker image used
 .IP
 .nf
 \f[C]
@@ -136,9 +121,8 @@ export ANS_X_DOCKER_REGISTRY=ghcr.io
 .fi
 .SS ANS_X_DOCKER_ENVS
 .PP
-The docker envs grep pattern
-expression (https://github.com//gerardnico/ansible-x/blob/main/home/admin/code/ans-x-docker.md#ans_x_docker_envs)
-Selects the environment variable to pass to Ansible
+The docker envs grep pattern expression Selects the environment variable
+to pass to Ansible
 .IP
 .nf
 \f[C]
@@ -147,9 +131,8 @@ export ANS_X_DOCKER_ENVS=\[ha](ANS_X|ANSIBLE|ACTION|AGNOSTIC|ANY|BECOME|CACHE|CA
 .fi
 .SS ANS_X_DOCKER_TERMINAL
 .PP
-Allocate a terminal to Docker and get
-colors (https://github.com//gerardnico/ansible-x/blob/main/home/admin/code/ans-x-script.md#ans_x_docker_terminal)
-Colors are extra characters.
+Allocate a terminal to Docker and get colors Colors are extra
+characters.
 You need to set this variable to 0 to retrieve raw data in a script
 .IP
 .nf
@@ -159,9 +142,7 @@ export ANS_X_DOCKER_TERMINAL=1
 .fi
 .SS ANS_X_DOCKER_IMAGE_SHELL
 .PP
-The shell in the docker
-image (https://github.com//gerardnico/ansible-x/blob/main/home/admin/code/ansible/ans-x-shell.md#ans_x_docker_image_shell)
-Used by the ans-x-shell script
+The shell in the docker image Used by the ans-x-shell script
 .IP
 .nf
 \f[C]

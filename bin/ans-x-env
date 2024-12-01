@@ -4,6 +4,7 @@
 # The base url for our env doc
 BASE_REPO="https://github.com"
 BASE_PATH="/gerardnico/ansible-x/blob/main"
+SCRIPT_PATH=$(realpath "$0")
 
 function printEnv(){
   ENV_NAME=$1
@@ -11,12 +12,22 @@ function printEnv(){
   ENV_LABEL2=$3
   ENV_URL_ARG=$4
   ENV_VALUE=${5}
+
   # starts with http ?
   if [[ $ENV_URL_ARG == http* ]]; then
     ENV_URL="$ENV_URL_ARG"
   else
-    ENV_URL="$BASE_REPO/$BASE_PATH$(realpath "$ENV_URL_ARG")#${ENV_NAME,,}"
+    if [ "$IS_SYNOPSIS" == "1" ]; then
+      # started from the project directory
+      # we use the relative path directly
+      ENV_URL="$ENV_URL_ARG"
+    else
+      # for the terminal/script
+      # we let the browser handle the `..`
+      ENV_URL="$BASE_REPO/$BASE_PATH/docs/bin-generated/${ENV_URL_ARG}"
+    fi
   fi
+
   if [ "$IS_SYNOPSIS" == "1" ]; then
 
     echo "### $ENV_NAME"
@@ -42,7 +53,7 @@ function printEnv(){
 # the script itself that is called
 # Synopsis
 IS_SYNOPSIS=0
-if [ ${1:-} == "synopsis" ] && [ "$(basename "$0")" == "ans-x-env" ]; then
+if [ "${1:-}" == "synopsis" ] && [ "$(basename "$0")" == "ans-x-env" ]; then
   IS_SYNOPSIS=1
 fi
 
