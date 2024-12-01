@@ -95,7 +95,7 @@ ENVS+=("--volume" "$SCRIPT_DIR/../docker-mount/bin/ans-x-galaxy-collections-list
 # {
 #    "auths": {
 #        "ghcr.io": {
-#           "auth": "Z2VyYXJkbmljb0BnbWFpbC5jb206Z2hwX2FQNGhZc2JyTDFQYzdjRlpiUnE0Qm44bVBldDFmNzFFQndSUQ=="
+#           "auth": "tokenxxxx=="
 #        }
 #    }
 # }
