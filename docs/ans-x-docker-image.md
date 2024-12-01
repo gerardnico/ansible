@@ -50,8 +50,10 @@ The [Ansible Development Tools](https://ansible.readthedocs.io/projects/dev-tool
 
 ### Molecule
 
-Molecule is installed with the [](#ansible-dev-tool) tool but the [plugins](https://pypi.org/project/molecule-plugins/) are not.
+[Molecule](bin-generated/molecule.md) is installed with the [Ansible Dev Tool](#ansible-dev-tool) 
+but the [plugins](https://pypi.org/project/molecule-plugins/) are not.
 We install them with their dependencies.
+Check the list [Molecule Plugins](bin-generated/molecule.md#plugins)
 
 
 

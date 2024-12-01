@@ -5,18 +5,23 @@ The `molecule` cli aids in the development and testing of Ansible roles.
 
 Official documentation: [molecule command line cli](https://ansible.readthedocs.io/projects/molecule/usage/)
 
-# Installation
+# Plugins
 
-Molecule is installed on the [Ans-X image](../ans-x-docker-image.md) with all [plugins](https://github.com/ansible-community/molecule-plugins) and dependencies
+`Molecule` is installed on the [Ans-X image](../ans-x-docker-image.md) with all [plugins (ie drivers)](https://github.com/ansible-community/molecule-plugins) and dependencies
 
-* azure
+* azure driver
 * containers driver
 * docker driver
-* ec2
-* gce
-* openstack
+* ec2 driver
+* gce driver
+* openstack driver
 * podman driver
 * vagrant driver
+
+You can check them with the command:
+```bash
+molecule drivers
+```
 
 # SYNOPSIS
 
