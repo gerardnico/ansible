@@ -11,7 +11,7 @@ Ansible content, including:
 * inventories, 
 * playbooks, 
 * collections, 
-* documentation 
+* documentation, 
 * and container images (execution environments).
 
 Official documentation: [ansible-galaxy command line cli](https://ansible.readthedocs.io/projects/navigator/)

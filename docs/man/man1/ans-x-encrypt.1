@@ -50,34 +50,8 @@ ans-x-encrypt < cert.pem
 \f[R]
 .fi
 .SH SYNOPSIS
-.PP
-\[ga]\[ga]\[ga]bashusage: ansible-vault encrypt_string [-h]
-[\[en]vault-id VAULT_IDS] [-J | \[en]vault-password-file
-VAULT_PASSWORD_FILES] [-v] [\[en]output OUTPUT_FILE]
-[\[en]encrypt-vault-id ENCRYPT_VAULT_ID] [-p] [\[en]show-input] [-n
-ENCRYPT_STRING_NAMES] [\[en]stdin-name ENCRYPT_STRING_STDIN_NAME]
-[string_to_encrypt \&...]
-.PP
-positional arguments: string_to_encrypt String to encrypt
-.PP
-options: -h, \[en]help show this help message and exit \[en]vault-id
-VAULT_IDS the vault identity to use.
-This argument may be specified multiple times.
--J, \[en]ask-vault-password, \[en]ask-vault-pass ask for vault password
-\[en]vault-password-file VAULT_PASSWORD_FILES, \[en]vault-pass-file
-VAULT_PASSWORD_FILES vault password file -v, \[en]verbose Causes Ansible
-to print more debug messages.
-Adding multiple -v will increase the verbosity, the builtin plugins
-currently evaluate up to -vvvvvv.
-A reasonable level to start is -vvv, connection debugging might require
--vvvv.
-This argument may be specified multiple times.
-\[en]output OUTPUT_FILE output file name for encrypt or decrypt; use -
-for stdout \[en]encrypt-vault-id ENCRYPT_VAULT_ID the vault id used to
-encrypt (required if more than one vault-id is provided) -p, \[en]prompt
-Prompt for the string to encrypt \[en]show-input Do not hide input when
-prompted for the string to encrypt -n ENCRYPT_STRING_NAMES, \[en]name
-ENCRYPT_STRING_NAMES Specify the variable name.
-This argument may be specified multiple times.
-\[en]stdin-name ENCRYPT_STRING_STDIN_NAME Specify the variable name for
-stdin \[ga]\[ga]\[ga]
+.IP
+.nf
+\f[C]
+\f[R]
+.fi

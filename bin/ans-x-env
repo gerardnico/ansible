@@ -1,3 +1,19 @@
+#!/bin/bash
+# It's a script but it's called as source by the other script
+
+# The base url for our env doc
+BASE_REPO="https://github.com/gerardnico/ansible-x/blob/main"
+BASE_BIN_DOC="$BASE_REPO/docs/bin-generated"
+
+
+# ans-x-env is called for all script, we need to be sure that it's only for
+# the script itself that is called
+# Synopsis
+IS_SYNOPSIS=0
+if [ ${1:-} == "synopsis" ] && [ "$(basename "$0")" == "ans-x-env" ]; then
+  IS_SYNOPSIS=1
+fi
+
 
 # Don't load `$HOME/.bashenv.d/ans-x.sh`
 # If we want to get another local environment
@@ -45,8 +61,24 @@ if [[ $(uname -a) =~ "CYGWIN" ]]; then
     # Note: Deleting the c part seems to work also (ie HOMEPATH=\Users\ngera)
     ANS_X_PROJECT_DIR=$(cygpath -aw "$ANS_X_PROJECT_DIR" | tr 'C:' '/c' | tr '\\' '/')
 fi
-echo "# The local ansible project directory to mount in docker"
-echo "ANS_X_PROJECT_DIR=$ANS_X_PROJECT_DIR"
+
+ANS_X_PROJECT_DIR_LABEL="The local ansible project directory to mount in docker"
+ANS_X_PROJECT_DIR_URL="$BASE_REPO/#how-to-define-a-project-location-so-that-the-commands-can-be-run-from-anywhere"
+if [ "$IS_SYNOPSIS" == "1" ]; then
+
+  echo "## ANS_X_PROJECT_DIR"
+  echo "[$ANS_X_PROJECT_DIR_LABEL](ANS_X_PROJECT_DIR_URL)"
+  echo '```bash'
+  echo "export ANS_X_PROJECT_DIR=$ANS_X_PROJECT_DIR"
+  echo '```'
+
+else
+
+  echo "# $ANS_X_PROJECT_DIR_LABEL"
+  echo "# $ANS_X_PROJECT_DIR_URL"
+  echo "ANS_X_PROJECT_DIR=$ANS_X_PROJECT_DIR"
+
+fi
 
 ##################################
 # Pass
@@ -136,16 +168,20 @@ echo ""
 # ANS_X_DOCKER_IMAGE_SHELL
 ANS_X_DOCKER_IMAGE_SHELL="${ANS_X_DOCKER_IMAGE_SHELL:-"/usr/bin/env bash"}"
 echo "# The shell in the image"
+echo "# $BASE_BIN_DOC/ans-x-shell.md#ANS_X_DOCKER_IMAGE_SHELL"
 echo "ANS_X_DOCKER_IMAGE_SHELL='$ANS_X_DOCKER_IMAGE_SHELL'"
 echo ""
 
 
 # Ansible
+echo ""
+echo "# Ansible Env that are mounted into the Ansible Docker Execution Environment"
+echo ""
 
 # Ansible HOME
 # We set it so that it's not empty and defined to the Ansible default because we mount it
 echo "# Ansible Home: ANSIBLE_HOME (The directory where collections and roles are installed and searched by ansible)"
-echo "# "
+echo "# https://docs.ansible.com/ansible/latest/reference_appendices/config.html#ansible-home"
 ANSIBLE_HOME=${ANSIBLE_HOME:-"$HOME/.ansible"}
 echo "ANSIBLE_HOME='$ANSIBLE_HOME'"
 echo ""
@@ -163,3 +199,25 @@ fi
 echo "# Ansible Collections Path: ANSIBLE_COLLECTIONS_PATH (The base collections directory)"
 echo "# https://docs.ansible.com/ansible/latest/reference_appendices/config.html#collections-paths"
 echo "ANSIBLE_COLLECTIONS_PATH='$ANSIBLE_COLLECTIONS_PATH'"
+echo ""
+
+echo "# Ansible Config. The path to the ansible.cfg config file"
+echo "# https://docs.ansible.com/ansible/latest/reference_appendices/config.html#ansible-config"
+ANSIBLE_CONFIG=${ANSIBLE_CONFIG:-}
+if [ "$ANSIBLE_CONFIG" != "" ]; then
+  # Mounted Path should be absolute
+  ANSIBLE_CONFIG=$(realpath $ANSIBLE_CONFIG)
+fi
+echo "ANSIBLE_CONFIG='${ANSIBLE_CONFIG:-}'"
+echo ""
+
+echo "# Ansible Connection Path. The path to connection script"
+echo "# https://docs.ansible.com/ansible/latest/reference_appendices/config.html#ansible-connection-path"
+echo "ANSIBLE_CONNECTION_PATH='${ANSIBLE_CONNECTION_PATH:-}'"
+echo ""
+
+echo "# Ansible cowsay path. Path. The custom cowsay path "
+echo "# https://docs.ansible.com/ansible/latest/reference_appendices/config.html#ansible-cow-path"
+echo "ANSIBLE_COW_PATH='${ANSIBLE_COW_PATH:-}'"
+echo ""
+

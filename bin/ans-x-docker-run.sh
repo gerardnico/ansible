@@ -13,7 +13,7 @@ source "${BASHLIB_LIBRARY_PATH:-}${BASHLIB_LIBRARY_PATH:+/}bashlib-path.sh"
 source "${BASHLIB_LIBRARY_PATH:-}${BASHLIB_LIBRARY_PATH:+/}bashlib-bash.sh"
 
 echo::debug "Loading env"
-ENV=$(source ans-x-env.sh "$@")
+ENV=$(source ans-x-env "$@")
 if ! ERROR=$(bash::eval_validate "$ENV"); then
   echo::err "Error on env"
   echo::echo "$ERROR"
@@ -124,6 +124,7 @@ else
   ANSIBLE_HOME="$ANS_X_DOCKER_IMAGE_ANSIBLE_HOME/$ANSIBLE_HOME_RELATIVE_PATH"
 fi
 
+# ANSIBLE_COLLECTIONS_PATH
 # Collections
 # https://docs.ansible.com/ansible/latest/reference_appendices/config.html#collections-paths
 if [ "$ANSIBLE_COLLECTIONS_PATH" != "" ]; then
@@ -131,6 +132,21 @@ if [ "$ANSIBLE_COLLECTIONS_PATH" != "" ]; then
   while IFS=':' read -r COLLECTION_PATH; do
     ENVS+=("--volume" "$COLLECTION_PATH:$COLLECTION_PATH")
   done <<< "$ANSIBLE_COLLECTIONS_PATH"
+fi
+
+# ANSIBLE_CONFIG
+if [ "${ANSIBLE_CONFIG:-}" != "" ]; then
+  ENVS+=("--volume" "$ANSIBLE_CONFIG:$ANSIBLE_CONFIG")
+fi
+
+# ANSIBLE_CONNECTION_PATH
+if [ "${ANSIBLE_CONNECTION_PATH:-}" != "" ]; then
+  ENVS+=("--volume" "$ANSIBLE_CONNECTION_PATH:$ANSIBLE_CONNECTION_PATH")
+fi
+
+# ANSIBLE_COW_PATH
+if [ "${ANSIBLE_COW_PATH:-}" != "" ]; then
+  ENVS+=("--volume" "$ANSIBLE_COW_PATH:$ANSIBLE_COW_PATH")
 fi
 
 

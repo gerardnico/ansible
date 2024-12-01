@@ -1,9 +1,10 @@
 # Ans-X Docker Image
 
 ## About
-The `Ans-x Docker Image` is the [default image](ans-x-docker.md#ans-x-image) used by the `ans-x scripts`.
+The `Ans-x Docker Image` is the [default image](ans-x-docker.md#ans-x-image) used by the [ans-x scripts](../README.md#ans-x-scripts)
 
 It's an [Ansible Execution Environment](../contrib/contrib-ee)
+(Ie a container image serving as an Ansible control node)
 
 The image is:
 * hosted on Github at [Ans-x Docker Image](https://github.com/gerardnico/ansible/pkgs/container/ansible)
@@ -14,13 +15,13 @@ The image is:
 
 * You can execute an ansible command
 ```bash
-docker run --rm ghcr.io/gerardnico/ansible:2.9 YOUR ANSIBLE COMMAND
+docker run --rm ghcr.io/gerardnico/ansible:9.12 YOUR ANSIBLE COMMAND
 # example
-docker run --rm ghcr.io/gerardnico/ansible:2.9 ansible --version
+docker run --rm ghcr.io/gerardnico/ansible:9.12 ansible --version
 ```
 * or you can get bash shell
 ```bash
-docker run --rm -it ghcr.io/gerardnico/ansible:2.9 bash
+docker run --rm -it ghcr.io/gerardnico/ansible:9.12 bash
 # and execute the ansible command from the shell
 ansible
 ```
@@ -46,6 +47,11 @@ The `kubectl` client is also installed.
 ### Ansible Dev Tool
 
 The [Ansible Development Tools](https://ansible.readthedocs.io/projects/dev-tools/) are included.
+
+### Molecule
+
+Molecule is installed with the [](#ansible-dev-tool) tool but the [plugins](https://pypi.org/project/molecule-plugins/) are not.
+We install them with their dependencies.
 
 
 

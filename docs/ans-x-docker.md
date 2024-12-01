@@ -2,7 +2,8 @@
 
 ## About
 
-[Ans-x scripts](../README.md#ans-x-scripts) use a Docker image to run Ansible.
+[Ans-x scripts](../README.md#ans-x-scripts) calls an Ansible execution environment 
+(ie a ansible docker image serving as an Ansible control node)
 
 
 ## Which Ansible Image is used

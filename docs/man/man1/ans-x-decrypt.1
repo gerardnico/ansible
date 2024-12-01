@@ -45,24 +45,8 @@ echo \[aq]$ANSIBLE_VAULT;...<ansible vault string>\[aq] | tr -d \[aq] \[aq] | an
 \f[R]
 .fi
 .SH SYNOPSIS
-.PP
-\[ga]\[ga]\[ga]bashusage: ansible-vault decrypt [-h] [\[en]output
-OUTPUT_FILE] [\[en]vault-id VAULT_IDS] [-J | \[en]vault-password-file
-VAULT_PASSWORD_FILES] [-v] [file_name \&...]
-.PP
-positional arguments: file_name Filename
-.PP
-options: -h, \[en]help show this help message and exit \[en]output
-OUTPUT_FILE output file name for encrypt or decrypt; use - for stdout
-\[en]vault-id VAULT_IDS the vault identity to use.
-This argument may be specified multiple times.
--J, \[en]ask-vault-password, \[en]ask-vault-pass ask for vault password
-\[en]vault-password-file VAULT_PASSWORD_FILES, \[en]vault-pass-file
-VAULT_PASSWORD_FILES vault password file -v, \[en]verbose Causes Ansible
-to print more debug messages.
-Adding multiple -v will increase the verbosity, the builtin plugins
-currently evaluate up to -vvvvvv.
-A reasonable level to start is -vvv, connection debugging might require
--vvvv.
-This argument may be specified multiple times.
-\[ga]\[ga]\[ga]
+.IP
+.nf
+\f[C]
+\f[R]
+.fi
