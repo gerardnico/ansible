@@ -16,7 +16,7 @@ Example:
 ```bash
 # if you get your vault id with
 pass ansible/vault-id
-# you need to set ANS_X_PASSWORD_PASS to
+# you need to set ANS_X_CONNECTION_PASSWORD_PASS to
 export ANS_X_VAULT_ID_PASS=ansible/vault-id
 ```
 `Ans-x` will then create the [ANSIBLE_VAULT_PASSWORD_FILE](https://docs.ansible.com/ansible/devel/reference_appendices/config.html#envvar-ANSIBLE_VAULT_PASSWORD_FILE)

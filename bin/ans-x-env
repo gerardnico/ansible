@@ -2,9 +2,41 @@
 # It's a script but it's called as source by the other script
 
 # The base url for our env doc
-BASE_REPO="https://github.com/gerardnico/ansible-x/blob/main"
-BASE_BIN_DOC="$BASE_REPO/docs/bin-generated"
+BASE_REPO="https://github.com"
+BASE_PATH="/gerardnico/ansible-x/blob/main"
 
+function printEnv(){
+  ENV_NAME=$1
+  ENV_LABEL=$2
+  ENV_LABEL2=$3
+  ENV_URL_ARG=$4
+  ENV_VALUE=${5}
+  # starts with http ?
+  if [[ $ENV_URL_ARG == http* ]]; then
+    ENV_URL="$ENV_URL_ARG"
+  else
+    ENV_URL="$BASE_REPO/$BASE_PATH$(realpath "$ENV_URL_ARG")#${ENV_NAME,,}"
+  fi
+  if [ "$IS_SYNOPSIS" == "1" ]; then
+
+    echo "### $ENV_NAME"
+    echo "[$ENV_LABEL]($ENV_URL)"
+    [ "$ENV_LABEL2" != "" ] && echo "$ENV_LABEL2"
+    echo '```bash'
+    echo "export $ENV_NAME=$ENV_VALUE"
+    echo '```'
+
+  else
+
+    echo "# $ENV_LABEL"
+    [ "$ENV_LABEL2" != "" ] && echo "# $ENV_LABEL2"
+    echo "# $ENV_URL"
+    echo "$ENV_NAME='$ENV_VALUE'"
+
+  fi
+
+  echo ""
+}
 
 # ans-x-env is called for all script, we need to be sure that it's only for
 # the script itself that is called
@@ -50,6 +82,19 @@ do
    shift
 done
 
+ANS_X_ENV_LABEL="Ansible eXpress Env (Ans-x Env)"
+ANS_X_ENV_LABEL2="The Ansible Express Env"
+if [ "$IS_SYNOPSIS" == "1" ]; then
+  echo "## $ANS_X_ENV_LABEL"
+  echo "$ANS_X_ENV_LABEL2"
+  echo ""
+else
+  # Ansible
+  echo "# $ANS_X_ENV_LABEL"
+  echo "# $ANS_X_ENV_LABEL2"
+  echo ""
+fi
+
 # ANS_X_PROJECT_DIR
 ANS_X_PROJECT_DIR=${ANS_X_PROJECT_DIR:-$PWD}
 if [ ! -d "$ANS_X_PROJECT_DIR" ]; then
@@ -62,23 +107,11 @@ if [[ $(uname -a) =~ "CYGWIN" ]]; then
     ANS_X_PROJECT_DIR=$(cygpath -aw "$ANS_X_PROJECT_DIR" | tr 'C:' '/c' | tr '\\' '/')
 fi
 
-ANS_X_PROJECT_DIR_LABEL="The local ansible project directory to mount in docker"
-ANS_X_PROJECT_DIR_URL="$BASE_REPO/#how-to-define-a-project-location-so-that-the-commands-can-be-run-from-anywhere"
-if [ "$IS_SYNOPSIS" == "1" ]; then
-
-  echo "## ANS_X_PROJECT_DIR"
-  echo "[$ANS_X_PROJECT_DIR_LABEL](ANS_X_PROJECT_DIR_URL)"
-  echo '```bash'
-  echo "export ANS_X_PROJECT_DIR=$ANS_X_PROJECT_DIR"
-  echo '```'
-
-else
-
-  echo "# $ANS_X_PROJECT_DIR_LABEL"
-  echo "# $ANS_X_PROJECT_DIR_URL"
-  echo "ANS_X_PROJECT_DIR=$ANS_X_PROJECT_DIR"
-
-fi
+printEnv "ANS_X_PROJECT_DIR" \
+   "The local ansible project directory to mount in docker" \
+   "Mount the directory if set" \
+   "../ans-x-project-directory.md" \
+   "$ANS_X_PROJECT_DIR"
 
 ##################################
 # Pass
@@ -86,105 +119,130 @@ fi
 
 # ANS_X_VAULT_ID_PASS
 ANS_X_VAULT_ID_PASS=${ANS_X_VAULT_ID_PASS:-}
-echo "# The location of a vault id in the pass secret manager"
-echo "# This variable will set ANSIBLE_VAULT_PASSWORD_FILE"
-echo "ANS_X_VAULT_ID_PASS=$ANS_X_VAULT_ID_PASS"
+printEnv 'ANS_X_VAULT_ID_PASS' \
+  "The location of a vault id in the pass secret manager" \
+  "This variable will set ANSIBLE_VAULT_PASSWORD_FILE" \
+  "ansible-vault.md" \
+  "$ANS_X_VAULT_ID_PASS"
 
 # ANS_X_SSH_KEY_PASS
 ANS_X_SSH_KEY_PASS=${ANS_X_SSH_KEY_PASS:-}
-echo "# The location of a ssh key in the pass secret manager"
-echo "# This variable will set ANSIBLE_PRIVATE_KEY_FILE"
-echo "ANS_X_SSH_KEY_PASS=$ANS_X_SSH_KEY_PASS"
-echo ""
+printEnv "ANS_X_SSH_KEY_PASS" \
+  "The location of a ssh key in the pass secret manager" \
+  "This variable will set ANSIBLE_PRIVATE_KEY_FILE" \
+  "../ans-x-ssh.md" \
+  "$ANS_X_SSH_KEY_PASS"
 
-# ANS_X_PASSWORD_PASS
-ANS_X_PASSWORD_PASS=${ANS_X_PASSWORD_PASS:-}
-echo "# The SSH user password in pass"
-echo "ANS_X_PASSWORD_PASS=$ANS_X_PASSWORD_PASS"
-echo ""
+# ANS_X_CONNECTION_PASSWORD_PASS
+ANS_X_CONNECTION_PASSWORD_PASS=${ANS_X_CONNECTION_PASSWORD_PASS:-}
+printEnv "ANS_X_CONNECTION_PASSWORD_PASS" \
+  "The SSH user password in pass" \
+  "This variable will set ANSIBLE_CONNECTION_PASSWORD_FILE" \
+  "../ans-x-ssh.md" \
+  "$ANS_X_CONNECTION_PASSWORD_PASS"
 
 # ANS_X_BECOME_PASSWORD_PASS
 ANS_X_BECOME_PASSWORD_PASS=${ANS_X_BECOME_PASSWORD_PASS:-}
-echo "# The become password in pass"
-echo "ANS_X_BECOME_PASSWORD_PASS=$ANS_X_BECOME_PASSWORD_PASS"
-echo ""
+printEnv 'ANS_X_BECOME_PASSWORD_PASS' \
+  "The become password in pass" \
+  "This variable will set ANSIBLE_BECOME_PASSWORD_FILE" \
+  "../ans-x-ssh.md" \
+  "$ANS_X_BECOME_PASSWORD_PASS"
 
-# ANS_X_PASS_ENABLED (SSH)
+# ANS_X_PASS_ENABLED
 # With molecule we don't need to have secret as we connect locally
-echo "# Do we load secret from pass (disabled for non-ssh cli such as molecule, ansible-config, ansible-galaxy, ... by default)"
-echo "ANS_X_PASS_ENABLED=$ANS_X_PASS_ENABLED"
-echo ""
+printEnv "ANS_X_PASS_ENABLED" \
+  "Enable or disable the pass secret" \
+  "1 (default, enabled), 0 (disabled)" \
+  "../ans-x-pass.md" \
+  "$ANS_X_PASS_ENABLED"
 
 ##################################
 # Docker
 ##################################
 # ANS_X_DOCKER_NAMESPACE
 ANS_X_DOCKER_NAMESPACE=${ANS_X_DOCKER_NAMESPACE:-gerardnico}
-echo "# The docker image namespace"
-echo "ANS_X_DOCKER_NAMESPACE=$ANS_X_DOCKER_NAMESPACE"
+printEnv "ANS_X_DOCKER_NAMESPACE" \
+  "The docker image namespace" \
+  "Set the namespace of the docker image used" \
+  "../ans-x-docker.md" \
+  "$ANS_X_DOCKER_NAMESPACE"
 
 # ANS_X_DOCKER_NAME
 ANS_X_DOCKER_NAME=${ANS_X_DOCKER_NAME:-ansible}
-echo "# The docker image name"
-echo "ANS_X_DOCKER_NAME=$ANS_X_DOCKER_NAME"
+printEnv "ANS_X_DOCKER_NAME" \
+  "The docker image name" \
+  "Set the name of the docker image used" \
+  "../ans-x-docker.md" \
+  "$ANS_X_DOCKER_NAME"
 
 # ANS_X_DOCKER_TAG
 ANS_X_DOCKER_TAG=${ANS_X_DOCKER_TAG:-9.12.0}
-echo "# The docker image tag"
-echo "ANS_X_DOCKER_TAG=$ANS_X_DOCKER_TAG"
+printEnv "ANS_X_DOCKER_TAG" \
+  "The docker image tag" \
+  "Set the tag of the docker image used" \
+  "../ans-x-docker.md" \
+  "$ANS_X_DOCKER_TAG"
 
 # ANS_X_DOCKER_REGISTRY
 ANS_X_DOCKER_REGISTRY=${ANS_X_DOCKER_REGISTRY:-"ghcr.io"}
-echo "# The docker image registry"
-echo "ANS_X_DOCKER_REGISTRY=$ANS_X_DOCKER_REGISTRY"
+printEnv "ANS_X_DOCKER_REGISTRY" \
+  "The docker image registry" \
+  "Set the registry of the docker image used" \
+  "../ans-x-docker.md" \
+  "$ANS_X_DOCKER_REGISTRY"
 
 
 
 # ANS_X_DOCKER_ENVS
-echo "# A grep pattern expression that selects the environment variable to pass to Ansible"
 ANS_X_DOCKER_ENVS="^(ANS_X|ANSIBLE|ACTION|AGNOSTIC|ANY|BECOME|CACHE|CALLBACKS|COLLECTIONS|COLOR|CONNECTION|COVERAGE|DEFAULT|DEPRECATION|DEVEL|DIFF|DOC|DUPLICATE|EDITOR|ENABLE|ERROR|FACTS_MODULES|GALAXY|HOST|INJECT|INTERPRETER|INVALID|INVENTORY|LOG|MAX_FILE_SIZE_FOR_DIFF|MODULE|HCLOUD|AZURE)"
-echo "ANS_X_DOCKER_ENVS='$ANS_X_DOCKER_ENVS'"
-echo ""
+printEnv 'ANS_X_DOCKER_ENVS' \
+  "The docker envs grep pattern expression" \
+  "Selects the environment variable to pass to Ansible" \
+  "../ans-x-docker.md" \
+  "$ANS_X_DOCKER_ENVS"
 
 # ANS_X_DOCKER_TERMINAL
-echo "# Allocate a terminal to Docker and get colors"
-echo "# Colors are extra characters. You need to set this variable to 0 to retrieve raw data in a script"
 ANS_X_DOCKER_TERMINAL="${ANS_X_DOCKER_TERMINAL:-"1"}"
-echo "ANS_X_DOCKER_TERMINAL='$ANS_X_DOCKER_TERMINAL'"
-echo ""
+printEnv 'ANS_X_DOCKER_TERMINAL' \
+  "Allocate a terminal to Docker and get colors" \
+  "Colors are extra characters. You need to set this variable to 0 to retrieve raw data in a script" \
+  "../ans-x-script.md" \
+  "$ANS_X_DOCKER_TERMINAL"
 
-# ANS_X_DOCKER_IMAGE_PROJECT_DIR
-ANS_X_DOCKER_IMAGE_PROJECT_DIR=${ANS_X_DOCKER_IMAGE_PROJECT_DIR:-"$PWD"}
-echo "# The project directory in the image (by default, the working directory)"
-echo "ANS_X_DOCKER_IMAGE_PROJECT_DIR=$ANS_X_DOCKER_IMAGE_PROJECT_DIR"
-echo ""
-
-# ANS_X_DOCKER_IMAGE_ANSIBLE_HOME
-ANS_X_DOCKER_IMAGE_ANSIBLE_HOME=${ANS_X_DOCKER_IMAGE_ANSIBLE_HOME:-"/ansible/home"}
-echo "# The ANSIBLE_HOME directory in the image"
-echo "ANS_X_DOCKER_IMAGE_ANSIBLE_HOME=$ANS_X_DOCKER_IMAGE_ANSIBLE_HOME"
-echo ""
 
 # ANS_X_DOCKER_IMAGE_SHELL
 ANS_X_DOCKER_IMAGE_SHELL="${ANS_X_DOCKER_IMAGE_SHELL:-"/usr/bin/env bash"}"
-echo "# The shell in the image"
-echo "# $BASE_BIN_DOC/ans-x-shell.md#ANS_X_DOCKER_IMAGE_SHELL"
-echo "ANS_X_DOCKER_IMAGE_SHELL='$ANS_X_DOCKER_IMAGE_SHELL'"
-echo ""
+printEnv 'ANS_X_DOCKER_IMAGE_SHELL' \
+  "The shell in the docker image" \
+  "Used by the ans-x-shell script" \
+  "ans-x-shell.md" \
+  "$ANS_X_DOCKER_IMAGE_SHELL"
 
-
-# Ansible
-echo ""
-echo "# Ansible Env that are mounted into the Ansible Docker Execution Environment"
-echo ""
+###################################
+# Ansible Env
+###################################
+ANSIBLE_ENV_LABEL="Ansible Env"
+ANSIBLE_ENV_LABEL2="The Ansible Env directory or file that are mounted into the Ansible Docker Execution Environment"
+if [ "$IS_SYNOPSIS" == "1" ]; then
+  echo "## $ANSIBLE_ENV_LABEL"
+  echo "$ANSIBLE_ENV_LABEL2"
+  echo ""
+else
+  # Ansible
+  echo "# $ANSIBLE_ENV_LABEL"
+  echo "# $ANSIBLE_ENV_LABEL2"
+  echo ""
+fi
 
 # Ansible HOME
 # We set it so that it's not empty and defined to the Ansible default because we mount it
-echo "# Ansible Home: ANSIBLE_HOME (The directory where collections and roles are installed and searched by ansible)"
-echo "# https://docs.ansible.com/ansible/latest/reference_appendices/config.html#ansible-home"
 ANSIBLE_HOME=${ANSIBLE_HOME:-"$HOME/.ansible"}
-echo "ANSIBLE_HOME='$ANSIBLE_HOME'"
-echo ""
+printEnv "ANSIBLE_HOME" \
+  "Ansible Home" \
+  "The directory where resources such as collections and roles are installed and searched by ansible)" \
+  "https://docs.ansible.com/ansible/latest/reference_appendices/config.html#ansible-home" \
+  "$ANSIBLE_HOME"
 
 # Ansible Collections path
 ANSIBLE_COLLECTIONS_PATH=${ANSIBLE_COLLECTIONS_PATH:-}
@@ -196,13 +254,13 @@ if [ "$ANSIBLE_COLLECTIONS_PATH" == "" ]; then
   # may be called COLLECTIONS_PATHS
   ANSIBLE_COLLECTIONS_PATH=${COLLECTIONS_PATHS:-}
 fi
-echo "# Ansible Collections Path: ANSIBLE_COLLECTIONS_PATH (The base collections directory)"
-echo "# https://docs.ansible.com/ansible/latest/reference_appendices/config.html#collections-paths"
-echo "ANSIBLE_COLLECTIONS_PATH='$ANSIBLE_COLLECTIONS_PATH'"
-echo ""
+printEnv "ANSIBLE_COLLECTIONS_PATH" \
+  "Ansible Collections Path" \
+  "The base collections directory" \
+  "https://docs.ansible.com/ansible/latest/reference_appendices/config.html#collections-paths" \
+  "$ANSIBLE_COLLECTIONS_PATH"
 
-echo "# Ansible Config. The path to the ansible.cfg config file"
-echo "# https://docs.ansible.com/ansible/latest/reference_appendices/config.html#ansible-config"
+
 ANSIBLE_CONFIG=${ANSIBLE_CONFIG:-}
 if [ "$ANSIBLE_CONFIG" != "" ]; then
   # Mounted Path should be absolute
@@ -214,22 +272,30 @@ if [ "$ANSIBLE_CONFIG" != "" ]; then
     ANSIBLE_CONFIG=$ANSIBLE_CONFIG_REAL_PATH
   fi
 fi
-echo "ANSIBLE_CONFIG='${ANSIBLE_CONFIG}'"
-echo ""
+printEnv "ANSIBLE_CONFIG" \
+  "Ansible Config" \
+  "The path to the ansible.cfg config file" \
+  "https://docs.ansible.com/ansible/latest/reference_appendices/config.html#ansible-config" \
+  "${ANSIBLE_CONFIG}"
 
-# ERROR: [Errno 21] Is a directory: b'/home/admin/code/ansible/ansible.cfg'
+# Prevent: ERROR: [Errno 21] Is a directory: b'/home/admin/code/ansible/ansible.cfg'
 if [ -d "$PWD/ansible.cfg" ]; then
     echo::err "$PWD/ansible.cfg is a directory, not a file."
     exit 1
 fi
 
-echo "# Ansible Connection Path. The path to connection script"
-echo "# https://docs.ansible.com/ansible/latest/reference_appendices/config.html#ansible-connection-path"
-echo "ANSIBLE_CONNECTION_PATH='${ANSIBLE_CONNECTION_PATH:-}'"
-echo ""
+# ANSIBLE_CONNECTION_PATH
+printEnv "ANSIBLE_CONNECTION_PATH" \
+  " Ansible Connection Path" \
+  "The path to connection script" \
+  "https://docs.ansible.com/ansible/latest/reference_appendices/config.html#ansible-connection-path" \
+  "${ANSIBLE_CONNECTION_PATH:-}"
 
-echo "# Ansible cowsay path. Path. The custom cowsay path "
-echo "# https://docs.ansible.com/ansible/latest/reference_appendices/config.html#ansible-cow-path"
-echo "ANSIBLE_COW_PATH='${ANSIBLE_COW_PATH:-}'"
-echo ""
+# ANSIBLE_COW_PATH
+printEnv "ANSIBLE_COW_PATH" \
+  "Ansible cowsay path" \
+  "The custom cowsay path" \
+  "https://docs.ansible.com/ansible/latest/reference_appendices/config.html#ansible-cow-path" \
+  "${ANSIBLE_COW_PATH:-}"
+
 

@@ -117,12 +117,7 @@ fi
 if [ ! -d "$ANSIBLE_HOME" ]; then
   mkdir -p "$ANSIBLE_HOME"
 fi
-if ! ANSIBLE_HOME_RELATIVE_PATH=$(path::relative_to "$ANSIBLE_HOME" "$ANS_X_PROJECT_DIR"); then
-  ENVS+=("--volume" "$ANSIBLE_HOME:$ANS_X_DOCKER_IMAGE_ANSIBLE_HOME")
-  ANSIBLE_HOME="$ANS_X_DOCKER_IMAGE_ANSIBLE_HOME"
-else
-  ANSIBLE_HOME="$ANS_X_DOCKER_IMAGE_ANSIBLE_HOME/$ANSIBLE_HOME_RELATIVE_PATH"
-fi
+ENVS+=("--volume" "$ANSIBLE_HOME:$ANSIBLE_HOME")
 
 # ANSIBLE_COLLECTIONS_PATH
 # Collections
@@ -141,11 +136,15 @@ fi
 
 # ANSIBLE_CONNECTION_PATH
 if [ "${ANSIBLE_CONNECTION_PATH:-}" != "" ]; then
+  # to mount in docker, we need a full qualified path
+  ANSIBLE_CONNECTION_PATH=$(realpath "$ANSIBLE_CONNECTION_PATH")
   ENVS+=("--volume" "$ANSIBLE_CONNECTION_PATH:$ANSIBLE_CONNECTION_PATH")
 fi
 
 # ANSIBLE_COW_PATH
 if [ "${ANSIBLE_COW_PATH:-}" != "" ]; then
+  # to mount in docker, we need a full qualified path
+  ANSIBLE_COW_PATH=$(realpath "$ANSIBLE_COW_PATH")
   ENVS+=("--volume" "$ANSIBLE_COW_PATH:$ANSIBLE_COW_PATH")
 fi
 
@@ -204,16 +203,16 @@ done
 if [ "${ANSIBLE_CONNECTION_PASSWORD_FILE:-}" != "" ]; then
   ENVS+=("-v" "$ANSIBLE_CONNECTION_PASSWORD_FILE:$ANSIBLE_CONNECTION_PASSWORD_FILE")
 else
-  if [ "${ANS_X_PASSWORD_PASS:-}" != "" ] && [ "$ANS_X_PASS_ENABLED" == "1" ]; then
-    PASSWORD_PASS_FILE="${PASSWORD_STORE_DIR:-"$HOME~/.password-store"}/$ANS_X_PASSWORD_PASS.gpg"
+  if [ "${ANS_X_CONNECTION_PASSWORD_PASS:-}" != "" ] && [ "$ANS_X_PASS_ENABLED" == "1" ]; then
+    PASSWORD_PASS_FILE="${PASSWORD_STORE_DIR:-"$HOME~/.password-store"}/$ANS_X_CONNECTION_PASSWORD_PASS.gpg"
     if [ ! -f "$PASSWORD_PASS_FILE" ]; then
-      echo::err "The pass ${ANS_X_PASSWORD_PASS} of the env ANS_X_PASSWORD_PASS does not exist"
+      echo::err "The pass ${ANS_X_CONNECTION_PASSWORD_PASS} of the env ANS_X_CONNECTION_PASSWORD_PASS does not exist"
       exit 1
     fi
 
     PASS_DOCKER_PATH=/tmp/user-password
     PASS_LOCAL_PATH=/dev/shm/user-password
-    pass "$ANS_X_PASSWORD_PASS" >| $PASS_LOCAL_PATH
+    pass "$ANS_X_CONNECTION_PASSWORD_PASS" >| $PASS_LOCAL_PATH
 
     ENVS+=("--env" "ANSIBLE_CONNECTION_PASSWORD_FILE=$PASS_DOCKER_PATH")
     ENVS+=("-v" "$PASS_LOCAL_PATH:$PASS_DOCKER_PATH")

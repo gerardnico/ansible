@@ -77,7 +77,7 @@ export ANSIBLE_PRIVATE_KEY_FILE=my_key
 We support passing passwords stored in the [pass secret manager](ans-x-pass.md)
 
 You need to set to the location of your password the variable
-* `ANS_X_PASSWORD_PASS`: the user password
+* `ANS_X_CONNECTION_PASSWORD_PASS`: the user password
 * `ANS_X_BECOME_PASSWORD_PASS`: the become user password
 
 Example:
@@ -85,8 +85,8 @@ Example:
 ```bash
 # if you get your user password with
 pass ansible/ssh-password
-# you need to set ANS_X_PASSWORD_PASS to
-export ANS_X_PASSWORD_PASS=ansible/ssh-password
+# you need to set ANS_X_CONNECTION_PASSWORD_PASS to
+export ANS_X_CONNECTION_PASSWORD_PASS=ansible/ssh-password
 ```
 * Become User Password
 ```bash

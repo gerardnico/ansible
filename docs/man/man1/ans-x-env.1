@@ -21,70 +21,210 @@
 \f[V]ans-x-env\f[R] shows you the environment variables of the Ansible X
 Execution Environment.
 .SH ENVS
+.SS Ansible eXpress Env (Ans-x Env)
+.PP
+The Ansible Express Env
 .SS ANS_X_PROJECT_DIR
 .PP
-The local ansible project directory to mount in docker
+The local ansible project directory to mount in
+docker (https://github.com//gerardnico/ansible-x/blob/main/home/admin/code/ans-x-project-directory.md#ans_x_project_dir)
+Mount the directory if set
 .IP
 .nf
 \f[C]
 export ANS_X_PROJECT_DIR=/home/admin/code/ansible
 \f[R]
 .fi
-.SH The location of a vault id in the pass secret manager
-.SH This variable will set ANSIBLE_VAULT_PASSWORD_FILE
+.SS ANS_X_VAULT_ID_PASS
 .PP
-ANS_X_VAULT_ID_PASS=ansible/vault-password # The location of a ssh key
-in the pass secret manager # This variable will set
-ANSIBLE_PRIVATE_KEY_FILE ANS_X_SSH_KEY_PASS=ssh-x/id_gerardnico_kube
-.SH The SSH user password in pass
+The location of a vault id in the pass secret
+manager (https://github.com//gerardnico/ansible-x/blob/main/home/admin/code/ansible/ansible-vault.md#ans_x_vault_id_pass)
+This variable will set ANSIBLE_VAULT_PASSWORD_FILE
+.IP
+.nf
+\f[C]
+export ANS_X_VAULT_ID_PASS=ansible/vault-password
+\f[R]
+.fi
+.SS ANS_X_SSH_KEY_PASS
 .PP
-ANS_X_PASSWORD_PASS=
-.SH The become password in pass
+The location of a ssh key in the pass secret
+manager (https://github.com//gerardnico/ansible-x/blob/main/home/admin/code/ans-x-ssh.md#ans_x_ssh_key_pass)
+This variable will set ANSIBLE_PRIVATE_KEY_FILE
+.IP
+.nf
+\f[C]
+export ANS_X_SSH_KEY_PASS=ssh-x/id_gerardnico_kube
+\f[R]
+.fi
+.SS ANS_X_CONNECTION_PASSWORD_PASS
 .PP
-ANS_X_BECOME_PASSWORD_PASS=
-.SH Do we load secret from pass (disabled for non-ssh cli such as molecule, ansible-config, ansible-galaxy, \&... by default)
+The SSH user password in
+pass (https://github.com//gerardnico/ansible-x/blob/main/home/admin/code/ans-x-ssh.md#ans_x_connection_password_pass)
+This variable will set ANSIBLE_CONNECTION_PASSWORD_FILE
+.IP
+.nf
+\f[C]
+export ANS_X_CONNECTION_PASSWORD_PASS=
+\f[R]
+.fi
+.SS ANS_X_BECOME_PASSWORD_PASS
 .PP
-ANS_X_PASS_ENABLED=1
-.SH The docker image namespace
+The become password in
+pass (https://github.com//gerardnico/ansible-x/blob/main/home/admin/code/ans-x-ssh.md#ans_x_become_password_pass)
+This variable will set ANSIBLE_BECOME_PASSWORD_FILE
+.IP
+.nf
+\f[C]
+export ANS_X_BECOME_PASSWORD_PASS=
+\f[R]
+.fi
+.SS ANS_X_PASS_ENABLED
 .PP
-ANS_X_DOCKER_NAMESPACE=gerardnico # The docker image name
-ANS_X_DOCKER_NAME=ansible # The docker image tag ANS_X_DOCKER_TAG=9.12.0
-# The docker image registry ANS_X_DOCKER_REGISTRY=ghcr.io # A grep
-pattern expression that selects the environment variable to pass to
+Enable or disable the pass
+secret (https://github.com//gerardnico/ansible-x/blob/main/home/admin/code/ans-x-pass.md#ans_x_pass_enabled)
+1 (default, enabled), 0 (disabled)
+.IP
+.nf
+\f[C]
+export ANS_X_PASS_ENABLED=1
+\f[R]
+.fi
+.SS ANS_X_DOCKER_NAMESPACE
+.PP
+The docker image
+namespace (https://github.com//gerardnico/ansible-x/blob/main/home/admin/code/ans-x-docker.md#ans_x_docker_namespace)
+Set the namespace of the docker image used
+.IP
+.nf
+\f[C]
+export ANS_X_DOCKER_NAMESPACE=gerardnico
+\f[R]
+.fi
+.SS ANS_X_DOCKER_NAME
+.PP
+The docker image
+name (https://github.com//gerardnico/ansible-x/blob/main/home/admin/code/ans-x-docker.md#ans_x_docker_name)
+Set the name of the docker image used
+.IP
+.nf
+\f[C]
+export ANS_X_DOCKER_NAME=ansible
+\f[R]
+.fi
+.SS ANS_X_DOCKER_TAG
+.PP
+The docker image
+tag (https://github.com//gerardnico/ansible-x/blob/main/home/admin/code/ans-x-docker.md#ans_x_docker_tag)
+Set the tag of the docker image used
+.IP
+.nf
+\f[C]
+export ANS_X_DOCKER_TAG=9.12.0
+\f[R]
+.fi
+.SS ANS_X_DOCKER_REGISTRY
+.PP
+The docker image
+registry (https://github.com//gerardnico/ansible-x/blob/main/home/admin/code/ans-x-docker.md#ans_x_docker_registry)
+Set the registry of the docker image used
+.IP
+.nf
+\f[C]
+export ANS_X_DOCKER_REGISTRY=ghcr.io
+\f[R]
+.fi
+.SS ANS_X_DOCKER_ENVS
+.PP
+The docker envs grep pattern
+expression (https://github.com//gerardnico/ansible-x/blob/main/home/admin/code/ans-x-docker.md#ans_x_docker_envs)
+Selects the environment variable to pass to Ansible
+.IP
+.nf
+\f[C]
+export ANS_X_DOCKER_ENVS=\[ha](ANS_X|ANSIBLE|ACTION|AGNOSTIC|ANY|BECOME|CACHE|CALLBACKS|COLLECTIONS|COLOR|CONNECTION|COVERAGE|DEFAULT|DEPRECATION|DEVEL|DIFF|DOC|DUPLICATE|EDITOR|ENABLE|ERROR|FACTS_MODULES|GALAXY|HOST|INJECT|INTERPRETER|INVALID|INVENTORY|LOG|MAX_FILE_SIZE_FOR_DIFF|MODULE|HCLOUD|AZURE)
+\f[R]
+.fi
+.SS ANS_X_DOCKER_TERMINAL
+.PP
+Allocate a terminal to Docker and get
+colors (https://github.com//gerardnico/ansible-x/blob/main/home/admin/code/ans-x-script.md#ans_x_docker_terminal)
+Colors are extra characters.
+You need to set this variable to 0 to retrieve raw data in a script
+.IP
+.nf
+\f[C]
+export ANS_X_DOCKER_TERMINAL=1
+\f[R]
+.fi
+.SS ANS_X_DOCKER_IMAGE_SHELL
+.PP
+The shell in the docker
+image (https://github.com//gerardnico/ansible-x/blob/main/home/admin/code/ansible/ans-x-shell.md#ans_x_docker_image_shell)
+Used by the ans-x-shell script
+.IP
+.nf
+\f[C]
+export ANS_X_DOCKER_IMAGE_SHELL=/usr/bin/env bash
+\f[R]
+.fi
+.SS Ansible Env
+.PP
+The Ansible Env directory or file that are mounted into the Ansible
+Docker Execution Environment
+.SS ANSIBLE_HOME
+.PP
 Ansible
-ANS_X_DOCKER_ENVS=`\[ha](ANS_X|ANSIBLE|ACTION|AGNOSTIC|ANY|BECOME|CACHE|CALLBACKS|COLLECTIONS|COLOR|CONNECTION|COVERAGE|DEFAULT|DEPRECATION|DEVEL|DIFF|DOC|DUPLICATE|EDITOR|ENABLE|ERROR|FACTS_MODULES|GALAXY|HOST|INJECT|INTERPRETER|INVALID|INVENTORY|LOG|MAX_FILE_SIZE_FOR_DIFF|MODULE|HCLOUD|AZURE)'
-.SH Allocate a terminal to Docker and get colors
-.SH Colors are extra characters. You need to set this variable to 0 to retrieve raw data in a script
+Home (https://docs.ansible.com/ansible/latest/reference_appendices/config.html#ansible-home)
+The directory where resources such as collections and roles are
+installed and searched by ansible)
+.IP
+.nf
+\f[C]
+export ANSIBLE_HOME=/home/admin/.ansible
+\f[R]
+.fi
+.SS ANSIBLE_COLLECTIONS_PATH
 .PP
-ANS_X_DOCKER_TERMINAL=`1'
-.SH The project directory in the image (by default, the working directory)
+Ansible Collections
+Path (https://docs.ansible.com/ansible/latest/reference_appendices/config.html#collections-paths)
+The base collections directory
+.IP
+.nf
+\f[C]
+export ANSIBLE_COLLECTIONS_PATH=
+\f[R]
+.fi
+.SS ANSIBLE_CONFIG
 .PP
-ANS_X_DOCKER_IMAGE_PROJECT_DIR=/home/admin/code/ansible
-.SH The ANSIBLE_HOME directory in the image
+Ansible
+Config (https://docs.ansible.com/ansible/latest/reference_appendices/config.html#ansible-config)
+The path to the ansible.cfg config file
+.IP
+.nf
+\f[C]
+export ANSIBLE_CONFIG=
+\f[R]
+.fi
+.SS ANSIBLE_CONNECTION_PATH
 .PP
-ANS_X_DOCKER_IMAGE_ANSIBLE_HOME=/ansible/home
-.SH The shell in the image
-.SH https://github.com/gerardnico/ansible-x/blob/main/docs/bin-generated/ans-x-shell.md#ANS_X_DOCKER_IMAGE_SHELL
+Ansible Connection
+Path (https://docs.ansible.com/ansible/latest/reference_appendices/config.html#ansible-connection-path)
+The path to connection script
+.IP
+.nf
+\f[C]
+export ANSIBLE_CONNECTION_PATH=
+\f[R]
+.fi
+.SS ANSIBLE_COW_PATH
 .PP
-ANS_X_DOCKER_IMAGE_SHELL=`/usr/bin/env bash'
-.SH Ansible Env that are mounted into the Ansible Docker Execution Environment
-.SH Ansible Home: ANSIBLE_HOME (The directory where collections and roles are installed and searched by ansible)
-.SH https://docs.ansible.com/ansible/latest/reference_appendices/config.html#ansible-home
-.PP
-ANSIBLE_HOME=`/home/admin/.ansible'
-.SH Ansible Collections Path: ANSIBLE_COLLECTIONS_PATH (The base collections directory)
-.SH https://docs.ansible.com/ansible/latest/reference_appendices/config.html#collections-paths
-.PP
-ANSIBLE_COLLECTIONS_PATH=\[cq]\[cq]
-.SH Ansible Config. The path to the ansible.cfg config file
-.SH https://docs.ansible.com/ansible/latest/reference_appendices/config.html#ansible-config
-.PP
-ANSIBLE_CONFIG=\[cq]\[cq]
-.SH Ansible Connection Path. The path to connection script
-.SH https://docs.ansible.com/ansible/latest/reference_appendices/config.html#ansible-connection-path
-.PP
-ANSIBLE_CONNECTION_PATH=\[cq]\[cq]
-.SH Ansible cowsay path. Path. The custom cowsay path
-.SH https://docs.ansible.com/ansible/latest/reference_appendices/config.html#ansible-cow-path
-.PP
-ANSIBLE_COW_PATH=\[cq]\[cq]
+Ansible cowsay
+path (https://docs.ansible.com/ansible/latest/reference_appendices/config.html#ansible-cow-path)
+The custom cowsay path
+.IP
+.nf
+\f[C]
+export ANSIBLE_COW_PATH=
+\f[R]
+.fi

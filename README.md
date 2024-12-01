@@ -22,9 +22,7 @@ With `Ans-x`, you get:
 * support for [pass](docs/ans-x-pass.md) as secret store to get:
   * a [vault id](#how-to-encryptdecrypt-with-vault) 
   * an [ssh private key/password](docs/ans-x-ssh.md)
-* native [Ansible environments](https://docs.ansible.com/ansible/latest/reference_appendices/config.html)  injection for:
-  * [ANSIBLE_HOME](https://docs.ansible.com/ansible/latest/reference_appendices/config.html#ansible-home)
-  * [ANSIBLE_COLLECTIONS_PATH](https://docs.ansible.com/ansible/latest/reference_appendices/config.html#collections-paths)
+* Native [Ansible environments](docs/bin-generated/ans-x-env.md#ansible-env) injection for [ANSIBLE_HOME](docs/bin-generated/ans-x-env.md#ansible_home), [ANSIBLE_COLLECTIONS_PATH](docs/bin-generated/ans-x-env.md#ansible_collections_path), ...
 * a [Kubernetes Ready Ansible](docs/ans-x-docker-image.md#kubernetes)
 * the [Ansible Dev Tools packaged](docs/ans-x-docker-image.md#ansible-dev-tool)
 * [Docker in Docker ready](#what-is-docker-in-docker-feature)
@@ -77,18 +75,7 @@ These scripts are utility scripts
 
 ### How to define a project location so that the commands can be run from anywhere
 
-By default, the project directory available to Ansible is your working directory.
-
-If you want to start a command inside your project directory such as a [molecule](docs/bin-generated/molecule.md) command in the `extensions` directory of a collection
-you can set the env variable `ANS_X_PROJECT_DIR` to the path of your ansible project.
-
-This directory will then be mounted and used instead of the current working directory.
-
-Example:
-* In a `.envrc` at the root directory of your project with `direnv`
-```bash
-export ANS_X_PROJECT_DIR=$PWD
-```
+See [How to define the Project Directory](docs/ans-x-project-directory.md)
  
 
 ### How to define the Ansible Docker Image?
@@ -129,23 +116,7 @@ See [How to define SSH key or password](docs/ans-x-ssh.md)
 
 ### How to use Ans-x in your script (disable terminal)?
 
-By default, we allocate a terminal to output colors.
-
-If you use `Ans-x` in a script to retrieve data, you need to disable this behavior
-so that you don't get any terminal specific characters.
-
-```bash
-export ANS_X_DOCKER_TERMINAL=0
-```
-
-A one-liner example on how to extract the `COLLECTIONS_PATHS` env
-of [ansible-galax](docs/bin-generated/ansible-galaxy.md) with [ansible-config](docs/bin-generated/ansible-config.md)   
-```bash
-collection_paths=$(
-  ANS_X_DOCKER_TERMINAL=0 ansible-config dump --format json \
-    | jq '.[] | select(.name == "COLLECTIONS_PATHS").value | @sh'
-  )
-```
+See [How to use Ans-x in your script](docs/ans-x-script.md)
 
 ## FAQ
 
