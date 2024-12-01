@@ -206,10 +206,22 @@ echo "# https://docs.ansible.com/ansible/latest/reference_appendices/config.html
 ANSIBLE_CONFIG=${ANSIBLE_CONFIG:-}
 if [ "$ANSIBLE_CONFIG" != "" ]; then
   # Mounted Path should be absolute
-  ANSIBLE_CONFIG=$(realpath $ANSIBLE_CONFIG)
+  ANSIBLE_CONFIG_REAL_PATH=$(realpath $ANSIBLE_CONFIG)
+  if [ ! -f "$ANSIBLE_CONFIG_REAL_PATH" ]; then
+    echo::warn "The ansible config file $ANSIBLE_CONFIG does not exist. Modify your ANSIBLE_CONFIG value of ($ANSIBLE_CONFIG)"
+    ANSIBLE_CONFIG=""
+  else
+    ANSIBLE_CONFIG=$ANSIBLE_CONFIG_REAL_PATH
+  fi
 fi
-echo "ANSIBLE_CONFIG='${ANSIBLE_CONFIG:-}'"
+echo "ANSIBLE_CONFIG='${ANSIBLE_CONFIG}'"
 echo ""
+
+# ERROR: [Errno 21] Is a directory: b'/home/admin/code/ansible/ansible.cfg'
+if [ -d "$PWD/ansible.cfg" ]; then
+    echo::err "$PWD/ansible.cfg is a directory, not a file."
+    exit 1
+fi
 
 echo "# Ansible Connection Path. The path to connection script"
 echo "# https://docs.ansible.com/ansible/latest/reference_appendices/config.html#ansible-connection-path"

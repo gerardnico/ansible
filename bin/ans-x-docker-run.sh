@@ -328,6 +328,14 @@ do
  shift
 done
 
-command::echo_debug_eval "docker ${ENVS[*]} \
+COMMAND="docker ${ENVS[*]} \
   $ANS_X_DOCKER_REGISTRY/$ANS_X_DOCKER_NAMESPACE/$ANS_X_DOCKER_NAME:$ANS_X_DOCKER_TAG \
   ${args[*]}"
+## No idea why but the docker errors are send to stdout and are just silenced
+if ! ERROR=$(command::echo_debug_eval "$COMMAND"); then
+  echo::err "The ansible docker execution returns an error."
+  echo::err "Error: $ERROR"
+  echo::err "Command:"
+  echo::echo $COMMAND
+  exit 1
+fi

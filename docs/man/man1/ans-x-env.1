@@ -27,7 +27,7 @@ The local ansible project directory to mount in docker
 .IP
 .nf
 \f[C]
-export ANS_X_PROJECT_DIR=/home/admin/code/infra
+export ANS_X_PROJECT_DIR=/home/admin/code/ansible
 \f[R]
 .fi
 .SH The location of a vault id in the pass secret manager
@@ -64,14 +64,14 @@ ANS_X_DOCKER_IMAGE_PROJECT_DIR=/home/admin/code/ansible
 .PP
 ANS_X_DOCKER_IMAGE_ANSIBLE_HOME=/ansible/home
 .SH The shell in the image
-.SH /ans-x-shell.md#ANS_X_DOCKER_IMAGE_SHELL
+.SH https://github.com/gerardnico/ansible-x/blob/main/docs/bin-generated/ans-x-shell.md#ANS_X_DOCKER_IMAGE_SHELL
 .PP
 ANS_X_DOCKER_IMAGE_SHELL=`/usr/bin/env bash'
 .SH Ansible Env that are mounted into the Ansible Docker Execution Environment
 .SH Ansible Home: ANSIBLE_HOME (The directory where collections and roles are installed and searched by ansible)
 .SH https://docs.ansible.com/ansible/latest/reference_appendices/config.html#ansible-home
 .PP
-ANSIBLE_HOME=`ansible'
+ANSIBLE_HOME=`/home/admin/.ansible'
 .SH Ansible Collections Path: ANSIBLE_COLLECTIONS_PATH (The base collections directory)
 .SH https://docs.ansible.com/ansible/latest/reference_appendices/config.html#collections-paths
 .PP
@@ -79,7 +79,7 @@ ANSIBLE_COLLECTIONS_PATH=\[cq]\[cq]
 .SH Ansible Config. The path to the ansible.cfg config file
 .SH https://docs.ansible.com/ansible/latest/reference_appendices/config.html#ansible-config
 .PP
-ANSIBLE_CONFIG=`ansible.cfg'
+ANSIBLE_CONFIG=\[cq]\[cq]
 .SH Ansible Connection Path. The path to connection script
 .SH https://docs.ansible.com/ansible/latest/reference_appendices/config.html#ansible-connection-path
 .PP
