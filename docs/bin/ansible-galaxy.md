@@ -16,5 +16,6 @@ ansible-galax collection list --format human-path
 
 # SYNOPSIS
 
-```bash${SYNOPSIS}
+```bash
+${SYNOPSIS}
 ```

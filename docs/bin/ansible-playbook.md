@@ -7,5 +7,6 @@ Official documentation: [ansible-playbook command line cli](https://docs.ansible
 
 # SYNOPSIS
 
-```bash${SYNOPSIS}
+```bash
+${SYNOPSIS}
 ```

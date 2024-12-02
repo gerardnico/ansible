@@ -18,10 +18,56 @@ Official documentation: [molecule command line cli](https://ansible.readthedocs.
 * podman driver
 * vagrant driver
 
-You
+You can check them with the command:
+```bash
+molecule drivers
+```
 
 # SYNOPSIS
 
 ```bash
+[33mUsage[0m: molecule [OPTIONS] COMMAND [ARGS]...
 
+  Molecule aids in the development and testing of Ansible roles.
+
+  To enable autocomplete for a supported shell execute command below after
+  replacing SHELL with either bash, zsh, or fish:
+
+      eval "$(_MOLECULE_COMPLETE=SHELL_source molecule)"
+
+[33mOptions[0m:
+  [32m--debug / --no-debug[0m    Enable or disable debug mode. Default is disabled.
+  [32m-v, --verbose[0m           Increase Ansible verbosity level. Default is 0.
+  [32m-c, --base-config TEXT[0m  Path to a base config (can be specified multiple
+                          times). If provided, Molecule will first load and
+                          deep merge the configurations in the specified
+                          order, and deep merge each scenario's molecule.yml
+                          on top. By default Molecule is looking for
+                          '.config/molecule/config.yml' in current VCS
+                          repository and if not found it will look in user
+                          home. (None).
+  [32m-e, --env-file TEXT[0m     The file to read variables from when rendering
+                          molecule.yml. (.env.yml)
+  [32m--version[0m
+  [32m--help[0m                  Show this message and exit.
+
+[33mCommands[0m:
+  [32mcheck[0m        Use the provisioner to perform a Dry-Run (destroy,...
+  [32mcleanup[0m      Use the provisioner to cleanup any changes.
+  [32mconverge[0m     Use the provisioner to configure instances (dependency,...
+  [32mcreate[0m       Use the provisioner to start the instances.
+  [32mdependency[0m   Manage the role's dependencies.
+  [32mdestroy[0m      Use the provisioner to destroy the instances.
+  [34mdrivers[0m      List drivers.
+  [32midempotence[0m  Use the provisioner to configure the instances.
+  [34minit[0m         Initialize a new scenario.
+  [34mlist[0m         List status of instances.
+  [93mlogin[0m        Log in to one instance.
+  [34mmatrix[0m       List matrix of steps used to test instances.
+  [32mprepare[0m      Use the provisioner to prepare the instances into a...
+  [34mreset[0m        Reset molecule temporary folders.
+  [32mside-effect[0m  Use the provisioner to perform side-effects to the instances.
+  [32msyntax[0m       Use the provisioner to syntax check the role.
+  [93mtest[0m         Test (dependency, cleanup, destroy, syntax, create,...
+  [32mverify[0m       Run automated tests against instances.
 ```

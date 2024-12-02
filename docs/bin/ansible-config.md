@@ -8,5 +8,6 @@ To see what a config does, check the [configuration setting page](https://docs.a
 
 # SYNOPSIS
 
-```bash${SYNOPSIS}
+```bash
+${SYNOPSIS}
 ```

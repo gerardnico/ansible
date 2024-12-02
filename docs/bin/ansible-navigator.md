@@ -18,5 +18,6 @@ Official documentation: [ansible-galaxy command line cli](https://ansible.readth
 
 # SYNOPSIS
 
-```bash${SYNOPSIS}
+```bash
+${SYNOPSIS}
 ```

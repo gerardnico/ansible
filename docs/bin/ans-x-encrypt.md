@@ -32,6 +32,7 @@ ans-x-encrypt < cert.pem
 
 # SYNOPSIS
 
-```bash${SYNOPSIS}
+```bash
+${SYNOPSIS}
 ```
 

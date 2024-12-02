@@ -8,5 +8,6 @@ Official documentation: [ansible-pull command line cli](https://docs.ansible.com
 
 # SYNOPSIS
 
-```bash${SYNOPSIS}
+```bash
+${SYNOPSIS}
 ```

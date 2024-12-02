@@ -7,5 +7,6 @@ Official documentation: [ansible-inventory command line cli](https://docs.ansibl
 
 # SYNOPSIS
 
-```bash${SYNOPSIS}
+```bash
+${SYNOPSIS}
 ```

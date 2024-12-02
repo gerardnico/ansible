@@ -30,5 +30,6 @@ We support wrappers for a one argument encryption and decryption
 
 # SYNOPSIS
 
-```bash${SYNOPSIS}
+```bash
+${SYNOPSIS}
 ```

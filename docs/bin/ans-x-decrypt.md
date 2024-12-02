@@ -27,6 +27,7 @@ echo '$ANSIBLE_VAULT;...<ansible vault string>' | tr -d ' ' | ansible-vault decr
 
 # SYNOPSIS
 
-```bash${SYNOPSIS}
+```bash
+${SYNOPSIS}
 ```
 
