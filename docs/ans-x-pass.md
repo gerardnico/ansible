@@ -28,10 +28,11 @@ export ANS_X_PASS_ENABLED="1"
 If `pass` has a Time to live (TTL) configured (ie [Gpg default-cache-ttl](https://www.gnupg.org/documentation/manuals/gnupg/Agent-Options.html#index-default_002dcache_002dttl)), it can become annoying
 to get a prompt every couple of minutes.
 
-We support 3 modes :
+We support 4 modes :
 * [enable once and for all](#how-to-enable-it-once-and-for-all)
 * [enable on demand](#how-to-disable-it-globally-enable-it-on-demand)
 * [disable on demand](#how-to-disable-it-on-demand)
+* [disable by script](#how-to-disable-it-for-a-command)
 
 ### How to enable it once and for all
 
@@ -83,3 +84,20 @@ ansible --xpass
 ansible --xp 
 ```
 
+### How to disable it for a command
+
+Not all Ansible Tool needs a secret for every run. 
+
+You can disable pass for specific [script](../README.md#ans-x-scripts)
+by setting the `ANS_X_PASS_SCRIPT_DISABLED` with a list of script name separated by a colon.
+
+By default, we disable pass for:
+* the [molecule](bin-generated/molecule.md)
+* and [ansible-navigator](bin-generated/ansible-navigator.md)
+* and [ansible-galaxy](bin-generated/ansible-galaxy.md)
+
+```bash
+export ANS_X_PASS_SCRIPT_DISABLED="molecule:ansible-navigator:ansible-galaxy"
+```
+
+Note that you can [toggle it on with the toggle flag](#how-to-disable-it-globally-enable-it-on-demand)

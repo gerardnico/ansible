@@ -67,12 +67,11 @@ fi
 # Flag parsing
 # ANS_X_PASS_ENABLED Default
 ANS_X_PASS_ENABLED="${ANS_X_PASS_ENABLED:-"1"}"
-#if [ "$ANS_X_PASS_ENABLED" == "" ]; then
-#  ANS_X_PASS_ENABLED="1"
-#  if [[ "$(basename "$0")" =~ "molecule"|"ansible-galaxy"|"ansible-conf" ]] ; then
-#    ANS_X_PASS_ENABLED="0"
-#  fi
-#fi
+ANS_X_PASS_SCRIPT_DISABLED=${ANS_X_PASS_SCRIPT_DISABLED:-'molecule:ansible-navigator:ansible-galaxy'}
+if [[ "${ANS_X_PASS_SCRIPT_DISABLED}" =~ "$(basename "$0")" ]] ; then
+  ANS_X_PASS_ENABLED="0"
+fi
+
 while [[ $# -gt 0 ]]
 do
    case "$1" in
