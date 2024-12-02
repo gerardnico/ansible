@@ -78,7 +78,10 @@ fi
 ######################
 # Mount the extras
 ######################
-ENVS+=("--volume" "$SCRIPT_DIR/../docker-mount/bin/ans-x-galaxy-collections-list-with-path:/usr/local/bin/ans-x-galaxy-collections-list-with-path")
+SCRIPT_NAME="ans-x-galaxy-collections-list-with-path"
+# realpath is fucking important, no `..` in the path otherwise you get weird mount
+SCRIPT_PATH=$(realpath "$SCRIPT_DIR/../docker-mount/bin/$SCRIPT_NAME")
+ENVS+=("--volume" "$SCRIPT_PATH:/usr/local/bin/$SCRIPT_NAME")
 
 # Docker Auth
 # By default, on WSL, you get .docker/config.json
@@ -104,7 +107,8 @@ DOCKER_CONFIG="$HOME/.docker/config.json"
 if [ -f $DOCKER_CONFIG ]; then
   DOCKER_CREDS_STORE=$(jq -r '.credsStore' "$HOME/.docker/config.json")
   if [ "$DOCKER_CREDS_STORE" == "desktop.exe" ]; then
-    ENVS+=("--volume" "$SCRIPT_DIR/../docker-mount/home/.docker/config.json:$HOME/.docker/config.json")
+    # realpath is fucking important, no `..` in the path otherwise you get weird mount
+    ENVS+=("--volume" "$(realpath $SCRIPT_DIR/../docker-mount/home/.docker/config.json):$HOME/.docker/config.json")
   fi
 fi
 
