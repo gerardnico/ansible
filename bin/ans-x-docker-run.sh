@@ -38,6 +38,12 @@ fi
 # [Errno 13] Permission denied: b'/home/hostUser'
 ENVS+=("--volume" "$HOME:$HOME")
 
+######################
+# Mount shared memory
+######################
+# We may create memory file to pass inventory for instance
+ENVS+=("--volume" "/dev/shm:/dev/shm")
+
 
 ######################
 # Mount the working directory
@@ -166,6 +172,8 @@ if [ "$(basename "$0")" == "ans-x-shell" ]; then
   # Docker it, not bash it
   ENVS+=("-i")
 fi
+
+
 
 # Terminal (Colors!)
 if [ "$ANS_X_DOCKER_TERMINAL" == "1" ]; then
